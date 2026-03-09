@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { AiOutlineLock, AiOutlinePhone, AiOutlineMail } from "react-icons/ai";
 import { MdAlternateEmail } from "react-icons/md";
+import { Link } from "react-router-dom";
 
 function Login() {
   const [loginMethod, setLoginMethod] = useState("phone");
@@ -149,9 +150,9 @@ function Login() {
         <div className="mt-6 text-center">
           <p className="text-gray-600 text-sm">
             Vous n'avez pas de compte ?{" "}
-            <a href="#" className="text-orange-600 hover:text-orange-700 font-medium">
+            <Link to={'auth/register'} className="text-orange-600 hover:text-orange-700 font-medium">
               Créer un compte
-            </a>
+            </Link>
           </p>
         </div>
       </div>
