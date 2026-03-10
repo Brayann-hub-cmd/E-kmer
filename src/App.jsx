@@ -1,4 +1,4 @@
-import SignUp from "./Auth/SignUp";
+import SignUp from "./SignUp/SignUp";
 function App() {
     return(
         <SignUp/>
