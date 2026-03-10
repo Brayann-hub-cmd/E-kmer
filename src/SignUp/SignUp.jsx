@@ -13,7 +13,10 @@ import {
   BsCheckCircle 
 } from 'react-icons/bs';
 
+
+import { Link } from 'react-router-dom';
 const SignUp = () => {
+
   // État pour gérer les valeurs du formulaire
   const [formData, setFormData] = useState({
     nomComplet: '',
@@ -515,9 +518,9 @@ const SignUp = () => {
         {/* Lien de connexion */}
         <p className={`text-center text-sm ${textStyle}`}>
           Vous avez déjà un compte ?{' '}
-          <a href="#" className={linkStyle}>
+          <Link to={'/'} className={linkStyle}>
             Se connecter
-          </a>
+          </Link>
         </p>
       </div>
     </div>

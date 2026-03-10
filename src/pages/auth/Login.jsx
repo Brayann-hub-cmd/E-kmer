@@ -1,152 +1,158 @@
 import React, { useState } from "react";
-import { AiOutlineMail, AiOutlineEye, AiOutlineEyeInvisible, AiOutlinePhone } from "react-icons/ai";
+import { AiOutlineLock, AiOutlinePhone, AiOutlineMail } from "react-icons/ai";
 import { MdAlternateEmail } from "react-icons/md";
+import { Link } from "react-router-dom";
 
 function Login() {
+  const [loginMethod, setLoginMethod] = useState("phone");
+  const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [loginMethod, setLoginMethod] = useState("email");
-  const [phone, setPhone] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setIsLoading(true);
-    setTimeout(() => {
-      alert("Connexion réussie!");
-      setIsLoading(false);
-    }, 1500);
+    // Handle login logic here
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-50 via-white to-orange-100 animate-fade-in">
-      <div className="bg-white p-10 rounded-3xl shadow-2xl max-w-md w-full animate-slide-in">
-        <div className="bg-gradient-to-r from-orange-500 to-orange-600 p-8 rounded-2xl text-center text-white mb-8 animate-slide-in-down animate-gradient">
-          <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-2xl mx-auto animate-float animate-pulse-glow animate-spin-slow">
-            <span className="text-4xl font-black text-orange-600">E</span>
-          </div>
-          <h1 className="text-3xl font-bold mb-2">E-KMER</h1>
-          <p className="opacity-90">Bienvenue sur votre plateforme</p>
+    <div className="min-h-screen bg-[#F3F3F3] flex items-center justify-center">
+      <div className="bg-white rounded-lg shadow-md p-8 w-[420px]">
+        <div className="text-center mb-6">
+          <h1 className="text-2xl font-bold mb-2">
+            Connexion à <span className="text-orange-500">E-kmer</span>
+          </h1>
+          <p className="text-gray-500 text-sm">Accédez à votre compte pour continuer</p>
         </div>
 
-        <div className="mb-6 animate-slide-in delay-100">
-          <p className="text-xs font-semibold text-orange-600 uppercase text-center mb-3">Choisir votre méthode</p>
-          <div className="grid grid-cols-2 gap-3">
-            <button
-              type="button"
-              onClick={() => setLoginMethod("email")}
-              className={`py-2 px-3 rounded-lg flex items-center justify-center gap-2 font-semibold text-sm transition-all border-2 ${
-                loginMethod === "email"
-                  ? "bg-orange-500 text-white border-orange-500"
-                  : "text-gray-700 border-gray-300 hover:border-orange-500"
-              } hover:animate-wiggle`}
-            >
-              <MdAlternateEmail className="text-lg hover:animate-spin-slow" />
-              <span>Email</span>
-            </button>
+        <div className="mb-6">
+          <div className="flex bg-white border border-gray-300 rounded-lg p-1">
             <button
               type="button"
               onClick={() => setLoginMethod("phone")}
-              className={`py-2 px-3 rounded-lg flex items-center justify-center gap-2 font-semibold text-sm transition-all border-2 ${
+              className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition ${
                 loginMethod === "phone"
-                  ? "bg-orange-500 text-white border-orange-500"
-                  : "text-gray-700 border-gray-300 hover:border-orange-500"
-              } hover:animate-wiggle`}
+                  ? "bg-orange-500 text-white"
+                  : "bg-white text-gray-500"
+              }`}
             >
-              <AiOutlinePhone className="text-lg hover:animate-spin-slow" />
-              <span>Tél.</span>
+              Avec votre téléphone
+            </button>
+            <button
+              type="button"
+              onClick={() => setLoginMethod("email")}
+              className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition ${
+                loginMethod === "email"
+                  ? "bg-orange-500 text-white"
+                  : "bg-white text-gray-500"
+              }`}
+            >
+              Avec votre email
             </button>
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {loginMethod === "email" ? (
-            <div className="animate-slide-in delay-200">
-              <label className="block text-sm font-semibold text-gray-800 mb-2">Adresse Email</label>
-              <div className="relative group">
-                <AiOutlineMail className="absolute right-3 top-3 text-orange-500 text-xl group-hover:animate-spin-slow" />
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {loginMethod === "phone" ? (
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Numéro de téléphone
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <img src="https://flagcdn.com/w20/cm.png" alt="Drapeau du Cameroun" className="w-5 h-auto mr-1" />
+                  <span className="text-gray-500">+237</span>
+                </div>
                 <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full px-4 py-3 pr-12 border-2 border-gray-200 rounded-lg focus:border-orange-500 focus:outline-none"
-                  placeholder="votre@email.com"
+                  type="tel"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  className="w-full pl-20 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-orange-500 focus:border-orange-500"
+                  placeholder="6XX XXX XXX"
                   required
                 />
               </div>
             </div>
           ) : (
-            <div className="animate-slide-in delay-200">
-              <label className="block text-sm font-semibold text-gray-800 mb-2">Numéro de Téléphone</label>
-              <div className="relative group">
-                <AiOutlinePhone className="absolute right-3 top-3 text-orange-500 text-xl group-hover:animate-spin-slow" />
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Adresse email
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <AiOutlineMail className="text-gray-400" />
+                </div>
                 <input
-                  type="tel"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  className="w-full px-4 py-3 pr-12 border-2 border-gray-200 rounded-lg focus:border-orange-500 focus:outline-none"
-                  placeholder="+237 6 12 34 56 78"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-orange-500 focus:border-orange-500"
+                  placeholder="votre@email.com"
                   required
                 />
               </div>
             </div>
           )}
 
-          <div className="animate-slide-in delay-300">
-            <label className="block text-sm font-semibold text-gray-800 mb-2">Mot de passe</label>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Mot de passe
+            </label>
             <div className="relative">
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-3 text-gray-400 hover:text-orange-500"
-              >
-                {showPassword ? <AiOutlineEyeInvisible className="text-xl" /> : <AiOutlineEye className="text-xl" />}
-              </button>
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <AiOutlineLock className="text-gray-400" />
+              </div>
               <input
-                type={showPassword ? "text" : "password"}
+                type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 pr-12 border-2 border-gray-200 rounded-lg focus:border-orange-500 focus:outline-none"
+                className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-orange-500 focus:border-orange-500"
                 placeholder="••••••••"
                 required
               />
             </div>
           </div>
 
-          <div className="flex items-center justify-between text-sm animate-slide-in delay-300">
-            <label className="flex items-center cursor-pointer">
-              <input type="checkbox" checked={rememberMe} onChange={(e) => setRememberMe(e.target.checked)} className="w-4 h-4 rounded accent-orange-600" />
-              <span className="ml-2 text-gray-600 hover:text-gray-800 transition">Se souvenir de moi</span>
+          <div className="flex items-center justify-between">
+            <label className="flex items-center">
+              <input
+                type="checkbox"
+                checked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
+                className="w-4 h-4 text-orange-600 bg-gray-100 border-gray-300 rounded focus:ring-orange-500"
+              />
+              <span className="ml-2 text-sm text-gray-600">Se souvenir de moi</span>
             </label>
-            <a href="#" className="text-orange-600 hover:text-orange-700 font-semibold transition hover:animate-wiggle">
-              Mot de passe oublié?
+            <a href="#" className="text-sm text-orange-600 hover:text-orange-700">
+              Mot de passe oublié ?
             </a>
           </div>
 
           <button
             type="submit"
-            disabled={isLoading}
-            className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold py-3 rounded-lg transition-all flex items-center justify-center gap-2 animate-slide-in delay-400 hover:animate-pulse hover:scale-105 focus:animate-pulse-glow"
+            className="w-full bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-600 transition"
           >
-            {isLoading ? (
-              <>
-                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                <span>Connexion...</span>
-              </>
-            ) : (
-              "Se connecter →"
-            )}
+            Connexion
           </button>
         </form>
 
-        <div className="mt-6 text-center border-t border-gray-200 pt-6 animate-slide-in delay-500">
-          <p className="text-gray-600">
-            Pas de compte?{" "}
-            <a href="/register" className="font-semibold text-orange-600 hover:text-orange-700 hover:animate-bounce">
-              S'inscrire gratuitement
-            </a>
+        <div className="mt-6">
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-300"></div>
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-2 bg-white text-gray-500">ou</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-6 text-center">
+          <p className="text-gray-600 text-sm">
+            Vous n'avez pas de compte ?{" "}
+            <Link to={'auth/register'} className="text-orange-600 hover:text-orange-700 font-medium">
+              Créer un compte
+            </Link>
           </p>
         </div>
       </div>
