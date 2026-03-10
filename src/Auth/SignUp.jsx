@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { toast, Toaster } from 'react-hot-toast';
 import { 
   FaUser, 
@@ -6,16 +6,18 @@ import {
   FaEye, 
   FaEyeSlash,
   FaMoon,
-  FaSun
+  FaSun,
+  FaEnvelope
 } from 'react-icons/fa';
 import { 
   BsCheckCircle 
 } from 'react-icons/bs';
 
-const Auth = () => {
+const SignUp = () => {
   // État pour gérer les valeurs du formulaire
   const [formData, setFormData] = useState({
     nomComplet: '',
+    email: '',
     telephone: '',
     motDePasse: '',
     confirmerMotDePasse: '',
@@ -51,6 +53,14 @@ const Auth = () => {
       nouvellesErreurs.nomComplet = 'Le nom complet est requis';
     } else if (donnees.nomComplet.trim().length < 2) {
       nouvellesErreurs.nomComplet = 'Le nom doit contenir au moins 2 caractères';
+    }
+
+    // Validation de l'email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!donnees.email.trim()) {
+      nouvellesErreurs.email = 'L\'email est requis';
+    } else if (!emailRegex.test(donnees.email)) {
+      nouvellesErreurs.email = 'Format d\'email invalide (ex: nom@domaine.com)';
     }
 
     // Validation du téléphone (format Cameroun)
@@ -165,6 +175,7 @@ const Auth = () => {
       // Réinitialiser le formulaire
       setFormData({
         nomComplet: '',
+        email: '',
         telephone: '',
         motDePasse: '',
         confirmerMotDePasse: '',
@@ -176,6 +187,7 @@ const Auth = () => {
       setErreurs(nouvellesErreurs);
       setTouched({
         nomComplet: true,
+        email: true,
         telephone: true,
         motDePasse: true,
         confirmerMotDePasse: true,
@@ -317,6 +329,30 @@ const Auth = () => {
             )}
           </div>
 
+          {/* Champ Email */}
+          <div>
+            <label className={labelStyle}>
+              Adresse email
+            </label>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <FaEnvelope className={iconStyle} />
+              </div>
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                placeholder="votre@email.com"
+                className={inputStyle(touched.email && erreurs.email)}
+              />
+            </div>
+            {touched.email && erreurs.email && (
+              <p className={errorTextStyle}>{erreurs.email}</p>
+            )}
+          </div>
+
           {/* Champ Téléphone */}
           <div>
             <label className={labelStyle}>
@@ -341,7 +377,7 @@ const Auth = () => {
                   });
                 }}
                 onBlur={handleBlur}
-                placeholder=" +237 6XX XXX XXX"
+                placeholder="+237 6XX XXX XXX"
                 className={inputStyle(touched.telephone && erreurs.telephone)}
               />
             </div>
@@ -488,4 +524,4 @@ const Auth = () => {
   );
 };
 
-export default Auth;
+export default SignUp;
