@@ -1,18 +1,52 @@
 import React, { useState } from "react";
 import { AiOutlineLock, AiOutlinePhone, AiOutlineMail } from "react-icons/ai";
 import { MdAlternateEmail } from "react-icons/md";
-import { Link } from "react-router-dom";
-
+import { Link, useNavigate } from "react-router-dom";
+import api from '../../api'
+import toast from "react-hot-toast";
 function Login() {
   const [loginMethod, setLoginMethod] = useState("phone");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
-
-  const handleSubmit = (e) => {
+  const [user, setUser] = useState(null)
+  const navigate = useNavigate()
+  const handleSubmit = async (e) => {
     e.preventDefault();
     // Handle login logic here
+    if (loginMethod === "email") {
+      try {
+        const response = await api.post('auth/login/', { email: email, password: password })
+        localStorage.setItem('token', response.data.token)
+        const userData = response.data.user
+        setUser(userData)
+        navigate('/auth/register',{state:{user:userData}})
+        toast.success(`Soyez la bienvenu M.${userData.username} !`)
+      } catch (error) {
+        if (error.response?.status === 401) {
+          toast.error('Email ou mot de passe incorrect.')
+        } else {
+          console.log(`Erreur! ${error}.`);
+        }
+      }
+    }
+    if (loginMethod === "phone") {
+      try {
+        const response = await api.post('auth/login/tel',{telephone:phone, password: password})
+        localStorage.setItem('token', response.data.token)
+        const userData = response.data.user
+        setUser(userData)
+        navigate('/auth/register',{state:{user:userData}})
+        toast.success(`Soyez la bienvenu M.${userData.username} !`)
+      } catch (error) {
+        if (error.response?.status === 401) {
+          toast.error('Email ou mot de passe incorrect.')
+        } else {
+          console.log(`Erreur! ${error}.`);
+        }
+      }
+    }
   };
 
   return (
@@ -30,22 +64,20 @@ function Login() {
             <button
               type="button"
               onClick={() => setLoginMethod("phone")}
-              className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition ${
-                loginMethod === "phone"
-                  ? "bg-orange-500 text-white"
-                  : "bg-white text-gray-500"
-              }`}
+              className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition ${loginMethod === "phone"
+                ? "bg-orange-500 text-white"
+                : "bg-white text-gray-500"
+                }`}
             >
               Avec votre téléphone
             </button>
             <button
               type="button"
               onClick={() => setLoginMethod("email")}
-              className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition ${
-                loginMethod === "email"
-                  ? "bg-orange-500 text-white"
-                  : "bg-white text-gray-500"
-              }`}
+              className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition ${loginMethod === "email"
+                ? "bg-orange-500 text-white"
+                : "bg-white text-gray-500"
+                }`}
             >
               Avec votre email
             </button>
@@ -131,6 +163,7 @@ function Login() {
           <button
             type="submit"
             className="w-full bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-600 transition"
+            onClick={handleSubmit}
           >
             Connexion
           </button>
