@@ -510,7 +510,7 @@ const SignUp = () => {
         {/* Lien de connexion */}
         <p className={`text-center text-sm ${textStyle}`}>
           Vous avez déjà un compte ?{' '}
-          <Link to={'/'} className={linkStyle}>
+          <Link to={'/auth/login'} className={linkStyle}>
             Se connecter
           </Link>
         </p>
