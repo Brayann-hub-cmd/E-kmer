@@ -1,6 +1,6 @@
 import React from 'react'
-import Navbar from './components/Navbar'
-import Header from './components/Header'
+import Navbar from './Components/Navbar'
+import Header from './Components/Header'
 
 function App() {
     return (

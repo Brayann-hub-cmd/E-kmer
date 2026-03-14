@@ -21,33 +21,35 @@ const categories = [
 return(
 
 
-<div 
-className="relative text-white"
+<div
+className="relative text-white bg-cover bg-center min-h-[80vh]"
 style={{
-backgroundImage: `linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url(${bg})`,
-backgroundSize:"cover",
-backgroundPosition:"center"
+backgroundImage:`linear-gradient(rgba(0,0,0,0.65),rgba(0,0,0,0.65)), url(${bg})`
 }}
 >
 
-<div className="relative text-white">
+{/* CATEGORIES BAR */}
 
-{/* BARRE CATEGORIES */}
+<div className="border-b border-orange-500/40">
 
-<div className="flex justify-center gap-10 text-sm font-medium border-b border-orange-500/40">
+<div className="max-w-2xl mx-auto px-2 flex items-center justify-between">
 
-{/* MENU MOBILE */}
+{/* logo */}
 
-<div 
-className="md:hidden text-2xl cursor-pointer py-3"
+
+
+{/* menu hamburger mobile */}
+
+<div
+className="md:hidden text-2xl cursor-pointer"
 onClick={()=>setMenuOpen(!menuOpen)}
 >
 <FaBars/>
 </div>
 
-{/* CATEGORIES DESKTOP */}
+{/* categories desktop */}
 
-<div className="hidden md:flex gap-10 text-sm font-medium">
+<div className="hidden md:flex gap-8 text-sm font-medium">
 
 {categories.map((cat)=>(
 
@@ -58,11 +60,15 @@ className="relative cursor-pointer py-4"
 >
 
 <span className={active===cat ? "text-orange-500" : "hover:text-orange-400"}>
+
 {cat}
+
 </span>
 
 {active===cat && (
+
 <div className="absolute bottom-0 left-0 w-full h-[3px] bg-orange-500"></div>
+
 )}
 
 </div>
@@ -73,11 +79,11 @@ className="relative cursor-pointer py-4"
 
 </div>
 
-{/* MENU MOBILE DEROULE */}
+{/* mobile menu */}
 
 {menuOpen && (
 
-<div className="md:hidden bg-black/90 flex flex-col items-center gap-4 py-4">
+<div className="md:hidden bg-black/90 flex flex-col items-center gap-6 py-6">
 
 {categories.map((cat)=>(
 
@@ -86,7 +92,9 @@ key={cat}
 onClick={()=>setActive(cat)}
 className="cursor-pointer text-lg hover:text-orange-500"
 >
+
 {cat}
+
 </div>
 
 ))}
@@ -95,30 +103,43 @@ className="cursor-pointer text-lg hover:text-orange-500"
 
 )}
 
-{/* HERO CONTENT */}
+</div>
 
-<div className="max-w-7xl mx-auto grid grid-cols-2 items-center py-16">
+
+{/* HERO SECTION */}
+
+<div className="max-w-7xl mx-auto px-6 py-12 grid lg:grid-cols-2 gap-12 items-center">
+
+{/* texte */}
 
 <div>
 
-<h1 className="text-5xl font-bold leading-tight">
+<h1 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight">
 
 Achetez et vendez  
-<br/>
 
 au Cameroun
 
+
 </h1>
 
-<div className="flex gap-4 mt-8">
+<p className="mt-6 text-gray-200 max-w-md">
 
-<button className="bg-orange-500 hover:bg-orange-600 px-6 py-3 rounded-lg font-semibold">
+Trouvez les meilleurs produits ou vendez facilement les vôtres partout au Cameroun.
+
+</p>
+
+{/* boutons */}
+
+<div className="flex flex-col sm:flex-row gap-4 mt-8">
+
+<button className="bg-orange-500 hover:bg-orange-600 px-6 py-3 rounded-lg font-semibold transition">
 
 Commencez vos achats
 
 </button>
 
-<button className="bg-white text-black px-6 py-3 rounded-lg font-semibold">
+<button className="bg-white text-black px-6 py-3 rounded-lg font-semibold hover:bg-gray-200 transition">
 
 Vendez vos produits
 
@@ -127,13 +148,16 @@ Vendez vos produits
 </div>
 
 </div>
-{/* IMAGE */}
 
-<div className="flex justify-end">
 
-<img 
+{/* image produits */}
+
+<div className="flex justify-center lg:justify-end">
+
+<img
 src={products}
-className="w-[450px]"
+alt="produits"
+className="w-full max-w-[420px] hover:scale-105 transition duration-300"
 />
 
 </div>
@@ -141,7 +165,6 @@ className="w-[450px]"
 </div>
 
 </div>
-</div> 
 
 )
 }
