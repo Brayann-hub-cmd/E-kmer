@@ -34,9 +34,7 @@ backgroundPosition:"center"
 
 {/* BARRE CATEGORIES */}
 
-<div className="border-b border-orange-500">
-
-<div className="max-w-7xl mx-auto flex items-center justify-between px-4">
+<div className="flex justify-center gap-10 text-sm font-medium border-b border-orange-500/40">
 
 {/* MENU MOBILE */}
 
@@ -143,7 +141,7 @@ className="w-[450px]"
 </div>
 
 </div>
-</div> </div>
+</div> 
 
 )
 }
