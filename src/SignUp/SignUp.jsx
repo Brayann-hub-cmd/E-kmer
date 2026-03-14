@@ -203,15 +203,7 @@ const SignUp = () => {
       });
     }
   };
-
-  // Composant d'icône pour le drapeau du Cameroun
-  const DrapeauCameroun = () => (
-    <div className="flex items-center gap-1">
-      <span className="text-xl text-gray-600">🇨🇲 </span>
-      <span className={isDarkMode ? "text-gray-600" : "text-gray-300"}>|</span>
-    </div>
-  );
-
+ 
   // Styles conditionnels basés sur le mode
   const pageStyle = isDarkMode 
     ? "min-h-screen bg-gray-900 flex items-center justify-center p-4" 
@@ -363,7 +355,7 @@ const SignUp = () => {
             </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <DrapeauCameroun />
+                <img src="https://flagcdn.com/w20/cm.png" alt="Drapeau du Cameroun" className="w-5 h-auto mr-1" />
               </div>
               <input
                 type="tel"
