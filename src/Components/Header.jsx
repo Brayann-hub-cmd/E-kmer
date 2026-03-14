@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { FaBars } from "react-icons/fa"
 
 import bg from "../assets/images/bg Header.png"
 import products from "../assets/images/products.png"
@@ -95,6 +96,39 @@ className="cursor-pointer text-lg hover:text-orange-500"
 </div>
 
 )}
+
+{/* HERO CONTENT */}
+
+<div className="max-w-7xl mx-auto grid grid-cols-2 items-center py-16">
+
+<div>
+
+<h1 className="text-5xl font-bold leading-tight">
+
+Achetez et vendez  
+<br/>
+
+au Cameroun
+
+</h1>
+
+<div className="flex gap-4 mt-8">
+
+<button className="bg-orange-500 hover:bg-orange-600 px-6 py-3 rounded-lg font-semibold">
+
+Commencez vos achats
+
+</button>
+
+<button className="bg-white text-black px-6 py-3 rounded-lg font-semibold">
+
+Vendez vos produits
+
+</button>
+
+</div>
+
+</div>
 {/* IMAGE */}
 
 <div className="flex justify-end">
@@ -109,7 +143,7 @@ className="w-[450px]"
 </div>
 
 </div>
-</div>
+</div> </div>
 
 )
 }
