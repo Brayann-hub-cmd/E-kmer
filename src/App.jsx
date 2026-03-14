@@ -1,4 +1,5 @@
 
+
 import Home from "./Home/Home";
 import Login from "./pages/auth/Login";
 import SignUp from "./pages/SignUp/SignUp"
@@ -25,3 +26,4 @@ function App() {
 }
 
 export default App;
+
