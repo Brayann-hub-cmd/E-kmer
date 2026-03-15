@@ -1,3 +1,6 @@
+import React from 'react'
+import Navbar from './components/Navbar'
+import Header from './components/Header'
 
 
 import Home from "./Home/Home";
@@ -23,6 +26,13 @@ function App() {
   return <RouterProvider router={router}/>
   
 
+
+    return (
+        <div className="App">
+            <Navbar />
+            <Header />
+        </div>
+    );
 }
 
 export default App;
