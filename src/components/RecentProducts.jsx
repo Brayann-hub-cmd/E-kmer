@@ -2,7 +2,7 @@ import React from "react";
 
 function RecentProducts() {
   return (
-    <section className="bg-gray-100 rounded-xl p-10 my-10 text-center">
+    <section className="bg-white rounded-xl p-10 my-10 text-center">
       
       <h2 className="text-2xl font-bold mb-4">
         Consultations récentes

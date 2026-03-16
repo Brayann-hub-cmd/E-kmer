@@ -36,7 +36,7 @@ const products = [
 function PopularOffers() {
   return (
     <section className="py-10 px-6">
-      <h2 className="text-2xl font-bold mb-6">Offres Populaires</h2>
+      <h2 className="text-2xl font-bold mb-6">Nos Produits </h2>
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
         {products.map((product) => (

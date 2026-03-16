@@ -11,14 +11,14 @@ export default function Navbar() {
   const languages = ["FRA", "ENG"];
 
   return (
-    <nav className="bg-black text-white px-4 py-2 flex items-center justify-between flex-wrap">
+    <nav className="bg-black text-white px-1 py-6 flex items-center justify-between flex-wrap">
       {/* LOGO */}
       <div className="mb-1 md:mb-0">
-        <img src="/logo.png"  className="h-6 w-auto" />
+        <img src="/logo.png" />
       </div>
 
       {/* SEARCH BAR */}
-      <div className="flex items-center bg-white rounded-lg overflow-visible w-full md:w-[400px] h-8 mb-1 md:mb-0">
+      <div className="flex items-center bg-white rounded-lg overflow-visible w-full md:w-[400px] h-9 mb-1 md:mb-0">
         {/* category */}
         <div className="relative flex items-center px-2 text-gray-700 border-r cursor-pointer" onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
           <span className="text-xs">{category}</span>

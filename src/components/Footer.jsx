@@ -86,7 +86,7 @@ const Footer = () => {
                                     className="btn btn-circle btn-sm bg-gray-800 hover:bg-orange-500 border-none text-white transition-all duration-300"
                                     aria-label={social.label}
                                 >
-                                    <social.icon className="text-sm" />
+                                    <social.icon className="text-2sm" />
                                 </a>
                             ))}
                         </div>
