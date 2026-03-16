@@ -10,7 +10,6 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
-  const [user, setUser] = useState(null)
   const navigate = useNavigate()
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,9 +19,10 @@ function Login() {
         const response = await api.post('auth/login/', { email: email, password: password })
         localStorage.setItem('token', response.data.token)
         const userData = response.data.user
-        setUser(userData)
-        navigate('/auth/register',{state:{user:userData}})
-        toast.success(`Soyez la bienvenu M.${userData.username} !`)
+        toast.success(`Soyez la bienvenu M./Mme ${userData.username} !`)
+        setTimeout(()=>{
+          navigate('/auth/register', { state: { user: userData } })
+        },1500)
       } catch (error) {
         if (error.response?.status === 401) {
           toast.error('Email ou mot de passe incorrect.')
@@ -33,17 +33,18 @@ function Login() {
     }
     if (loginMethod === "phone") {
       try {
-        const response = await api.post('auth/login/tel',{telephone:phone, password: password})
+        const response = await api.post('auth/login/tel', { telephone: phone, password: password })
         localStorage.setItem('token', response.data.token)
         const userData = response.data.user
-        setUser(userData)
-        navigate('/auth/register',{state:{user:userData}})
-        toast.success(`Soyez la bienvenu M.${userData.username} !`)
+        toast.success(`Soyez la bienvenu M./Mme ${userData.username} !`)
+        setTimeout(()=>{
+          navigate('/auth/register', { state: { user: userData } })
+        },1500)
       } catch (error) {
         if (error.response?.status === 401) {
-          toast.error('Email ou mot de passe incorrect.')
+          toast.error('Téléphone ou mot de passe incorrect.')
         } else {
-          console.log(`Erreur! ${error}.`);
+          console.log(`Erreur! ${error.message}.`);
         }
       }
     }
