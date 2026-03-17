@@ -1,8 +1,4 @@
 import React from 'react'
-import Navbar from './Components/Navbar'
-import Header from './Components/Header'
-
-
 import Home from "./Home/Home";
 import Login from "./pages/auth/Login";
 import SignUp from "./pages/SignUp/SignUp"

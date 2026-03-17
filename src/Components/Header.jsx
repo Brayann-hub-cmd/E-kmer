@@ -1,4 +1,5 @@
 import { useState, useCallback, useMemo } from "react";
+import { Link } from "react-router-dom";
 import { FaBars, FaTimes } from "react-icons/fa";
 import bg from "../assets/images/bg Header.png";
 import products from "../assets/images/products.png";
@@ -9,19 +10,19 @@ export default function Header() {
 
   const categories = useMemo(
     () => [
-      "Electronique",
-      "Véhicule",
-      "Mode",
-      "Immobilier",
-      "Services",
-      "Produits Agricoles",
+      { name: "Electronique", path: "/categorie/electronique" },
+      { name: "Véhicule", path: "/categorie/vehicule" },
+      { name: "Mode", path: "/categorie/mode" },
+      { name: "Immobilier", path: "/categorie/immobilier" },
+      { name: "Services", path: "/categorie/services" },
+      { name: "Produits Agricoles", path: "/categorie/produits-agricoles" },
     ],
     []
   );
 
   const handleCategoryClick = useCallback(
-    (cat) => {
-      setActive(cat);
+    (catName) => {
+      setActive(catName);
       setMenuOpen(false);
     },
     []
@@ -51,33 +52,34 @@ export default function Header() {
         <div className="border-b border-orange-500/30">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between h-16 md:h-20">
-              {/* Logo - Ajout du logo manquant */}
-              
+              {/* Espace vide à gauche pour équilibrer (remplace le logo) */}
+              <div className="w-[72px]"></div>
 
               {/* Desktop Navigation - CENTRÉ */}
-              <nav className="hidden md:flex items-center justify-center flex-3" aria-label="Catégories">
+              <nav className="hidden md:flex items-center justify-center flex-1" aria-label="Catégories">
                 <div className="flex items-center space-x-1 lg:space-x-2 mx-auto">
                   {categories.map((cat) => (
-                    <button
-                      key={cat}
-                      onClick={() => handleCategoryClick(cat)}
+                    <Link
+                      key={cat.name}
+                      to={cat.path}
+                      onClick={() => handleCategoryClick(cat.name)}
                       className={`relative px-3 lg:px-4 py-2 text-sm lg:text-base font-medium transition-colors whitespace-nowrap ${
-                        active === cat
+                        active === cat.name
                           ? "text-orange-500"
                           : "text-gray-200 hover:text-orange-400"
                       }`}
-                      aria-current={active === cat ? "page" : undefined}
+                      aria-current={active === cat.name ? "page" : undefined}
                     >
-                      {cat}
-                      {active === cat && (
+                      {cat.name}
+                      {active === cat.name && (
                         <span className="absolute bottom-0 left-0 w-full h-0.5 bg-orange-500 rounded-full" />
                       )}
-                    </button>
+                    </Link>
                   ))}
                 </div>
               </nav>
 
-              {/* Espace vide pour équilibrer le layout (invisible sur mobile) */}
+              {/* Espace vide à droite pour équilibrer */}
               <div className="hidden md:block w-[72px]"></div>
 
               {/* Mobile menu button */}
@@ -106,18 +108,19 @@ export default function Header() {
         >
           <nav className="container mx-auto px-4 py-6 flex flex-col items-center space-y-4">
             {categories.map((cat) => (
-              <button
-                key={cat}
-                onClick={() => handleCategoryClick(cat)}
+              <Link
+                key={cat.name}
+                to={cat.path}
+                onClick={() => handleCategoryClick(cat.name)}
                 className={`w-full max-w-xs text-center py-3 px-4 rounded-lg text-lg font-medium transition-all ${
-                  active === cat
+                  active === cat.name
                     ? "bg-orange-500/20 text-orange-500 border-l-4 border-orange-500"
                     : "text-gray-200 hover:bg-white/10"
                 }`}
-                aria-current={active === cat ? "page" : undefined}
+                aria-current={active === cat.name ? "page" : undefined}
               >
-                {cat}
-              </button>
+                {cat.name}
+              </Link>
             ))}
           </nav>
         </div>
@@ -137,25 +140,31 @@ export default function Header() {
             {/* Texte */}
             <div className="text-center lg:text-left">
               <h1 className="text-2xl sm:text-4xl lg:text-5xl xl:text-5xl font-bold leading-tight">
-                Achetez et vendre au Cameroun
+                Achetez et vendez au Cameroun
               </h1>
 
               <p className="mt-4 sm:mt-6 text-gray-300 text-sm sm:text-base max-w-md mx-auto lg:mx-0">
                 Trouvez les meilleurs produits ou vendez facilement les vôtres partout au Cameroun.
               </p>
 
-              {/* Boutons */}
+              {/* Boutons avec liens */}
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-6 sm:mt-8 justify-center lg:justify-start">
-                <button className="bg-orange-500 hover:bg-orange-600 px-6 py-3 sm:px-8 sm:py-3.5 rounded-lg font-semibold transition-all transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-orange-500/25">
+                <Link
+                  to="/achats"
+                  className="bg-orange-500 hover:bg-orange-600 px-6 py-3 sm:px-8 sm:py-3.5 rounded-lg font-semibold transition-all transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-orange-500/25 text-center inline-block"
+                >
                   Commencez vos achats
-                </button>
-                <button className="bg-white text-gray-900 hover:bg-gray-100 px-6 py-3 sm:px-8 sm:py-3.5 rounded-lg font-semibold transition-all transform hover:scale-105 active:scale-95 shadow-lg">
+                </Link>
+                <Link
+                  to="/vendre"
+                  className="bg-white text-gray-900 hover:bg-gray-100 px-6 py-3 sm:px-8 sm:py-3.5 rounded-lg font-semibold transition-all transform hover:scale-105 active:scale-95 shadow-lg text-center inline-block"
+                >
                   Vendez vos produits
-                </button>
+                </Link>
               </div>
             </div>
 
-            {/* Image produits */}
+            {/* Image produits avec lien */}
             <div className="flex justify-center lg:justify-end">
               <div className="relative w-full max-w-[300px] sm:max-w-[350px] lg:max-w-[420px] xl:max-w-[500px]">
                 <img
