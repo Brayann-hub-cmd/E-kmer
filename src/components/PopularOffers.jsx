@@ -1,67 +1,154 @@
-import React from "react";
+import React, { useState } from "react";
+
+import casque from "../assets/images/casque.jpg";
+import jacket from "../assets/images/jacket.jpg";
+import pixel from "../assets/images/pixel.jpg";
+import friteuse from "../assets/images/friteuse.jpg";
+import etagere from "../assets/images/etagere.jpg";
+import jordan from "../assets/images/jordan.jpg";
+import laptop from "../assets/images/laptop.jpg";
 
 const products = [
   {
     id: 1,
     name: "Casque Sony",
     price: "15000 FCFA",
-    image: "https://via.placeholder.com/200",
+    location: "Douala",
+    time: "il y a 7 jours",
+    image: casque,
   },
   {
     id: 2,
     name: "Jacket en cuir",
     price: "80000 FCFA",
-    image: "https://via.placeholder.com/200",
+    location: "Yaoundé",
+    time: "il y a 3 jours",
+    image: jacket,
   },
   {
     id: 3,
     name: "Pixel 8 Pro",
     price: "250000 FCFA",
-    image: "https://via.placeholder.com/200",
+    location: "Douala",
+    time: "Aujourd’hui",
+    image: pixel,
   },
   {
     id: 4,
     name: "Friteuse Philips",
     price: "120000 FCFA",
-    image: "https://via.placeholder.com/200",
+    location: "Bamenda",
+    time: "Hier",
+    image: friteuse,
   },
   {
     id: 5,
+    name: "Étagère",
+    price: "60000 FCFA",
+    location: "Douala",
+    time: "Aujourd’hui",
+    image: etagere,
+  },
+  {
+    id: 6,
     name: "Air Jordan",
     price: "20000 FCFA",
-    image: "https://via.placeholder.com/200",
+    location: "Yaoundé",
+    time: "il y a 2 jours",
+    image: jordan,
+  },
+  {
+    id: 7,
+    name: "Laptop Lenovo",
+    price: "200000 FCFA",
+    location: "Douala",
+    time: "il y a 5 jours",
+    image: laptop,
   },
 ];
 
-function PopularOffers() {
+const PopularOffers = () => {
+  // 🔥 tableau des favoris
+  const [favorites, setFavorites] = useState([]);
+
+  // 🔥 fonction pour ajouter/retirer des favoris
+  const toggleFavorite = (id) => {
+    if (favorites.includes(id)) {
+      setFavorites(favorites.filter((item) => item !== id));
+    } else {
+      setFavorites([...favorites, id]);
+    }
+  };
+
   return (
-    <section className="py-10 px-6">
-      <h2 className="text-2xl font-bold mb-6">Nos Produits </h2>
+    <div className="px-6 py-10 bg-gray-100">
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
-        {products.map((product) => (
-          <div
-            key={product.id}
-            className="bg-white rounded-xl shadow hover:shadow-lg transition p-4"
-          >
-            <img
-              src={product.image}
-              alt={product.name}
-              className="rounded-lg mb-3"
-            />
+      <h2 className="text-2xl font-bold mb-6">
+        Offres Populaires
+      </h2>
 
-            <h3 className="font-semibold">{product.name}</h3>
+      {/* SCROLL HORIZONTAL */}
+      <div className="flex gap-4 overflow-x-auto">
 
-            <p className="text-orange-500 font-bold">{product.price}</p>
+        {products.map((product) => {
+          const isFav = favorites.includes(product.id);
 
-            <button className="mt-3 bg-orange-500 text-white px-3 py-1 rounded hover:bg-orange-600">
-              Voir les détails
-            </button>
-          </div>
-        ))}
+          return (
+            <div
+              key={product.id}
+              className="min-w-[220px] bg-white rounded-xl shadow-md overflow-hidden"
+            >
+
+              {/* IMAGE */}
+              <div className="relative">
+                <img
+                  src={product.image}
+                  alt={product.name}
+                  className="w-full h-40 object-cover"
+                />
+
+                {/* ❤️ COEUR */}
+                <span
+                  onClick={() => toggleFavorite(product.id)}
+                  className={`absolute top-2 right-2 cursor-pointer text-xl transition ${
+                    isFav ? "text-red-500" : "text-gray-400"
+                  }`}
+                >
+                  {isFav ? "❤️" : "🤍"}
+                </span>
+              </div>
+
+              {/* CONTENU */}
+              <div className="p-3">
+
+                {/* PRIX */}
+                <p className="text-orange-500 font-bold">
+                  {product.price}
+                </p>
+
+                {/* NOM */}
+                <p className="font-semibold text-sm">
+                  {product.name}
+                </p>
+
+                {/* LOCALISATION */}
+                <p className="text-gray-400 text-xs">
+                  📍 {product.location} • {product.time}
+                </p>
+
+                {/* BOUTON */}
+                <button className="mt-3 w-full bg-orange-500 text-white text-sm py-2 rounded-full hover:bg-orange-600">
+                  Voir les détails
+                </button>
+
+              </div>
+            </div>
+          );
+        })}
+
       </div>
-    </section>
+    </div>
   );
-}
+};
 
 export default PopularOffers;
