@@ -9,7 +9,7 @@ const SellSection = () => {
     <div className="px-6 py-10 bg-gray-100 flex justify-center">
 
       {/* CONTAINER PRINCIPAL */}
-      <div className="w-full max-w-6xl bg-[#F29F05] rounded-2xl px-10 py-12 flex flex-col md:flex-row items-center justify-between">
+      <div className="w-full max-w-30xl bg-[#F29F05] rounded-2xl px-15 py-20 flex flex-col md:flex-row items-center justify-between">
 
         {/* TEXTE */}
         <div className="max-w-lg text-[#8C3402]">
