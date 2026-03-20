@@ -1,9 +1,7 @@
+import defaultTheme from "tailwindcss/defaultTheme"
+
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
-  ],
   theme: {
     extend: {
       keyframes: {
@@ -46,9 +44,9 @@ export default {
         'pulse-glow': 'pulseGlow 2s ease-in-out infinite',
         gradient: 'gradient 5s ease infinite',
         'spin-slow': 'spin 3s linear infinite',
+      fontFamily: {
+        sans: ["InterVariable", ...defaultTheme.fontFamily.sans],
       },
     },
   },
-  plugins: [require("daisyui")],
 }
-

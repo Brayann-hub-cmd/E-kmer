@@ -21,7 +21,7 @@ function Login() {
         const userData = response.data.user
         toast.success(`Soyez la bienvenu M./Mme ${userData.username} !`)
         setTimeout(()=>{
-          navigate('/auth/register', { state: { user: userData } })
+          navigate('/', { state: { user: userData } })
         },1500)
       } catch (error) {
         if (error.response?.status === 401) {
@@ -38,7 +38,7 @@ function Login() {
         const userData = response.data.user
         toast.success(`Soyez la bienvenu M./Mme ${userData.username} !`)
         setTimeout(()=>{
-          navigate('/auth/register', { state: { user: userData } })
+          navigate('/', { state: { user: userData } })
         },1500)
       } catch (error) {
         if (error.response?.status === 401) {
@@ -184,7 +184,7 @@ function Login() {
         <div className="mt-6 text-center">
           <p className="text-gray-600 text-sm">
             Vous n'avez pas de compte ?{" "}
-            <Link to={'auth/register'} className="text-orange-600 hover:text-orange-700 font-medium">
+            <Link to={'/auth/register'} className="text-orange-600 hover:text-orange-700 font-medium">
               Créer un compte
             </Link>
           </p>

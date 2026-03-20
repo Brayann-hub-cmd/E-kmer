@@ -1,0 +1,26 @@
+import React from "react";
+import { Link } from "react-router-dom";
+
+function RecentProducts() {
+  return (
+    <section className="bg-white rounded-xl p-10 my-10 text-center">
+      
+      <h2 className="text-2xl font-bold mb-4">
+        Consultations récentes
+      </h2>
+
+      <p className="mb-4 text-gray-600">
+        Vous n’avez pas encore consulté d’articles.
+      </p>
+
+      <Link
+        to="/articles"
+        className="inline-block bg-orange-500 text-white px-6 py-2 rounded hover:bg-orange-600 transition-colors"
+      >
+        Explorer les articles
+      </Link>
+    </section>
+  );
+}
+
+export default RecentProducts;
