@@ -8,21 +8,22 @@ export default function Header() {
   const [active, setActive] = useState("Electronique");
   const [menuOpen, setMenuOpen] = useState(false);
 
+  // Catégories avec les IDs de l'API
   const categories = useMemo(
     () => [
-      { name: "Electronique", path: "/categorie/electronique" },
-      { name: "Véhicule", path: "/categorie/vehicule" },
-      { name: "Mode", path: "/categorie/mode" },
-      { name: "Immobilier", path: "/categorie/immobilier" },
-      { name: "Services", path: "/categorie/services" },
-      { name: "Produits Agricoles", path: "/categorie/produits-agricoles" },
+      { id: "Cat_1", name: "Electronique", path: "/categorie/electronique", slug: "electronique" },
+      { id: "Cat_2", name: "Véhicule", path: "/categorie/vehicule", slug: "vehicule" },
+      { id: "Cat_3", name: "Mode", path: "/categorie/mode", slug: "mode" },
+      { id: "Cat_4", name: "Immobilier", path: "/categorie/immobilier", slug: "immobilier" },
+      { id: "Cat_5", name: "Services", path: "/categorie/services", slug: "services" },
+      { id: "Cat_6", name: "Produits Agricoles", path: "/categorie/produits-agricoles", slug: "produits-agricoles" },
     ],
     []
   );
 
   const handleCategoryClick = useCallback(
-    (catName) => {
-      setActive(catName);
+    (cat) => {
+      setActive(cat.name);
       setMenuOpen(false);
     },
     []
@@ -60,9 +61,9 @@ export default function Header() {
                 <div className="flex items-center space-x-1 lg:space-x-2 mx-auto">
                   {categories.map((cat) => (
                     <Link
-                      key={cat.name}
-                      to={cat.path}
-                      onClick={() => handleCategoryClick(cat.name)}
+                      key={cat.id}
+                      to={`/categorie/${cat.slug}?id=${cat.id}`} // ← ID dans l'URL
+                      onClick={() => handleCategoryClick(cat)}
                       className={`relative px-3 lg:px-4 py-2 text-sm lg:text-base font-medium transition-colors whitespace-nowrap ${
                         active === cat.name
                           ? "text-orange-500"
@@ -109,9 +110,9 @@ export default function Header() {
           <nav className="container mx-auto px-4 py-6 flex flex-col items-center space-y-4">
             {categories.map((cat) => (
               <Link
-                key={cat.name}
-                to={cat.path}
-                onClick={() => handleCategoryClick(cat.name)}
+                key={cat.id}
+                to={`/categorie/${cat.slug}?id=${cat.id}`} // ← ID dans l'URL aussi en mobile
+                onClick={() => handleCategoryClick(cat)}
                 className={`w-full max-w-xs text-center py-3 px-4 rounded-lg text-lg font-medium transition-all ${
                   active === cat.name
                     ? "bg-orange-500/20 text-orange-500 border-l-4 border-orange-500"
