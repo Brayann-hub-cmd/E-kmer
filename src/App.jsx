@@ -1,5 +1,15 @@
+<<<<<<< HEAD
 import React from 'react'
 import Home from './pages/Home/Home';
+=======
+
+import React from 'react';
+import Home from './pages/Home/Home';
+
+
+import { Toaster } from "react-hot-toast";
+
+>>>>>>> 6e9b9ca9fc211ec7e74c838cc82d257f5dca333f
 import Login from "./pages/auth/Login";
 import SignUp from "./pages/SignUp/SignUp"
 import PageCategorie from './pages/CategoriePage/CategoriePage';
@@ -23,17 +33,12 @@ function App() {
       element:<PageCategorie/>
     }
   ])
-
-  return <RouterProvider router={router}/>
-  
-
-
-    return (
-        <div className="App">
-            <Navbar />
-            <Header />
-        </div>
-    );
+  return (
+    <>
+      <Toaster />
+      <RouterProvider router={router} />
+    </>
+  )
 }
 
 export default App;
