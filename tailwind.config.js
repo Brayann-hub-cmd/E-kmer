@@ -2,9 +2,12 @@ import defaultTheme from "tailwindcss/defaultTheme"
 
 /** @type {import('tailwindcss').Config} */
 export default {
+  Content: [
+    ".index.html",
+    "./src/**/*.{js,jsx,ts,tsx}",
+  ],
   theme: {
     extend: {
-<<<<<<< HEAD
       keyframes: {
         slideInUp: {
           '0%': { transform: 'translateY(100%)', opacity: '0' },
@@ -36,6 +39,7 @@ export default {
           '100%': { backgroundPosition: '0% 50%' },
         },
       },
+
       animation: {
         'slide-in': 'slideInUp 0.8s ease-out forwards',
         'slide-in-down': 'slideInDown 0.8s ease-out forwards',
@@ -45,10 +49,10 @@ export default {
         'pulse-glow': 'pulseGlow 2s ease-in-out infinite',
         gradient: 'gradient 5s ease infinite',
         'spin-slow': 'spin 3s linear infinite',
-=======
+      },
+
       fontFamily: {
         sans: ["InterVariable", ...defaultTheme.fontFamily.sans],
->>>>>>> b82775483533ff5defefe4a76930910c74f4b6fa
       },
     },
   },

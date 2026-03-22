@@ -68,7 +68,7 @@ const Footer = () => {
                         data-aos="fade-up"
                         data-aos-delay="100"
                     >
-                        <div class="relative w-64 right-9">
+                        <div className="relative w-64 right-9">
                             <a href='/' className='cursor-pointer'><img src="public\logo2 1.png" alt="Logo"/></a>
                         </div>
                         <p className="text-gray-300 text-sm">
