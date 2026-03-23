@@ -1,7 +1,8 @@
 import { Toaster } from "react-hot-toast";
-import Home from "./Home/Home";
+import Home from "./pages/Home/Home";
 import Login from "./pages/auth/Login";
 import SignUp from "./pages/SignUp/SignUp"
+import PageCategorie from './pages/CategoriePage/CategoriePage';
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 function App() {
   const router = createBrowserRouter([
@@ -16,9 +17,12 @@ function App() {
     {
       path:'auth/login',
       element:<Login />
+    },
+    {
+      path:'/categorie/:categorieSlug',
+      element:<PageCategorie/>
     }
   ])
-
   return (
     <>
       <Toaster />

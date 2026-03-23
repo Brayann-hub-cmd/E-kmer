@@ -1,5 +1,5 @@
-import { useState, useCallback, useMemo } from "react";
-import { Link } from "react-router-dom";
+import { useState, useCallback, useMemo, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { FaBars, FaTimes } from "react-icons/fa";
 import bg from "../assets/images/bg Header.png";
 import products from "../assets/images/products.png";
@@ -7,22 +7,59 @@ import products from "../assets/images/products.png";
 export default function Header() {
   const [active, setActive] = useState("Electronique");
   const [menuOpen, setMenuOpen] = useState(false);
+  const location = useLocation(); // Pour détecter la route actuelle
+  const [categorieData, setCategorieData] = useState([])
 
+  useEffect(() => {
+    const getCategories = async () => {
+      try {
+        const response = await api.get("categories/")
+        setCategorieData((categorieData)=>response.data)
+      } catch (error) {
+        toast.error("Une erreur est survenue lors de la collection des catégories de produits:" + error, { position: 'top-center' })
+      }
+    }
+    getCategories();
+  }, [])
+
+  // Catégories avec les IDs de l'API
+  // const categories = useMemo(
+  //   () => [
+  //     { id: "Cat_1", name: "Electronique", path: "/categorie/electronique", slug: "electronique" },
+  //     { id: "Cat_2", name: "Véhicule", path: "/categorie/vehicule", slug: "vehicule" },
+  //     { id: "Cat_3", name: "Mode", path: "/categorie/mode", slug: "mode" },
+  //     { id: "Cat_4", name: "Immobilier", path: "/categorie/immobilier", slug: "immobilier" },
+  //     { id: "Cat_5", name: "Services", path: "/categorie/services", slug: "services" },
+  //     { id: "Cat_6", name: "Produits Agricoles", path: "/categorie/produits-agricoles", slug: "produits-agricoles" },
+  //   ],
+  //   []
+  // );
   const categories = useMemo(
-    () => [
-      { name: "Electronique", path: "/categorie/electronique" },
-      { name: "Véhicule", path: "/categorie/vehicule" },
-      { name: "Mode", path: "/categorie/mode" },
-      { name: "Immobilier", path: "/categorie/immobilier" },
-      { name: "Services", path: "/categorie/services" },
-      { name: "Produits Agricoles", path: "/categorie/produits-agricoles" },
-    ],
-    []
+    ()=>{
+      return categorieData.map((cat)=>({
+        code: `${cat.code}`,
+        nom: `${cat.nom}`,
+        path: `/categorie/${cat.nom}`,
+        slug: `${cat.nom}`
+      }));
+    },[categorieData]
   );
 
+  // Mettre à jour active en fonction de l'URL actuelle
+  useEffect(() => {
+    const currentPath = location.pathname;
+    const currentCategory = categories.find(cat => currentPath.includes(cat.slug));
+    if (currentCategory) {
+      setActive(currentCategory.nom);
+    } else if (currentPath === "/") {
+      // Optionnel: mettre un état par défaut sur la page d'accueil
+      // setActive("Electronique");
+    }
+  }, [location.pathname, categories]);
+
   const handleCategoryClick = useCallback(
-    (catName) => {
-      setActive(catName);
+    (cat) => {
+      setActive(cat.nom);
       setMenuOpen(false);
     },
     []
@@ -60,18 +97,17 @@ export default function Header() {
                 <div className="flex items-center space-x-1 lg:space-x-2 mx-auto">
                   {categories.map((cat) => (
                     <Link
-                      key={cat.name}
-                      to={cat.path}
-                      onClick={() => handleCategoryClick(cat.name)}
-                      className={`relative px-3 lg:px-4 py-2 text-sm lg:text-base font-medium transition-colors whitespace-nowrap ${
-                        active === cat.name
+                      key={cat.id}
+                      to={`/categorie/${cat.slug}?id=${cat.code}`}
+                      onClick={() => handleCategoryClick(cat)}
+                      className={`relative px-3 lg:px-4 py-2 text-sm lg:text-base font-medium transition-colors whitespace-nowrap ${active === cat.name
                           ? "text-orange-500"
                           : "text-gray-200 hover:text-orange-400"
-                      }`}
-                      aria-current={active === cat.name ? "page" : undefined}
+                        }`}
+                      aria-current={active === cat.nom ? "page" : undefined}
                     >
-                      {cat.name}
-                      {active === cat.name && (
+                      {cat.nom}
+                      {active === cat.nom && (
                         <span className="absolute bottom-0 left-0 w-full h-0.5 bg-orange-500 rounded-full" />
                       )}
                     </Link>
@@ -109,17 +145,16 @@ export default function Header() {
           <nav className="container mx-auto px-4 py-6 flex flex-col items-center space-y-4">
             {categories.map((cat) => (
               <Link
-                key={cat.name}
-                to={cat.path}
-                onClick={() => handleCategoryClick(cat.name)}
-                className={`w-full max-w-xs text-center py-3 px-4 rounded-lg text-lg font-medium transition-all ${
-                  active === cat.name
+                key={cat.code}
+                to={`/categorie/${cat.slug}?id=${cat.code}`}
+                onClick={() => handleCategoryClick(cat)}
+                className={`w-full max-w-xs text-center py-3 px-4 rounded-lg text-lg font-medium transition-all ${active === cat.name
                     ? "bg-orange-500/20 text-orange-500 border-l-4 border-orange-500"
                     : "text-gray-200 hover:bg-white/10"
-                }`}
-                aria-current={active === cat.name ? "page" : undefined}
+                  }`}
+                aria-current={active === cat.nom ? "page" : undefined}
               >
-                {cat.name}
+                {cat.nom}
               </Link>
             ))}
           </nav>
