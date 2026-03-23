@@ -3,7 +3,8 @@ import { Link, useLocation } from "react-router-dom";
 import { FaBars, FaTimes } from "react-icons/fa";
 import bg from "../assets/images/bg Header.png";
 import products from "../assets/images/products.png";
-
+import toast from "react-hot-toast";
+import api from "../api";
 export default function Header() {
   const [active, setActive] = useState("Electronique");
   const [menuOpen, setMenuOpen] = useState(false);
@@ -15,6 +16,7 @@ export default function Header() {
       try {
         const response = await api.get("categories/")
         setCategorieData((categorieData)=>response.data)
+        console.log(categorieData)
       } catch (error) {
         toast.error("Une erreur est survenue lors de la collection des catégories de produits:" + error, { position: 'top-center' })
       }
@@ -39,8 +41,8 @@ export default function Header() {
       return categorieData.map((cat)=>({
         code: `${cat.code}`,
         nom: `${cat.nom}`,
-        path: `/categorie/${cat.nom}`,
-        slug: `${cat.nom}`
+        path: `/categorie/${cat.nom.toLowerCase().replace(/\s+/g, '-').normalize("NFD").replace(/[\u0300-\u036f]/g, '')}`,
+        slug: cat.nom.toLowerCase().replace(/\s+/g, '-').normalize("NFD").replace(/[\u0300-\u036f]/g, '')
       }));
     },[categorieData]
   );

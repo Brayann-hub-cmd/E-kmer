@@ -1,17 +1,30 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import CategorySection from "../../components/Categorie";
-
+import api from "../../api";
+import toast from "react-hot-toast";
 const CategoriePage = () => {
   const { categorieSlug } = useParams();
   const [searchParams] = useSearchParams();
   const categorieId = searchParams.get("id");
 
   const [sousCategories, setSousCategories] = useState([]);
+  const [categorie,setCategorie] = useState({})
   const [categorieNom, setCategorieNom] = useState("");
   const [loading, setLoading] = useState(true);
   const [activeSousCategorie, setActiveSousCategorie] = useState(null);
-
+  useEffect(()=>{
+    const getCategorie = async(code)=>{
+      try {
+        const response = api.get(`categories/${categorieId}/`)
+        setCategorie((categorie) => response.data)
+      } catch (error) {
+        toast.error("Une erreur est survenue lors de la collection des catégories de produits:" + error, { position: 'top-center' })
+      }
+    }
+    getCategorie()
+    setCategorieNom((categorieNom)=>categorie.nom)
+  },[])
   // Mapping des slugs vers les noms
   const slugToNom = {
     electronique: "Électronique",
