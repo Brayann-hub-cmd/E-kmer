@@ -59,62 +59,16 @@ const CategoriePage = () => {
       return map;
     }, [categories]
   )
-  console.log(slugToNom);
-
-  // DONNÉES MOCK COMPLÈTES POUR TOUTES LES CATÉGORIES
-  const mockSousCategories = {
-    // Électronique (Cat_1)
-    Cat_1: [
-      { code: "S_C_1", nom: "Téléphone", categorie: "Cat_1" },
-      { code: "S_C_2", nom: "Ordinateur", categorie: "Cat_1" },
-      { code: "S_C_3", nom: "Accessoire Informatique", categorie: "Cat_1" },
-      { code: "S_C_4", nom: "Électroménager", categorie: "Cat_1" },
-      { code: "S_C_5", nom: "Accessoire high-tech", categorie: "Cat_1" },
-      { code: "S_C_6", nom: "Jeux vidéos et Console", categorie: "Cat_1" }
-    ],
-    // Véhicule (Cat_2)
-    Cat_2: [
-      { code: "S_C_7", nom: "Voitures", categorie: "Cat_2" },
-      { code: "S_C_8", nom: "Motos", categorie: "Cat_2" },
-      { code: "S_C_9", nom: "Vélos", categorie: "Cat_2" },
-      { code: "S_C_10", nom: "Pièces détachées", categorie: "Cat_2" },
-      { code: "S_C_11", nom: "Accessoires auto", categorie: "Cat_2" }
-    ],
-    // Mode (Cat_3)
-    Cat_3: [
-      { code: "S_C_12", nom: "Hommes", categorie: "Cat_3" },
-      { code: "S_C_13", nom: "Femmes", categorie: "Cat_3" },
-      { code: "S_C_14", nom: "Enfants", categorie: "Cat_3" },
-      { code: "S_C_15", nom: "Chaussures", categorie: "Cat_3" },
-      { code: "S_C_16", nom: "Accessoires", categorie: "Cat_3" }
-    ],
-    // Immobilier (Cat_4)
-    Cat_4: [
-      { code: "S_C_17", nom: "Appartements", categorie: "Cat_4" },
-      { code: "S_C_18", nom: "Maisons", categorie: "Cat_4" },
-      { code: "S_C_19", nom: "Terrains", categorie: "Cat_4" },
-      { code: "S_C_20", nom: "Bureaux", categorie: "Cat_4" },
-      { code: "S_C_21", nom: "Locaux commerciaux", categorie: "Cat_4" }
-    ],
-    // Services (Cat_5)
-    Cat_5: [
-      { code: "S_C_22", nom: "Réparation", categorie: "Cat_5" },
-      { code: "S_C_23", nom: "Cours particuliers", categorie: "Cat_5" },
-      { code: "S_C_24", nom: "Ménage", categorie: "Cat_5" },
-      { code: "S_C_25", nom: "Jardinage", categorie: "Cat_5" },
-      { code: "S_C_26", nom: "Informatique", categorie: "Cat_5" }
-    ],
-    // Produits Agricoles (Cat_6)
-    Cat_6: [
-      { code: "S_C_27", nom: "Fruits", categorie: "Cat_6" },
-      { code: "S_C_28", nom: "Légumes", categorie: "Cat_6" },
-      { code: "S_C_29", nom: "Céréales", categorie: "Cat_6" },
-      { code: "S_C_30", nom: "Graines", categorie: "Cat_6" },
-      { code: "S_C_31", nom: "Matériel agricole", categorie: "Cat_6" },
-      { code: "S_C_32", nom: "Produits laitiers", categorie: "Cat_6" }
-    ]
-  };
-
+  const allSousCategories = async (id_categorie) =>{
+    try {
+      const response = await api.get(`low_categories/${id_categorie}/sous_categories/`)
+      return response.data
+    } catch (error) {
+      toast.error("Erreur survenue lors de la collection des sous catégories" + error, { position: 'top-center' })
+      return []
+    }
+  }
+  
   useEffect(() => {
     const loadSousCategories = async () => {
       if (!categorieId) {
@@ -122,17 +76,32 @@ const CategoriePage = () => {
         return;
       }
       setLoading(true);
-      // Simulation de délai de chargement
-      setTimeout(() => {
-        const filtered = mockSousCategories[categorieId] || [];
-        setSousCategories(filtered);
 
-        if (filtered.length > 0) {
-          setActiveSousCategorie(filtered[0].code);
+      try {
+        const response = await api.get(`low_categories/${categorieId}/sous_categories/`)
+        const data = response.data;
+        setSousCategories(data)
+
+        if(data.length > 0){
+          setActiveSousCategorie(data[0].code)
         }
-        setCategorieNom((categorieNom) => slugToNom[categorieSlug] || "Catégorie");
-        setLoading(false);
-      }, 500);
+        setCategorieNom(slugToNom[categorieSlug] || "Catégorie");
+      } catch (error) {
+        console.error("Erreur API:",error);
+        setSousCategories([])
+      }finally{
+        setLoading(false)
+      }
+      // setTimeout(() => {
+      //   const filtered = mockSousCategories[categorieId] || [];
+      //   setSousCategories(filtered);
+
+      //   if (filtered.length > 0) {
+      //     setActiveSousCategorie(filtered[0].code);
+      //   }
+          // setCategorieNom(slugToNom[categorieSlug] || "Catégorie");
+      //   setLoading(false);
+      // }, 500);
     };
 
     loadSousCategories();
