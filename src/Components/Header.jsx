@@ -16,7 +16,6 @@ export default function Header() {
       try {
         const response = await api.get("categories/")
         setCategorieData((categorieData)=>response.data)
-        console.log(categorieData)
       } catch (error) {
         toast.error("Une erreur est survenue lors de la collection des catégories de produits:" + error, { position: 'top-center' })
       }
@@ -25,17 +24,6 @@ export default function Header() {
   }, [])
 
   // Catégories avec les IDs de l'API
-  // const categories = useMemo(
-  //   () => [
-  //     { id: "Cat_1", name: "Electronique", path: "/categorie/electronique", slug: "electronique" },
-  //     { id: "Cat_2", name: "Véhicule", path: "/categorie/vehicule", slug: "vehicule" },
-  //     { id: "Cat_3", name: "Mode", path: "/categorie/mode", slug: "mode" },
-  //     { id: "Cat_4", name: "Immobilier", path: "/categorie/immobilier", slug: "immobilier" },
-  //     { id: "Cat_5", name: "Services", path: "/categorie/services", slug: "services" },
-  //     { id: "Cat_6", name: "Produits Agricoles", path: "/categorie/produits-agricoles", slug: "produits-agricoles" },
-  //   ],
-  //   []
-  // );
   const categories = useMemo(
     ()=>{
       return categorieData.map((cat)=>({

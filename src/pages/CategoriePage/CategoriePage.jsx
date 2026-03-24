@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import CategorySection from "../../components/Categorie";
 import api from "../../api";
@@ -9,31 +9,57 @@ const CategoriePage = () => {
   const categorieId = searchParams.get("id");
 
   const [sousCategories, setSousCategories] = useState([]);
-  const [categorie,setCategorie] = useState({})
+  const [categorie, setCategorie] = useState({
+    code: "",
+    nom: ""
+  })
+  const [categories, setCategories] = useState([])
   const [categorieNom, setCategorieNom] = useState("");
   const [loading, setLoading] = useState(true);
   const [activeSousCategorie, setActiveSousCategorie] = useState(null);
-  useEffect(()=>{
-    const getCategorie = async(code)=>{
+  //Recuperation de la catégorie sélectionnée
+  useEffect(() => {
+    const getCategorie = async (code) => {
       try {
-        const response = api.get(`categories/${categorieId}/`)
-        setCategorie((categorie) => response.data)
+        const response = await api.get(`categories/${categorieId}/`)
+        setCategorie(prev => ({
+          ...prev,
+          code: `${response.data.code}`,
+          nom: `${response.data.nom}`
+        }))
       } catch (error) {
-        toast.error("Une erreur est survenue lors de la collection des catégories de produits:" + error, { position: 'top-center' })
+        toast.error("Une erreur est survenue lors de la collection de la catégorie:" + error, { position: 'top-center' })
       }
     }
-    getCategorie()
-    setCategorieNom((categorieNom)=>categorie.nom)
-  },[])
-  // Mapping des slugs vers les noms
-  const slugToNom = {
-    electronique: "Électronique",
-    vehicule: "Véhicule",
-    mode: "Mode",
-    immobilier: "Immobilier",
-    services: "Services",
-    "produits-agricoles": "Produits Agricoles"
-  };
+    getCategorie();
+  }, [])
+  //Initialisation de la variable categorieNom
+  useEffect(() => {
+    setCategorieNom((categorieNom) => categorie.nom);
+  }, [categorie])
+  useEffect(() => {
+    const getCategories = async () => {
+      try {
+        const response = await api.get("categories/")
+        setCategories((categories) => response.data)
+      } catch (error) {
+        toast.error("Erreur survenue lors de la collection des catégories de produits:" + error, { position: 'top-center' })
+      }
+    }
+    getCategories();
+  }, [])
+
+  const slugToNom = useMemo(
+    () => {
+      const map = {}
+      categories.forEach((cat) => {
+        const slug = cat.nom.toLowerCase().replace(/\s+/g, '-').normalize("NFD").replace(/[\u0300-\u036f]/g, '')
+        map[slug] = cat.nom;
+      });
+      return map;
+    }, [categories]
+  )
+  console.log(slugToNom);
 
   // DONNÉES MOCK COMPLÈTES POUR TOUTES LES CATÉGORIES
   const mockSousCategories = {
@@ -95,9 +121,7 @@ const CategoriePage = () => {
         setLoading(false);
         return;
       }
-
       setLoading(true);
-      
       // Simulation de délai de chargement
       setTimeout(() => {
         const filtered = mockSousCategories[categorieId] || [];
@@ -106,14 +130,13 @@ const CategoriePage = () => {
         if (filtered.length > 0) {
           setActiveSousCategorie(filtered[0].code);
         }
-
-        setCategorieNom(slugToNom[categorieSlug] || "Catégorie");
+        setCategorieNom((categorieNom) => slugToNom[categorieSlug] || "Catégorie");
         setLoading(false);
       }, 500);
     };
 
     loadSousCategories();
-  }, [categorieId, categorieSlug]);
+  }, [categorieId, categorieSlug, slugToNom]);
 
   const scrollToSection = (code) => {
     setActiveSousCategorie(code);
@@ -126,7 +149,7 @@ const CategoriePage = () => {
   return (
     <div className="bg-gray-50 min-h-screen">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        
+
         {/* En-tête */}
         <div className="mb-8">
           <h1 className="text-3xl sm:text-4xl font-bold text-gray-800">
@@ -153,11 +176,10 @@ const CategoriePage = () => {
                 <button
                   key={sc.code}
                   onClick={() => scrollToSection(sc.code)}
-                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
-                    activeSousCategorie === sc.code
-                      ? "bg-orange-500 text-white shadow-md"
-                      : "bg-gray-100 text-gray-700 hover:bg-orange-100 hover:text-orange-600"
-                  }`}
+                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${activeSousCategorie === sc.code
+                    ? "bg-orange-500 text-white shadow-md"
+                    : "bg-gray-100 text-gray-700 hover:bg-orange-100 hover:text-orange-600"
+                    }`}
                 >
                   {sc.nom}
                 </button>
