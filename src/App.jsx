@@ -5,7 +5,7 @@ import Home from "./Home/Home";
 import Login from "./pages/auth/Login";
 import SignUp from "./pages/SignUp/SignUp";
 import MainLayout from "./Layout/MainLayout";
-
+import Userventes from "./pages/Userventes";
 function App() {
   return (
     <BrowserRouter>
@@ -19,6 +19,7 @@ function App() {
         
         <Route path="/Login" element={<Login />} />
         <Route path="/SignUp" element={<SignUp />} />
+        <Route path="/Userventes" element={<Userventes />} />
 
       </Routes>
     </BrowserRouter>

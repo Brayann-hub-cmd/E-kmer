@@ -34,7 +34,7 @@ const Footer = () => {
 
     const liensUtiles = [
         { name: 'À propos', path: '/a-propos' },
-        { name: "S'inscrire", path: '/inscription' },
+        { name: "S'inscrire", path: '/SignUp' },
         { name: 'Comment ça marche', path: '/comment-ca-marche' },
         { name: 'Sécurité', path: '/securite' },
         { name: "Centre d'aide", path: '/aide' },
@@ -45,7 +45,7 @@ const Footer = () => {
     const vendreAcheter = [
         { name: 'Comment vendre', path: '/comment-vendre' },
         { name: 'Comment acheter', path: '/comment-acheter' },
-        { name: 'Commencer à vendre', path: '/vendre' },
+        { name: 'Commencer à vendre', path: '/Userventes' },
         { name: 'Commandes', path: '/commandes' }
     ];
 
