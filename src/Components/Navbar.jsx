@@ -35,7 +35,7 @@ export default function Navbar() {
   const languageTabletRef = useRef(null);
   const languageMobileRef = useRef(null);
 
-  // Catégories principales avec leurs IDs
+  // // Catégories principales avec leurs IDs
   // const categories = [
   //   { id: "CAT_000", name: "Toutes les categories", path: "/toutes-categories" },
   //   { id: "CAT_001", name: "Électronique", path: "/categorie/electronique" },
