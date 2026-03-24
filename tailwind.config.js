@@ -2,8 +2,8 @@ import defaultTheme from "tailwindcss/defaultTheme"
 
 /** @type {import('tailwindcss').Config} */
 export default {
-  Content: [
-    ".index.html",
+  content: [
+    "./index.html",
     "./src/**/*.{js,jsx,ts,tsx}",
   ],
   theme: {

@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { FaSearch, FaUser, FaShoppingCart, FaChevronDown } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 export default function Navbar() {
   const [category, setCategory] = useState("Toutes les catégories");
@@ -8,22 +9,56 @@ export default function Navbar() {
   const [isLanguageDropdownOpen, setIsLanguageDropdownOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
 
+  //  reférence pour chaque menu
+  const categoryRef = useRef(null);
+  const languageRef = useRef(null);
+  const userRef = useRef(null);
+
   const categories = ["Toutes les catégories", "Électronique","Véhicules","Téléphones et accessoires","Produits agricoles","Immobilier","Vêtements", "Maison"];
   const languages = ["FRA", "ENG"];
 
+  // click outside pour chaque menu
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (categoryRef.current && !categoryRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+
+      if (languageRef.current && !languageRef.current.contains(event.target)) {
+        setIsLanguageDropdownOpen(false);
+      }
+
+      if (userRef.current && !userRef.current.contains(event.target)) {
+        setIsUserMenuOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
     <nav className="bg-black text-white px-4 py-2 flex items-center justify-between flex-wrap">
+
       {/* LOGO */}
       <div className="shrink-0">
-        <img src="/logo.png"  className="h-7 w-auto" />
+        <img src="/logo.png" className="h-7 w-auto" />
       </div>
 
       {/* SEARCH BAR */}
       <div className="flex items-center bg-white rounded-lg overflow-visible flex-1 md:flex-none md:w-[420px] lg:w-[480px] h-9 min-w-0">
+
         {/* category */}
-        <div className="relative flex items-center px-2 text-gray-700 border-r cursor-pointer" onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
+        <div
+          ref={categoryRef}
+          className="relative flex items-center px-2 text-gray-700 border-r cursor-pointer"
+          onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+        >
           <span className="text-xs hidden sm:block">{category}</span>
           <FaChevronDown className="ml-1 text-xs" />
+
           {isDropdownOpen && (
             <div className="absolute top-full left-0 bg-white border border-gray-300 rounded mt-1 w-40 z-20">
               {categories.map((cat) => (
@@ -57,11 +92,16 @@ export default function Navbar() {
 
       {/* RIGHT SECTION */}
       <div className="flex items-center gap-10 shrink-0">
-        {/* language */}
-        <div className="relative flex items-center gap-1 cursor-pointer" onClick={() => setIsLanguageDropdownOpen(!isLanguageDropdownOpen)}>
-          <span className="text-xs hidden sm:block">{language}</span>
 
+        {/* language */}
+        <div
+          ref={languageRef}
+          className="relative flex items-center gap-1 cursor-pointer"
+          onClick={() => setIsLanguageDropdownOpen(!isLanguageDropdownOpen)}
+        >
+          <span className="text-xs hidden sm:block">{language}</span>
           <FaChevronDown className="text-xs" />
+
           {isLanguageDropdownOpen && (
             <div className="absolute top-full left-0 bg-white border border-gray-300 rounded mt-1 w-20 z-20">
               {languages.map((lang) => (
@@ -80,47 +120,34 @@ export default function Navbar() {
           )}
         </div>
 
-        {/* login */}
-        <div className="relative">
+        {/* user */}
+        <div ref={userRef} className="relative">
+          <div
+            className="flex items-center gap-1 cursor-pointer"
+            onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+          >
+            <FaUser className="text-sm" />
+            <Link to="/Login" className="text-xs hidden sm:block">
+              Se connecter
+            </Link>
+          </div>
 
-  {/* bouton utilisateur */}
-  <div
-    className="flex items-center gap-1 cursor-pointer"
-    onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-  >
-    <FaUser className="text-sm" />
-
-    {/* visible seulement desktop */}
-    <span className="text-xs hidden sm:block">
-      Se connecter
-    </span>
-  </div>
-
-  {/* dropdown */}
-  {isUserMenuOpen && (
-
-    <div className="absolute right-0 mt-2 w-32 bg-white text-black rounded shadow-lg z-20">
-
-      <div
-        className="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm"
-      >
-        Se connecter
-      </div>
-
-      <div
-        className="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm"
-      >
-        S'inscrire
-      </div>
-
-    </div>
-
-  )}
-
-</div>
+          {isUserMenuOpen && (
+            <div className="absolute right-0 mt-2 w-32 bg-white text-black rounded shadow-lg z-20">
+              <Link to="/Login" className="block px-3 py-2 hover:bg-gray-100 text-sm">
+  Se connecter
+</Link>
+              <Link to="/SignUp" className="block px-3 py-2 hover:bg-gray-100 text-sm">
+                S'inscrire
+              </Link>
+            </div>
+          )}
+        </div>
 
         {/* register */}
-        <span className="text-xs cursor-pointer hidden md:block">S'inscrire</span>
+       <Link to="/SignUp" className="text-xs hidden sm:block hover:text-orange-500">
+         S'inscrire
+       </Link>
 
         {/* cart */}
         <div className="relative cursor-pointer">
@@ -129,6 +156,7 @@ export default function Navbar() {
             0
           </span>
         </div>
+
       </div>
     </nav>
   );

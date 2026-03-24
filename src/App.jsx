@@ -1,38 +1,28 @@
 import React from 'react'
-import Navbar from './Components/Navbar'
-import Header from './Components/Header'
-
+import { BrowserRouter, Routes, Route } from "react-router-dom"
 
 import Home from "./Home/Home";
 import Login from "./pages/auth/Login";
-import SignUp from "./pages/SignUp/SignUp"
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import SignUp from "./pages/SignUp/SignUp";
+import MainLayout from "./Layout/MainLayout";
+
 function App() {
-  const router = createBrowserRouter([
-    {
-      path:'/',
-      element:<Home />
-    },
-    {
-      path:'auth/register',
-      element:<SignUp />
-    },
-    {
-      path:'auth/login',
-      element:<Login />
-    }
-  ])
+  return (
+    <BrowserRouter>
+      <Routes>
 
-  return <RouterProvider router={router}/>
-  
+        
+        <Route element={<MainLayout />}>
+          <Route path="/" element={<Home />} />
+        </Route>
 
+        
+        <Route path="/Login" element={<Login />} />
+        <Route path="/SignUp" element={<SignUp />} />
 
-    return (
-        <div className="App">
-            <Navbar />
-            <Header />
-        </div>
-    );
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
 export default App;

@@ -69,7 +69,7 @@ const Footer = () => {
                         data-aos-delay="100"
                     >
                         <div className="relative w-64 right-9">
-                            <a href='/' className='cursor-pointer'><img src="public\logo2 1.png" alt="Logo"/></a>
+                            <a href='/' className='cursor-pointer'><img src="/logo.png" alt="Logo"/></a>
                         </div>
                         <p className="text-gray-300 text-sm">
                             Achetez et vendez vos articles
