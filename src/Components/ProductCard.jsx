@@ -1,9 +1,7 @@
-// src/components/ProductCard.jsx
-import React from "react";
 import { Link } from "react-router-dom";
 import { FaMapMarkerAlt, FaClock } from "react-icons/fa";
-
 const ProductCard = ({ product }) => {
+  const MEDIA_URL = import.meta.env.VITE_API_URL;
   // Formatage du prix avec espaces
   const formatPrice = (price) => {
     return new Intl.NumberFormat('fr-FR').format(price) + " FCFA";
@@ -14,7 +12,7 @@ const ProductCard = ({ product }) => {
     const date = new Date(dateString);
     const today = new Date();
     const diffTime = Math.abs(today - date);
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
     
     if (diffDays === 0) return "Aujourd'hui";
     if (diffDays === 1) return "Hier";
@@ -27,7 +25,7 @@ const ProductCard = ({ product }) => {
       {/* Image */}
       <Link to={`/produit/${product.code}`} className="block overflow-hidden">
         <img
-          src={product.image || "/placeholder-image.jpg"}
+          src={product.image ? `${MEDIA_URL}${product.image}`: "/placeholder-image.jpg"}
           alt={product.title}
           className="w-full h-40 object-cover bg-gray-100 group-hover:scale-105 transition-transform duration-300"
         />

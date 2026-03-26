@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import ProductCard from "./ProductCard";
-
+import api from "../api"
 const CategorySection = ({ sousCategorie, categorieId }) => {
   const [produits, setProduits] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -12,18 +12,12 @@ const CategorySection = ({ sousCategorie, categorieId }) => {
   const loadProduits = async (page) => {
     setLoading(true);
     try {
-      const limit = 10;
+      const limit = 2;
 
       // Appel API réel
-      const response = await fetch(
-        `/api/annonces?sous_categorie=${sousCategorie.code}&page=${page}&limit=${limit}`
-      );
+      const response = await api.get(`all_annonces/${sousCategorie.code}/annonces/`);
 
-      if (!response.ok) {
-        throw new Error(`Erreur API: ${response.status}`);
-      }
-
-      const data = await response.json();
+      const data = response.data;
 
       // Transformer les données au format attendu par ProductCard
       const produitsFormates = data.map(annonce => ({
@@ -35,31 +29,20 @@ const CategorySection = ({ sousCategorie, categorieId }) => {
         created_at: annonce.created_at,
         description: annonce.description,
         statut: annonce.statut,
-        qte: annonce.qte
+        qte: annonce.qte,
+        vendeur:annonce.vendeur,
+        autres_images:annonce.images
       }));
 
       setProduits(produitsFormates);
 
       // Calculer le nombre total de pages (si l'API renvoie le total)
       // setTotalPages(Math.ceil(data.total / limit));
-      setTotalPages(2); // À adapter selon la réponse de l'API
+      setTotalPages(produitsFormates.length /limit); // À adapter selon la réponse de l'API
       setCurrentPage(page);
 
     } catch (error) {
       console.error("Erreur chargement produits:", error);
-
-      // Données mock pour le développement (si API indisponible)
-      const mockProduits = Array(6).fill(null).map((_, i) => ({
-        code: `MOCK_${i}`,
-        title: "Produit exemple",
-        prix: 15000,
-        image: "/api/placeholder/200/200",
-        localisation: "Douala",
-        created_at: new Date().toISOString()
-      }));
-      setProduits(mockProduits);
-      setTotalPages(1);
-
     } finally {
       setLoading(false);
     }
