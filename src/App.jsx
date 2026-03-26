@@ -6,24 +6,50 @@ import Login from "./pages/auth/Login";
 import SignUp from "./pages/SignUp/SignUp";
 import MainLayout from "./Layout/MainLayout";
 import Userventes from "./pages/Userventes";
+import { Toaster } from "react-hot-toast";
+import PageCategorie from './pages/CategoriePage/CategoriePage';
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+
 function App() {
+  const router = createBrowserRouter([
+    {
+      path:'/',
+      element:<Home />
+    },
+    {
+      path:'auth/register',
+      element:<SignUp />
+    },
+    {
+      path:'auth/login',
+      element:<Login />
+    },
+    {
+      path:'/categorie/:categorieSlug',
+      element:<PageCategorie/>
+    }
+  ])
   return (
-    <BrowserRouter>
-      <Routes>
+    <>
+      <Toaster />
+      <RouterProvider router={router} />
+    </>
+  )
+
+  // return <RouterProvider router={router}/>
 
         
-        <Route element={<MainLayout />}>
-          <Route path="/" element={<Home />} />
-        </Route>
+       
 
-        
-        <Route path="/Login" element={<Login />} />
-        <Route path="/SignUp" element={<SignUp />} />
-        <Route path="/Userventes" element={<Userventes />} />
+  
+  
+  //   return (
+  //       <div className="App">
+  //           <Navbar />
+  //           <Header />
+  //       </div>
+  //   );
 
-      </Routes>
-    </BrowserRouter>
-  );
 }
 
 export default App;

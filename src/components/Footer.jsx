@@ -34,7 +34,11 @@ const Footer = () => {
 
     const liensUtiles = [
         { name: 'À propos', path: '/a-propos' },
+<<<<<<< HEAD
         { name: "S'inscrire", path: '/SignUp' },
+=======
+        { name: "S'inscrire", path: '/auth/register' },
+>>>>>>> 5bcfe065ba02ea5c84a7b69c7e7acd8e2e3d1d6f
         { name: 'Comment ça marche', path: '/comment-ca-marche' },
         { name: 'Sécurité', path: '/securite' },
         { name: "Centre d'aide", path: '/aide' },
@@ -69,24 +73,28 @@ const Footer = () => {
                         data-aos-delay="100"
                     >
                         <div className="relative w-64 right-9">
+<<<<<<< HEAD
                             <a href='/' className='cursor-pointer'><img src="/logo.png" alt="Logo"/></a>
+=======
+                            <a href='/' className='cursor-pointer'><img src="public\logo2 1.png" alt="Logo"/></a>
+>>>>>>> 5bcfe065ba02ea5c84a7b69c7e7acd8e2e3d1d6f
                         </div>
                         <p className="text-gray-300 text-sm">
                             Achetez et vendez vos articles
                         </p>
 
                         {/* Icônes réseaux sociaux */}
-                        <div className="flex gap-3 pt-2">
+                        <div className="flex gap-5 pt-2">
                             {socialIcons.map((social, index) => (
                                 <a
                                     key={index}
                                     href={social.path}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="btn btn-circle btn-sm bg-gray-800 hover:bg-orange-500 border-none text-white transition-all duration-300"
+                                    className="btn btn-circle btn-sm border-none text-white transition-all duration-300"
                                     aria-label={social.label}
                                 >
-                                    <social.icon className="text-sm" />
+                                    <social.icon className="text-[20px]" />
                                 </a>
                             ))}
                         </div>
