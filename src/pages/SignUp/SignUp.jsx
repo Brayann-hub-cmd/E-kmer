@@ -1,22 +1,22 @@
 import React, { useState } from 'react';
 import { toast, Toaster } from 'react-hot-toast';
-import { 
-  FaUser, 
-  FaLock, 
-  FaEye, 
+import {
+  FaUser,
+  FaLock,
+  FaEye,
   FaEyeSlash,
   FaMoon,
   FaSun,
   FaEnvelope
 } from 'react-icons/fa';
-import { 
-  BsCheckCircle 
+import {
+  BsCheckCircle
 } from 'react-icons/bs';
 
-
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import api from '../../api';
 const SignUp = () => {
-
+  const navigate = useNavigate()
   // État pour gérer les valeurs du formulaire
   const [formData, setFormData] = useState({
     nomComplet: '',
@@ -29,7 +29,7 @@ const SignUp = () => {
 
   // État pour gérer les erreurs de validation
   const [erreurs, setErreurs] = useState({});
-  
+
   // État pour gérer l'affichage des mots de passe
   const [afficherMdp, setAfficherMdp] = useState({
     motDePasse: false,
@@ -100,7 +100,7 @@ const SignUp = () => {
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     const nouvelleValeur = type === 'checkbox' ? checked : value;
-    
+
     setFormData(prev => ({
       ...prev,
       [name]: nouvelleValeur
@@ -131,7 +131,7 @@ const SignUp = () => {
   const formaterTelephone = (valeur) => {
     // Supprimer tout sauf les chiffres et le +
     let numeros = valeur.replace(/[^\d+]/g, '');
-    
+
     // Si ça commence par +237
     if (numeros.startsWith('+237')) {
       const sansPrefix = numeros.slice(4);
@@ -139,12 +139,12 @@ const SignUp = () => {
         const partie1 = sansPrefix.slice(0, 3);
         const partie2 = sansPrefix.slice(3, 6);
         const partie3 = sansPrefix.slice(6, 9);
-        
+
         let formate = '+237';
         if (partie1) formate += ' ' + partie1;
         if (partie2) formate += ' ' + partie2;
         if (partie3) formate += ' ' + partie3;
-        
+
         return formate;
       }
     }
@@ -152,29 +152,55 @@ const SignUp = () => {
   };
 
   // Gestionnaire de soumission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     const nouvellesErreurs = validerFormulaire();
-    
+    const telephoneInput = formData.telephone.split(' ')
+    const telephone = telephoneInput[0] + telephoneInput[1] + telephoneInput[2] + telephoneInput[3]
     if (Object.keys(nouvellesErreurs).length === 0) {
-      // Succès - Afficher la notification
-      toast.success(
-        <div className="flex items-center gap-2">
-          <BsCheckCircle className="text-green-500 text-xl" />
-          <span>Inscription réussie ! Bienvenue sur E-kmer</span>
-        </div>,
-        {
-          duration: 4000,
-          position: 'top-center',
-          style: {
-            background: '#10b981',
-            color: '#fff',
-            padding: '16px',
-          },
+      try {
+        const role = "user"
+        const response = await api.post('auth/register/', {
+          username: formData.nomComplet,
+          telephone: telephone,
+          email: formData.email,
+          password: formData.motDePasse,
+          role: role
+        })
+        // Succès - Afficher la notification
+        toast.success(
+          <div className="flex items-center gap-2">
+            <BsCheckCircle className="text-green-500 text-xl" />
+            <span>{response.data.message}</span>
+          </div>,
+          {
+            duration: 4000,
+            position: 'top-center',
+            style: {
+              background: '#10b981',
+              color: '#fff',
+              padding: '16px',
+            },
+          }
+        );
+
+        setTimeout(() => {
+          navigate('/auth/login')
+        }, 1500)
+
+      } catch (error) {
+        if (error.response?.status === 400) {
+          toast.error(error.response.data.error)
         }
-      );
-      
+        else if (error.response?.status === 500) {
+          toast.error("Un problème avec le serveur est survenue!")
+        }
+        else {
+          toast.error(`Erreur : `, error)
+        }
+      }
+
       // Réinitialiser le formulaire
       setFormData({
         nomComplet: '',
@@ -196,7 +222,7 @@ const SignUp = () => {
         confirmerMotDePasse: true,
         accepteConditions: true
       });
-      
+
       toast.error('Veuillez corriger les erreurs dans le formulaire', {
         duration: 3000,
         position: 'top-center',
@@ -205,43 +231,43 @@ const SignUp = () => {
   };
  
   // Styles conditionnels basés sur le mode
-  const pageStyle = isDarkMode 
-    ? "min-h-screen bg-gray-900 flex items-center justify-center p-4" 
+  const pageStyle = isDarkMode
+    ? "min-h-screen bg-gray-900 flex items-center justify-center p-4"
     : "min-h-screen bg-gray-50 flex items-center justify-center p-4";
 
-  const cardStyle = isDarkMode 
-    ? "bg-gray-800 rounded-xl shadow-lg w-full max-w-[420px] p-8 border border-gray-700" 
+  const cardStyle = isDarkMode
+    ? "bg-gray-800 rounded-xl shadow-lg w-full max-w-[420px] p-8 border border-gray-700"
     : "bg-white rounded-xl shadow-lg w-full max-w-[420px] p-8";
 
-  const titleStyle = isDarkMode 
-    ? "text-2xl font-bold text-center mb-1 text-white" 
+  const titleStyle = isDarkMode
+    ? "text-2xl font-bold text-center mb-1 text-white"
     : "text-2xl font-bold text-center mb-1 text-gray-900";
 
-  const subtitleStyle = isDarkMode 
-    ? "text-center text-gray-400 text-sm mb-6" 
+  const subtitleStyle = isDarkMode
+    ? "text-center text-gray-400 text-sm mb-6"
     : "text-center text-gray-500 text-sm mb-6";
 
-  const labelStyle = isDarkMode 
-    ? "block text-sm font-medium text-gray-300 mb-1" 
+  const labelStyle = isDarkMode
+    ? "block text-sm font-medium text-gray-300 mb-1"
     : "block text-sm font-medium text-gray-700 mb-1";
 
   const inputStyle = (hasError) => {
     const baseStyle = "w-full pl-10 pr-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent";
-    const borderStyle = hasError 
-      ? "border-red-500" 
+    const borderStyle = hasError
+      ? "border-red-500"
       : isDarkMode ? "border-gray-600" : "border-gray-300";
     const bgStyle = isDarkMode ? "bg-gray-800 text-white placeholder-gray-500" : "bg-white text-gray-900 placeholder-gray-400";
-    
+
     return `${baseStyle} ${borderStyle} ${bgStyle}`;
   };
 
   const inputPasswordStyle = (hasError) => {
     const baseStyle = "w-full pl-10 pr-10 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent";
-    const borderStyle = hasError 
-      ? "border-red-500" 
+    const borderStyle = hasError
+      ? "border-red-500"
       : isDarkMode ? "border-gray-600" : "border-gray-300";
     const bgStyle = isDarkMode ? "bg-gray-800 text-white placeholder-gray-500" : "bg-white text-gray-900 placeholder-gray-400";
-    
+
     return `${baseStyle} ${borderStyle} ${bgStyle}`;
   };
 
@@ -249,20 +275,20 @@ const SignUp = () => {
   const iconHoverStyle = isDarkMode ? "hover:text-gray-300" : "hover:text-gray-600";
   const errorTextStyle = isDarkMode ? "mt-1 text-xs text-red-400" : "mt-1 text-xs text-red-500";
   const helperTextStyle = isDarkMode ? "mt-1 text-xs text-gray-500" : "mt-1 text-xs text-gray-400";
-  const linkStyle = isDarkMode 
-    ? "text-orange-400 hover:text-orange-300 font-medium" 
+  const linkStyle = isDarkMode
+    ? "text-orange-400 hover:text-orange-300 font-medium"
     : "text-orange-500 hover:text-orange-600 font-medium";
   const textStyle = isDarkMode ? "text-gray-400" : "text-gray-600";
   const separatorStyle = isDarkMode ? "px-2 bg-gray-800 text-gray-500" : "px-2 bg-white text-gray-500";
   const borderStyle = isDarkMode ? "w-full border-t border-gray-700" : "w-full border-t border-gray-300";
-  const checkboxStyle = isDarkMode 
-    ? "mt-1 h-4 w-4 text-orange-500 border-gray-600 rounded focus:ring-orange-500 bg-gray-800" 
+  const checkboxStyle = isDarkMode
+    ? "mt-1 h-4 w-4 text-orange-500 border-gray-600 rounded focus:ring-orange-500 bg-gray-800"
     : "mt-1 h-4 w-4 text-orange-500 border-gray-300 rounded focus:ring-orange-500";
 
   return (
     <div className={pageStyle}>
       {/* Toast Container */}
-      <Toaster 
+      <Toaster
         toastOptions={{
           style: {
             background: isDarkMode ? '#1f2937' : '#ffffff',
@@ -270,28 +296,27 @@ const SignUp = () => {
           },
         }}
       />
-      
+
       {/* Bouton de bascule de mode */}
       <button
         onClick={toggleDarkMode}
-        className={`fixed top-4 right-4 p-2 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 ${
-          isDarkMode 
-            ? 'bg-gray-700 text-yellow-400' 
-            : 'bg-white text-gray-700'
-        }`}
+        className={`fixed top-4 right-4 p-2 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 ${isDarkMode
+          ? 'bg-gray-700 text-yellow-400'
+          : 'bg-white text-gray-700'
+          }`}
       >
         {isDarkMode ? <FaSun className="text-xl" /> : <FaMoon className="text-xl" />}
       </button>
-      
+
       {/* Card d'inscription */}
       <div className={cardStyle}>
-        
+
         {/* Titre */}
         <h1 className={titleStyle}>
           Inscription à{' '}
           <span className="text-orange-500">E-kmer</span>
         </h1>
-        
+
         {/* Sous-titre */}
         <p className={subtitleStyle}>
           Créez votre compte pour commencer à acheter et vendre
@@ -299,7 +324,7 @@ const SignUp = () => {
 
         {/* Formulaire */}
         <form onSubmit={handleSubmit} className="space-y-4">
-          
+
           {/* Champ Nom complet */}
           <div>
             <label className={labelStyle}>
@@ -489,9 +514,8 @@ const SignUp = () => {
           {/* Bouton principal */}
           <button
             type="submit"
-            className={`w-full bg-orange-500 text-white py-3 px-4 rounded-lg hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 ${
-              isDarkMode ? 'focus:ring-offset-gray-800' : 'focus:ring-offset-white'
-            } transition-colors font-medium mt-6`}
+            className={`w-full bg-orange-500 text-white py-3 px-4 rounded-lg hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 ${isDarkMode ? 'focus:ring-offset-gray-800' : 'focus:ring-offset-white'
+              } transition-colors font-medium mt-6`}
           >
             Créer mon compte
           </button>

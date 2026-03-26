@@ -34,7 +34,7 @@ const Footer = () => {
 
     const liensUtiles = [
         { name: 'À propos', path: '/a-propos' },
-        { name: "S'inscrire", path: '/inscription' },
+        { name: "S'inscrire", path: '/auth/register' },
         { name: 'Comment ça marche', path: '/comment-ca-marche' },
         { name: 'Sécurité', path: '/securite' },
         { name: "Centre d'aide", path: '/aide' },
@@ -68,7 +68,7 @@ const Footer = () => {
                         data-aos="fade-up"
                         data-aos-delay="100"
                     >
-                        <div class="relative w-64 right-9">
+                        <div className="relative w-64 right-9">
                             <a href='/' className='cursor-pointer'><img src="public\logo2 1.png" alt="Logo"/></a>
                         </div>
                         <p className="text-gray-300 text-sm">
@@ -76,17 +76,17 @@ const Footer = () => {
                         </p>
 
                         {/* Icônes réseaux sociaux */}
-                        <div className="flex gap-3 pt-2">
+                        <div className="flex gap-5 pt-2">
                             {socialIcons.map((social, index) => (
                                 <a
                                     key={index}
                                     href={social.path}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="btn btn-circle btn-sm bg-gray-800 hover:bg-orange-500 border-none text-white transition-all duration-300"
+                                    className="btn btn-circle btn-sm border-none text-white transition-all duration-300"
                                     aria-label={social.label}
                                 >
-                                    <social.icon className="text-2sm" />
+                                    <social.icon className="text-[20px]" />
                                 </a>
                             ))}
                         </div>

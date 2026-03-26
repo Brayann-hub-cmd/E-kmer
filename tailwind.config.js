@@ -8,9 +8,12 @@ export default {
   ],
   theme: {
     extend: {
+<<<<<<< HEAD
       fontFamily: {
         sans: ["InterVariable", ...defaultTheme.fontFamily.sans],
       },
+=======
+>>>>>>> 5bcfe065ba02ea5c84a7b69c7e7acd8e2e3d1d6f
       keyframes: {
         slideInUp: {
           '0%': { transform: 'translateY(100%)', opacity: '0' },
@@ -51,6 +54,11 @@ export default {
         'pulse-glow': 'pulseGlow 2s ease-in-out infinite',
         gradient: 'gradient 5s ease infinite',
         'spin-slow': 'spin 3s linear infinite',
+<<<<<<< HEAD
+=======
+      fontFamily: {
+        sans: ["InterVariable", ...defaultTheme.fontFamily.sans],
+>>>>>>> 5bcfe065ba02ea5c84a7b69c7e7acd8e2e3d1d6f
       },
     },
   },

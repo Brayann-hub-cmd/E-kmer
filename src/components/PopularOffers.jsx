@@ -67,14 +67,12 @@ const products = [
   },
 ];
 
-const PopularOffers = () => {
-  // 🔥 tableau des favoris
+function PopularOffers() {
   const [favorites, setFavorites] = useState([]);
 
-  // 🔥 fonction pour ajouter/retirer des favoris
   const toggleFavorite = (id) => {
     if (favorites.includes(id)) {
-      setFavorites(favorites.filter((item) => item !== id));
+      setFavorites(favorites.filter((fav) => fav !== id));
     } else {
       setFavorites([...favorites, id]);
     }
@@ -82,73 +80,50 @@ const PopularOffers = () => {
 
   return (
     <div className="px-6 py-10 bg-gray-100">
+      <h2 className="text-2xl font-bold mb-6">Offres Populaires</h2>
 
-      <h2 className="text-2xl font-bold mb-6">
-        Offres Populaires
-      </h2>
+      <div className="flex gap-4 overflow-x-auto scrollbar-hide">
+        {products.map((product) => (
+          <div
+            key={product.id}
+            className="min-w-[220px] bg-white rounded-xl shadow-md overflow-hidden"
+          >
+            {/* IMAGE */}
+            <div className="relative">
+              <img
+                src={product.image}
+                alt={product.name}
+                className="w-full h-40 object-cover"
+              />
 
-      {/* SCROLL HORIZONTAL */}
-      <div className="flex gap-4 overflow-x-auto">
-
-        {products.map((product) => {
-          const isFav = favorites.includes(product.id);
-
-          return (
-            <div
-              key={product.id}
-              className="min-w-[220px] bg-white rounded-xl shadow-md overflow-hidden"
-            >
-
-              {/* IMAGE */}
-              <div className="relative">
-                <img
-                  src={product.image}
-                  alt={product.name}
-                  className="w-full h-40 object-cover"
-                />
-
-                {/* ❤️ COEUR */}
-                <span
-                  onClick={() => toggleFavorite(product.id)}
-                  className={`absolute top-2 right-2 cursor-pointer text-xl transition ${
-                    isFav ? "text-red-500" : "text-gray-400"
-                  }`}
-                >
-                  {isFav ? "❤️" : "🤍"}
-                </span>
-              </div>
-
-              {/* CONTENU */}
-              <div className="p-3">
-
-                {/* PRIX */}
-                <p className="text-orange-500 font-bold">
-                  {product.price}
-                </p>
-
-                {/* NOM */}
-                <p className="font-semibold text-sm">
-                  {product.name}
-                </p>
-
-                {/* LOCALISATION */}
-                <p className="text-gray-400 text-xs">
-                  📍 {product.location} • {product.time}
-                </p>
-
-                {/* BOUTON */}
-                <button className="mt-3 w-full bg-orange-500 text-white text-sm py-2 rounded-full hover:bg-orange-600">
-                  Voir les détails
-                </button>
-
-              </div>
+              {/* COEUR FAVORI */}
+              <button
+                onClick={() => toggleFavorite(product.id)}
+                className="absolute top-2 right-2 text-xl"
+              >
+                {favorites.includes(product.id) ? "❤️" : "🤍"}
+              </button>
             </div>
-          );
-        })}
 
+            {/* CONTENU */}
+            <div className="p-3">
+              <p className="text-orange-500 font-bold">{product.price}</p>
+
+              <p className="font-semibold text-sm">{product.name}</p>
+
+              <p className="text-gray-400 text-xs">
+                📍 {product.location} • {product.time}
+              </p>
+
+              <button className="mt-3 w-full bg-orange-500 text-white text-sm py-2 rounded-full hover:bg-orange-600">
+                Voir les détails
+              </button>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );
-};
+}
 
 export default PopularOffers;
