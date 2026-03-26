@@ -13,18 +13,18 @@ const CategorySection = ({ sousCategorie, categorieId }) => {
     setLoading(true);
     try {
       const limit = 10;
-      
+
       // Appel API réel
       const response = await fetch(
         `/api/annonces?sous_categorie=${sousCategorie.code}&page=${page}&limit=${limit}`
       );
-      
+
       if (!response.ok) {
         throw new Error(`Erreur API: ${response.status}`);
       }
-      
+
       const data = await response.json();
-      
+
       // Transformer les données au format attendu par ProductCard
       const produitsFormates = data.map(annonce => ({
         code: annonce.code,
@@ -37,17 +37,17 @@ const CategorySection = ({ sousCategorie, categorieId }) => {
         statut: annonce.statut,
         qte: annonce.qte
       }));
-      
+
       setProduits(produitsFormates);
-      
+
       // Calculer le nombre total de pages (si l'API renvoie le total)
       // setTotalPages(Math.ceil(data.total / limit));
       setTotalPages(2); // À adapter selon la réponse de l'API
       setCurrentPage(page);
-      
+
     } catch (error) {
       console.error("Erreur chargement produits:", error);
-      
+
       // Données mock pour le développement (si API indisponible)
       const mockProduits = Array(6).fill(null).map((_, i) => ({
         code: `MOCK_${i}`,
@@ -59,7 +59,7 @@ const CategorySection = ({ sousCategorie, categorieId }) => {
       }));
       setProduits(mockProduits);
       setTotalPages(1);
-      
+
     } finally {
       setLoading(false);
     }
@@ -113,27 +113,25 @@ const CategorySection = ({ sousCategorie, categorieId }) => {
           <button
             onClick={() => goToPage(currentPage - 1)}
             disabled={currentPage === 1}
-            className={`p-2 rounded-lg border transition-colors ${
-              currentPage === 1
+            className={`p-2 rounded-lg border transition-colors ${currentPage === 1
                 ? "border-gray-200 text-gray-300 cursor-not-allowed"
                 : "border-gray-300 text-gray-600 hover:bg-orange-500 hover:text-white hover:border-orange-500"
-            }`}
+              }`}
           >
             <FaChevronLeft className="text-sm" />
           </button>
-          
+
           <span className="text-gray-700 font-medium">
             {currentPage} / {totalPages}
           </span>
-          
+
           <button
             onClick={() => goToPage(currentPage + 1)}
             disabled={currentPage === totalPages}
-            className={`p-2 rounded-lg border transition-colors ${
-              currentPage === totalPages
+            className={`p-2 rounded-lg border transition-colors ${currentPage === totalPages
                 ? "border-gray-200 text-gray-300 cursor-not-allowed"
                 : "border-gray-300 text-gray-600 hover:bg-orange-500 hover:text-white hover:border-orange-500"
-            }`}
+              }`}
           >
             <FaChevronRight className="text-sm" />
           </button>

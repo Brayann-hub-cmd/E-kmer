@@ -35,6 +35,7 @@ export default function Navbar() {
   const languageTabletRef = useRef(null);
   const languageMobileRef = useRef(null);
 
+
   // // Catégories principales avec leurs IDs
   // const categories = [
   //   { id: "CAT_000", name: "Toutes les categories", path: "/toutes-categories" },
@@ -45,7 +46,7 @@ export default function Navbar() {
   //   { id: "CAT_006", name: "Services", path: "/categorie/service" },
   //   { id: "CAT_004", name: "Produits agricoles", path: "/categorie/produits-agricoles" },
   // ];
-  
+
   useEffect(()=>{
     const getCategorie = async ()=>{
       try {
@@ -307,7 +308,7 @@ export default function Navbar() {
                 {isCategoryOpen && (
                   <div className="absolute top-full left-0 mt-1 bg-white border rounded-lg shadow-xl w-48 max-h-60 overflow-y-auto z-50">
                     {categories.map((cat) => (
-                      <button key={cat.id} onClick={() => handleCategoryChange(cat)} className="w-full text-left px-3 py-2.5 text-xs hover:bg-orange-500 hover:text-white">{cat.name}</button>
+                      <button key={cat.id} onClick={() => handleCategoryChange(cat)} className="w-full text-left px-3 py-2.5 text-xs hover:bg-orange-500 hover:text-white">{cat.nom}</button>
                     ))}
                   </div>
                 )}
