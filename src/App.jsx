@@ -1,15 +1,9 @@
-import React from 'react'
-import { BrowserRouter, Routes, Route } from "react-router-dom"
-
+import { Toaster } from "react-hot-toast";
 import Home from "./pages/Home/Home";
 import Login from "./pages/auth/Login";
-import SignUp from "./pages/SignUp/SignUp";
-import MainLayout from "./Layout/MainLayout";
-import Userventes from "./pages/Userventes";
-import { Toaster } from "react-hot-toast";
+import SignUp from "./pages/SignUp/SignUp"
 import PageCategorie from './pages/CategoriePage/CategoriePage';
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-
 function App() {
   const router = createBrowserRouter([
     {
@@ -38,19 +32,13 @@ function App() {
 
   // return <RouterProvider router={router}/>
 
-        
-       
 
-  
-  
   //   return (
   //       <div className="App">
   //           <Navbar />
   //           <Header />
   //       </div>
   //   );
-
 }
 
 export default App;
-

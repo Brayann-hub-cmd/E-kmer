@@ -34,11 +34,7 @@ const Footer = () => {
 
     const liensUtiles = [
         { name: 'À propos', path: '/a-propos' },
-<<<<<<< HEAD
-        { name: "S'inscrire", path: '/SignUp' },
-=======
         { name: "S'inscrire", path: '/auth/register' },
->>>>>>> 5bcfe065ba02ea5c84a7b69c7e7acd8e2e3d1d6f
         { name: 'Comment ça marche', path: '/comment-ca-marche' },
         { name: 'Sécurité', path: '/securite' },
         { name: "Centre d'aide", path: '/aide' },
@@ -49,7 +45,7 @@ const Footer = () => {
     const vendreAcheter = [
         { name: 'Comment vendre', path: '/comment-vendre' },
         { name: 'Comment acheter', path: '/comment-acheter' },
-        { name: 'Commencer à vendre', path: '/Userventes' },
+        { name: 'Commencer à vendre', path: '/vendre' },
         { name: 'Commandes', path: '/commandes' }
     ];
 
@@ -73,11 +69,7 @@ const Footer = () => {
                         data-aos-delay="100"
                     >
                         <div className="relative w-64 right-9">
-<<<<<<< HEAD
-                            <a href='/' className='cursor-pointer'><img src="/logo.png" alt="Logo"/></a>
-=======
                             <a href='/' className='cursor-pointer'><img src="public\logo2 1.png" alt="Logo"/></a>
->>>>>>> 5bcfe065ba02ea5c84a7b69c7e7acd8e2e3d1d6f
                         </div>
                         <p className="text-gray-300 text-sm">
                             Achetez et vendez vos articles
