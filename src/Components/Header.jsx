@@ -87,7 +87,7 @@ export default function Header() {
                 <div className="flex items-center space-x-1 lg:space-x-2 mx-auto">
                   {categories.map((cat) => (
                     <Link
-                      key={cat.id}
+                      key={cat.code}
                       to={`/categorie/${cat.slug}?id=${cat.code}`}
                       onClick={() => handleCategoryClick(cat)}
                       className={`relative px-3 lg:px-4 py-2 text-sm lg:text-base font-medium transition-colors whitespace-nowrap ${active === cat.name

@@ -1,7 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
-
 // Icônes
 import {
     FaFacebookF,
@@ -12,8 +11,33 @@ import {
     FaPhoneAlt,
     FaEnvelope
 } from 'react-icons/fa';
-
+import { Link } from 'react-router-dom';
+import api from '../api';
 const Footer = () => {
+    const [data, setData] = useState([])
+
+    useEffect(() => {
+        const getCategories = async () => {
+            try {
+                const response = await api.get("categories/")
+                setData((data) => response.data)
+            } catch (error) {
+                console.error("footer error, ", error);
+            }
+        }
+        getCategories();
+    }, [])
+
+    const categories = useMemo(
+        ()=>{
+          return data.map((cat)=>({
+            code: `${cat.code}`,
+            name: `${cat.nom}`,
+            path: `/categorie/${cat.nom.toLowerCase().replace(/\s+/g, '-').normalize("NFD").replace(/[\u0300-\u036f]/g, '')}?id=${cat.code}`,
+          }));
+        },[data]
+      );
+
     useEffect(() => {
         AOS.init({
             duration: 1000,
@@ -23,14 +47,14 @@ const Footer = () => {
     }, []);
 
     // Données pour les colonnes
-    const categories = [
-        { name: 'Électronique', path: '/categorie/electronique' },
-        { name: 'Véhicule', path: '/categorie/vehicule' },
-        { name: 'Mode', path: '/categorie/mode' },
-        { name: 'Immobilier', path: '/categorie/immobilier' },
-        { name: 'Services', path: '/categorie/services' },
-        { name: 'Produits agricoles', path: '/categorie/agricole' }
-    ];
+    // const categories = [
+    //     { name: 'Électronique', path: '/categorie/electronique' },
+    //     { name: 'Véhicule', path: '/categorie/vehicule' },
+    //     { name: 'Mode', path: '/categorie/mode' },
+    //     { name: 'Immobilier', path: '/categorie/immobilier' },
+    //     { name: 'Services', path: '/categorie/services' },
+    //     { name: 'Produits agricoles', path: '/categorie/agricole' }
+    // ];
 
     const liensUtiles = [
         { name: 'À propos', path: '/a-propos' },
@@ -69,7 +93,7 @@ const Footer = () => {
                         data-aos-delay="100"
                     >
                         <div className="relative w-64 right-9">
-                            <a href='/' className='cursor-pointer'><img src="public\logo2 1.png" alt="Logo"/></a>
+                            <a href='/' className='cursor-pointer'><img src="public\logo2 1.png" alt="Logo" /></a>
                         </div>
                         <p className="text-gray-300 text-sm">
                             Achetez et vendez vos articles
@@ -103,13 +127,13 @@ const Footer = () => {
                         </h3>
                         <ul className="space-y-2">
                             {categories.map((item, index) => (
-                                <li key={index}>
-                                    <a
-                                        href={item.path}
+                                <li key={item.code}>
+                                    <Link
+                                        to={item.path}
                                         className="text-gray-300 hover:text-[#F25012] transition-colors duration-300 text-sm cursor-pointer"
                                     >
                                         {item.name}
-                                    </a>
+                                    </Link>
                                 </li>
                             ))}
                         </ul>
