@@ -13,31 +13,35 @@ function PopularOffers() {
     const getAnnonces = async () => {
       try {
         const response = await api.get('annonces/')
-        setData((data)=>response.data)
-      } catch (error) {
+        const categoriesArray = Array.isArray(response.data) ? response.data : []
+        setData(categoriesArray)
+      } 
+      catch (error) {
         console.error("Erreur chargement produits:", error);
       }
     }
+    getAnnonces();
 
-    getAnnonces(); 
   }, [])
 
   const produits = useMemo(
     () => {
-      return data.map((annonce) => ({
-        code: annonce.code,
-        title: annonce.titre,
-        prix: annonce.prix,
-        image: annonce.image,
-        localisation: annonce.localisation,
-        created_at: annonce.created_at,
-        description: annonce.description,
-        statut: annonce.statut,
-        qte: annonce.qte,
-        vendeur: annonce.vendeur,
-        autres_images: annonce.images,
-        slug: `${annonce.code}`
-      }))
+      if (data.length > 0) {
+        return Array.isArray(data) ? data.map((annonce) => ({
+          code: annonce.code,
+          title: annonce.titre,
+          prix: annonce.prix,
+          image: annonce.image,
+          localisation: annonce.localisation,
+          created_at: annonce.created_at,
+          description: annonce.description,
+          statut: annonce.statut,
+          qte: annonce.qte,
+          vendeur: annonce.vendeur,
+          autres_images: annonce.images,
+          slug: `${annonce.code}`
+        })) : []
+      }
     }, [data]
   )
   // Vérifier si on peut défiler
