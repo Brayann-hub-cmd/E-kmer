@@ -4,10 +4,13 @@ import defaultTheme from "tailwindcss/defaultTheme"
 export default {
   content: [
     "./index.html",
-    "./src/**/*.{js,jsx,ts,tsx}",
+    "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ["InterVariable", ...defaultTheme.fontFamily.sans],
+      },
       keyframes: {
         slideInUp: {
           '0%': { transform: 'translateY(100%)', opacity: '0' },
@@ -49,10 +52,13 @@ export default {
         'pulse-glow': 'pulseGlow 2s ease-in-out infinite',
         gradient: 'gradient 5s ease infinite',
         'spin-slow': 'spin 3s linear infinite',
+
       },
+
 
       fontFamily: {
         sans: ["InterVariable", ...defaultTheme.fontFamily.sans],
+
       },
     },
   },
