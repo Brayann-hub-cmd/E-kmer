@@ -17,7 +17,7 @@ function App() {
     },
     {
       path:'auth/login',
-      element:<Login />
+      element:<PublishProduct />
     },
     {
       path:'/categorie/:categorieSlug',
