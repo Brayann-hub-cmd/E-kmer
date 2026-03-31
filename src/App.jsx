@@ -2,6 +2,7 @@ import { Toaster } from "react-hot-toast";
 import Home from "./pages/Home/Home";
 import Login from "./pages/auth/Login";
 import SignUp from "./pages/SignUp/SignUp"
+import Userventes from "./pages/Userventes"
 import PageCategorie from './pages/CategoriePage/CategoriePage';
 import PublishProduct from "./components/PublishProduct";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
@@ -22,6 +23,10 @@ function App() {
     {
       path:'/categorie/:categorieSlug',
       element:<PageCategorie/>
+    },
+    {
+      path:'/pages/Userventes',
+      element:<Userventes />
     }
   ])
   return (

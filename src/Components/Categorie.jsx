@@ -20,7 +20,7 @@ const CategorySection = ({ sousCategorie, categorieId }) => {
       const data = response.data;
 
       // Transformer les données au format attendu par ProductCard
-      const produitsFormates = data.map(annonce => ({
+      const produitsFormates =  data.map((annonce) => ({
         code: annonce.code,
         title: annonce.titre,
         prix: annonce.prix,

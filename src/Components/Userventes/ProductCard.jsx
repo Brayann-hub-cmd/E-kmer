@@ -1,58 +1,46 @@
-export default function ProductCard({ product }) {
-
+export default function ProductCard() {
   return (
-    <div className="bg-white p-4 rounded-xl shadow flex gap-4">
-
+    <div className="bg-white rounded-2xl p-4 shadow flex gap-4 items-center">
       {/* IMAGE */}
-      <div className="w-32 h-32 bg-gray-200 rounded-lg overflow-hidden">
-        {product.image ? (
-          <img
-            src={product.image}
-            alt=""
-            className="w-full h-full object-cover"
-          />
-        ) : (
-          <div className="flex items-center justify-center h-full text-gray-400">
-            Image
-          </div>
-        )}
-        
-      </div>
+      <img
+        src="/OIP.webp"
+        alt="Product"
+        className="w-32 h-32 object-cover rounded-lg"
+      />
 
       {/* INFOS */}
       <div className="flex-1">
+        <h3 className="font-semibold text-lg">Iphone 14 Pro</h3>
+        <p className="text-orange-500 font-bold text-lg">450000 FCFA</p>
 
-        <div className="flex justify-between">
-
-          <div>
-            <h3 className="font-semibold">{product.name}</h3>
-            <p className="text-orange-500 font-bold">{product.price}</p>
-          </div>
-
-          <span className="text-green-600 bg-green-100 px-3 py-1 rounded text-sm">
-            {product.status}
-          </span>
-          </div>
-
-    <div className="flex gap-6 mt-2 text-sm text-gray-600">
-          <p>Stock: {product.stock}</p>
-          <p>Vendus: {product.sold}</p>
+        <div className="flex gap-10 mt-2 text-sm text-gray-600">
+          <p>Stock: <strong>3 unités</strong></p>
+          <p>Vendus: <strong>2</strong></p>
         </div>
-    
 
-        {/* ACTIONS */}
-        <div className="flex gap-2 mt-3">
-          <button className="bg-blue-500 text-white px-3 py-1 rounded text-sm">
+        <div className="flex gap-3 mt-4">
+          <button className="bg-blue-600 text-white px-4 py-1 rounded-lg">
             Modifier
           </button>
 
-          <button className="bg-red-500 text-white px-3 py-1 rounded text-sm">
+          <button className="bg-red-500 text-white px-4 py-1 rounded-lg">
             Supprimer
           </button>
         </div>
-
       </div>
 
-    </div>
-  )
+        {/* STATUT */}
+      <div className="flex items-center gap-2 bg-green-100 px-3 py-1 rounded-full">
+        
+        
+        <div className="w-5 h-5 flex items-center justify-center bg-green-600 rounded-full">
+          <FaCheck className="text-white text-xs" />
+        </div>
+
+        {/* Texte */}
+        <span className="text-green-700 text-sm font-medium">
+          Actif
+        </span>
+    </div></div>
+  );
 }
