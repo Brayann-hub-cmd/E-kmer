@@ -3,6 +3,7 @@ import Home from "./pages/Home/Home";
 import Login from "./pages/auth/Login";
 import SignUp from "./pages/SignUp/SignUp"
 import PageCategorie from './pages/CategoriePage/CategoriePage';
+import PublishProduct from "./Components/PublishProduct";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 function App() {
   const router = createBrowserRouter([
@@ -11,34 +12,28 @@ function App() {
       element:<Home />
     },
     {
-      path:'auth/register',
+      path:'/auth/register',
       element:<SignUp />
     },
     {
-      path:'auth/login',
+      path:'/auth/login',
       element:<Login />
     },
     {
       path:'/categorie/:categorieSlug',
       element:<PageCategorie/>
+    },
+    {
+      path:'/publish_annonce/',
+      element:<PublishProduct/>
     }
   ])
   return (
     <>
       <Toaster />
-      <RouterProvider router={router} />
+      <RouterProvider router={router}/>
     </>
   )
-
-  // return <RouterProvider router={router}/>
-
-
-  //   return (
-  //       <div className="App">
-  //           <Navbar />
-  //           <Header />
-  //       </div>
-  //   );
 }
 
 export default App;

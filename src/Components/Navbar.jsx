@@ -266,7 +266,7 @@ export default function Navbar() {
 
           {/* LOGIN */}
           <Link
-            to="/auth/login"
+            to="/publish_annonce/"
             className="flex items-center gap-2 text-sm hover:text-orange-500 whitespace-nowrap transition-colors"
           >
             <FaUser className="text-sm" />
