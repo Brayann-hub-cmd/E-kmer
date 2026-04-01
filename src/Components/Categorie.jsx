@@ -1,5 +1,5 @@
 // src/components/CategorySection.jsx
-import React, { useState, useEffect } from "react";
+import  { useState, useEffect } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import ProductCard from "./ProductCard";
 import api from "../api"

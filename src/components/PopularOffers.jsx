@@ -9,6 +9,7 @@ function PopularOffers() {
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
   const [data, setData] = useState([])
+  const [produits, setProduits] = useState([])
   useEffect(() => {
     const getAnnonces = async () => {
       try {
@@ -22,24 +23,27 @@ function PopularOffers() {
     getAnnonces(); 
   }, [])
 
-  const produits = useMemo(
-    () => {
-      return data.map((annonce) => ({
-        code: annonce.code,
-        title: annonce.titre,
-        prix: annonce.prix,
-        image: annonce.image,
-        localisation: annonce.localisation,
-        created_at: annonce.created_at,
-        description: annonce.description,
-        statut: annonce.statut,
-        qte: annonce.qte,
-        vendeur: annonce.vendeur,
-        autres_images: annonce.images,
-        slug: `${annonce.code}`
-      }))
-    }, [data]
-  )
+  const filtered = useMemo(() => {
+  if (!Array.isArray(data)) return [];
+
+  console.log("DATA =", data);
+
+  return data.map((annonce) => ({
+    code: annonce.code,
+    title: annonce.titre,
+    prix: annonce.prix,
+    image: annonce.image,
+    localisation: annonce.localisation,
+    created_at: annonce.created_at,
+    description: annonce.description,
+    statut: annonce.statut,
+    qte: annonce.qte,
+    vendeur: annonce.vendeur,
+    autres_images: annonce.images,
+    slug: `${annonce.code}`
+  }));
+}, [data]);
+  
   // Vérifier si on peut défiler
   const checkScroll = () => {
     if (scrollContainerRef.current) {
@@ -49,19 +53,18 @@ function PopularOffers() {
     }
   };
 
-  useEffect(() => {
-    const scrollContainer = scrollContainerRef.current;
-    if (scrollContainer) {
-      checkScroll();
-      scrollContainer.addEventListener('scroll', checkScroll);
-      window.addEventListener('resize', checkScroll);
-
-      return () => {
-        scrollContainer.removeEventListener('scroll', checkScroll);
-        window.removeEventListener('resize', checkScroll);
-      };
+useEffect(() => {
+  const getAnnonces = async () => {
+    try {
+      const response = await api.get('annonces/');
+      setData(response.data); 
+    } catch (error) {
+      console.error("Erreur chargement produits:", error);
     }
-  }, []);
+  };
+
+  getAnnonces();
+}, []);
 
   const scroll = (direction) => {
     if (scrollContainerRef.current) {

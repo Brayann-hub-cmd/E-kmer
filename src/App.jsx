@@ -3,6 +3,8 @@ import Home from "./pages/Home/Home";
 import Login from "./pages/auth/Login";
 import SignUp from "./pages/SignUp/SignUp"
 import PageCategorie from './pages/CategoriePage/CategoriePage';
+import PublishProduct from "./components/PublishProduct";
+import Userventes from "./pages/Userventes";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 function App() {
   const router = createBrowserRouter([
@@ -21,12 +23,20 @@ function App() {
     {
       path:'/categorie/:categorieSlug',
       element:<PageCategorie/>
+    },
+    {
+      path:'/publier/',
+      element:<PublishProduct />
+    },
+    {
+      path:'/vendre/',
+      element:<Userventes />
     }
   ])
   return (
     <>
       <Toaster />
-      <RouterProvider router={router} />
+      <RouterProvider router={router}/>
     </>
   )
 
@@ -42,4 +52,3 @@ function App() {
 }
 
 export default App;
-

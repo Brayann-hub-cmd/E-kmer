@@ -1,6 +1,6 @@
 import React from 'react';
-import Footer from '../../components/Footer';
-import Hero1Blue from '../../components/Hero1Blue';
+import Footer from '../../Components/Footer';
+import Hero1Blue from '../../Components/Hero1Blue';
 import PopularOffers from '../../components/PopularOffers';
 import RecentProduct from '../../components/RecentProducts';
 import Header from '../../Components/Header';
@@ -20,5 +20,6 @@ const Home = () => {
     </div>
   );
 };
+
 
 export default Home;
