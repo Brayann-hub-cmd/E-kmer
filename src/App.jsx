@@ -4,7 +4,7 @@ import Login from "./pages/auth/Login";
 import SignUp from "./pages/SignUp/SignUp"
 import Userventes from "./pages/Userventes"
 import PageCategorie from './pages/CategoriePage/CategoriePage';
-import PublishProduct from "./components/PublishProduct";
+import PublishProduct from "./Components/PublishProduct";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 function App() {
   const router = createBrowserRouter([
@@ -13,11 +13,11 @@ function App() {
       element:<Home />
     },
     {
-      path:'auth/register',
+      path:'/auth/register',
       element:<SignUp />
     },
     {
-      path:'auth/login',
+      path:'/auth/login',
       element:<Login />
     },
     {
@@ -25,12 +25,18 @@ function App() {
       element:<PageCategorie/>
     },
     {
+
       path:'/publier/',
       element:<PublishProduct />
     },
     {
       path:'/vendre/',
       element:<Userventes />
+    },
+    {
+      path:'/publish_annonce/',
+      element:<PublishProduct/>
+
     }
   ])
   return (
@@ -39,16 +45,6 @@ function App() {
       <RouterProvider router={router}/>
     </>
   )
-
-  // return <RouterProvider router={router}/>
-
-
-  //   return (
-  //       <div className="App">
-  //           <Navbar />
-  //           <Header />
-  //       </div>
-  //   );
 }
 
 export default App;
