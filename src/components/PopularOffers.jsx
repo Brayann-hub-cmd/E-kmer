@@ -28,7 +28,7 @@ function PopularOffers() {
 
   console.log("DATA =", data);
 
-  return data.map((annonce) => ({
+  return console.log(data), data.map((annonce) => ({
     code: annonce.code,
     title: annonce.titre,
     prix: annonce.prix,
