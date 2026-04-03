@@ -6,6 +6,7 @@ import Userventes from "./pages/Userventes"
 import PageCategorie from './pages/CategoriePage/CategoriePage';
 import PublishProduct from "./Components/PublishProduct";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import  UserSettings from "./pages/UserSettings";
 function App() {
   const router = createBrowserRouter([
     {
@@ -37,6 +38,10 @@ function App() {
       path:'/publish_annonce/',
       element:<PublishProduct/>
 
+    },
+    {
+      path:'/settings/',
+      element:<UserSettings/>
     }
   ])
   return (

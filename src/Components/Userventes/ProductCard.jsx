@@ -4,7 +4,7 @@ export default function ProductCard() {
     <div className="bg-white rounded-2xl p-4 shadow flex gap-4 items-center">
       {/* IMAGE */}
       <img
-        src="/OIP.webp"
+        src="assets/images/iphone.png"
         alt="Product"
         className="w-32 h-32 object-cover rounded-lg"
       />
@@ -20,12 +20,9 @@ export default function ProductCard() {
         </div>
 
         <div className="flex gap-3 mt-4">
-          <button className="bg-blue-600 text-white px-4 py-1 rounded-lg">
-            Modifier
-          </button>
-
-          <button className="bg-red-500 text-white px-4 py-1 rounded-lg">
-            Supprimer
+          
+          <button className="bg-orange-500 text-white px-4 py-1 rounded-lg">
+            Consulter
           </button>
         </div>
       </div>

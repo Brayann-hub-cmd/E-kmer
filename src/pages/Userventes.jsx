@@ -28,7 +28,7 @@ export default function Userventes() {
 
             {/* section header */}
 
-            <h2 className="text-lg font-semibold">Mes produits de vente</h2>
+           
 
             <Link to="/publier/" className="rounded hover:bg-orange-600 transition">
               <button className="bg-orange-500 text-white px-4 py-2 rounded-full text-sm">
