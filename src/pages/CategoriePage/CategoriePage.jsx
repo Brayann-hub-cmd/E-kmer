@@ -129,7 +129,6 @@ const CategoriePage = () => {
           </p>
           {categorieId && process.env.NODE_ENV === "development" && (
             <p className="text-xs text-gray-400 mt-1">
-              ID: {categorieId}
             </p>
           )}
         </div>

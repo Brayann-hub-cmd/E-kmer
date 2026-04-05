@@ -32,7 +32,7 @@ export default function Header() {
 
   // Transformer les catégories API
   const categories = useMemo(() => {
-    return categorieData.map((cat) => ({
+    return console.log(categorieData), categorieData.map((cat) => ({
       code: `${cat.code}`,
       nom: `${cat.nom}`,
       path: `/categorie/${cat.nom

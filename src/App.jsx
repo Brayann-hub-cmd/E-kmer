@@ -2,6 +2,7 @@ import { Toaster } from "react-hot-toast";
 import Home from "./pages/Home/Home";
 import Login from "./pages/auth/Login";
 import SignUp from "./pages/SignUp/SignUp"
+import Userventes from "./pages/Userventes"
 import PageCategorie from './pages/CategoriePage/CategoriePage';
 import PublishProduct from "./Components/PublishProduct";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
@@ -24,8 +25,12 @@ function App() {
       element:<PageCategorie/>
     },
     {
-      path:'/publish_annonce/',
-      element:<PublishProduct/>
+      path:'/publier/',
+      element:<PublishProduct />
+    },
+    {
+      path:'/vendre/',
+      element:<Userventes />
     }
   ])
   return (
@@ -37,4 +42,3 @@ function App() {
 }
 
 export default App;
-
