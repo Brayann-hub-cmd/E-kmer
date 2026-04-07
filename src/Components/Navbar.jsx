@@ -34,19 +34,6 @@ export default function Navbar() {
   const languageDesktopRef = useRef(null);
   const languageTabletRef = useRef(null);
   const languageMobileRef = useRef(null);
-
-
-  // // Catégories principales avec leurs IDs
-  // const categories = [
-  //   { id: "CAT_000", name: "Toutes les categories", path: "/toutes-categories" },
-  //   { id: "CAT_001", name: "Électronique", path: "/categorie/electronique" },
-  //   { id: "CAT_002", name: "Véhicules", path: "/categorie/vehicules" },
-  //   { id: "CAT_003", name: "Mode", path: "/categorie/mode" },
-  //   { id: "CAT_005", name: "Immobilier", path: "/categorie/immobilier" },
-  //   { id: "CAT_006", name: "Services", path: "/categorie/service" },
-  //   { id: "CAT_004", name: "Produits agricoles", path: "/categorie/produits-agricoles" },
-  // ];
-
   useEffect(()=>{
     const getCategorie = async ()=>{
       try {
