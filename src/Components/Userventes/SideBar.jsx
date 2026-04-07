@@ -1,53 +1,48 @@
-export default function SideBar({ user }) {
+import { FaHeart, FaCog, FaShoppingCart, FaStore } from "react-icons/fa";
 
-    const SideBar = () => {
-  return <div>SideBar</div>;
-};
-
+export default function Sidebar() {
   return (
-    <div className="w-64 bg-white shadow-md p-4 flex flex-col items-center">
+    <div className="w-[260px] bg-white p-5 shadow rounded-r-2xl">
+      {/* PROFILE */}
+      <div className="text-center">
+        <div className="w-24 h-24 bg-orange-500 text-white flex items-center justify-center rounded-full text-2xl font-bold mx-auto">
+          JD
+        </div>
 
-      {/* Avatar */}
-      <div className="w-24 h-24 bg-orange-500 text-white flex items-center justify-center rounded-full text-2xl font-bold">
-        {user.name ?.[0]}
+        <h2 className="mt-4 text-lg font-semibold">Jean Dupont</h2>
+        <p className="text-gray-500 text-sm">+237 6XX XXX XXX</p>
       </div>
 
-      {/* Infos */}
-      <h2 className="mt-4 font-semibold">{user.name || "Nom utilisateur"}</h2>
-      <p className="text-sm text-gray-500">{user.phone || "Téléphone"}</p>
-
-      {/* Stats */}
-      <div className="flex gap-4 mt-4">
+      {/* STATS */}
+      <div className="flex justify-around mt-6 bg-gray-100 p-3 rounded-lg">
         <div className="text-center">
-          <p className="text-orange-500 font-bold">--</p>
-          <span className="text-xs">Achats</span>
+          <p className="text-orange-500 font-bold text-lg">12</p>
+          <p className="text-sm">Achats</p>
         </div>
         <div className="text-center">
-          <p className="text-green-500 font-bold">--</p>
-          <span className="text-xs">Ventes</span>
+          <p className="text-green-600 font-bold text-lg">8</p>
+          <p className="text-sm">Ventes</p>
         </div>
       </div>
 
-      {/* Menu */}
-      <div className="mt-6 w-full space-y-2">
-
-        <button className="w-full bg-orange-100 text-orange-500 py-2 rounded">
-          Mes ventes
+      {/* MENU */}
+      <div className="mt-6 space-y-3">
+        <button className="w-full flex items-center gap-2 bg-orange-100 text-orange-600 p-3 rounded-lg">
+          <FaStore /> Mes ventes
         </button>
 
-        <button className="w-full py-2 hover:bg-gray-100 rounded">
-          Mes achats
+        <button className="w-full flex items-center gap-2 p-3 rounded-lg hover:bg-gray-100">
+          <FaShoppingCart /> Mes achats
         </button>
 
-        <button className="w-full py-2 hover:bg-gray-100 rounded">
-          Mes favoris
+        <button className="w-full flex items-center gap-2 p-3 rounded-lg hover:bg-gray-100">
+          <FaHeart /> Mes favoris
         </button>
 
-        <button className="w-full py-2 hover:bg-gray-100 rounded">
-          Paramètres
+        <button className="w-full flex items-center gap-2 p-3 rounded-lg hover:bg-gray-100">
+          <FaCog /> Paramètres
         </button>
-
       </div>
     </div>
-  )
+  );
 }

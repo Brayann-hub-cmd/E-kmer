@@ -28,7 +28,7 @@ function PopularOffers() {
 
   console.log("DATA =", data);
 
-  return data.map((annonce) => ({
+  return console.log(data), data.map((annonce) => ({
     code: annonce.code,
     title: annonce.titre,
     prix: annonce.prix,
@@ -53,18 +53,6 @@ function PopularOffers() {
     }
   };
 
-useEffect(() => {
-  const getAnnonces = async () => {
-    try {
-      const response = await api.get('annonces/');
-      setData(response.data); 
-    } catch (error) {
-      console.error("Erreur chargement produits:", error);
-    }
-  };
-
-  getAnnonces();
-}, []);
 
   const scroll = (direction) => {
     if (scrollContainerRef.current) {
@@ -145,7 +133,7 @@ useEffect(() => {
             WebkitOverflowScrolling: 'touch'
           }}
         >
-          {produits.map((product) => (
+          {filtered.map((product) => (
             <div
               key={product.code}
               className={`flex-none ${getCardWidthClass()} bg-[#F2F2F2] rounded-lg sm:rounded-xl shadow hover:shadow-xl transition-all duration-300 overflow-hidden`}

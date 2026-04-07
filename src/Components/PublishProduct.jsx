@@ -6,6 +6,10 @@ import axios from "axios";
 
 const API_BASE_URL = "http://127.0.0.1:8000/api";
 
+import { FaChevronDown, FaTimes, FaPlus } from "react-icons/fa";
+import api from '../api'
+
+
 const PublishProduct = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -43,11 +47,12 @@ const PublishProduct = () => {
     "Ngaoundéré", "Bamenda", "Bertoua", "Ebolowa", "Kribi",
     "Limbe", "Buea", "Dschang", "Foumban", "Mbalmayo"
   ];
-  
+  const token = localStorage.getItem('token')
   // Charger les catégories depuis l'API
   useEffect(() => {
     const fetchCategories = async () => {
       try {
+
         const response = await axios.get(`${API_BASE_URL}/categories/`);
         setCategories(response.data);
         setApiError(null);
@@ -61,6 +66,18 @@ const PublishProduct = () => {
           { code: "Cat_5", nom: "Services" },
           { code: "Cat_6", nom: "Produit agricole" }
         ]);
+
+        console.log("Chargement des catégories...");
+        const response = await api.get(`categories/`);
+        console.log("Catégories chargées:", response.data);
+        setCategories(response.data);
+        setApiError(null);
+      } catch (error) {
+  
+        setApiError("Impossible de charger les catégories. Vérifiez votre connexion au réseau.");
+        // Données mock pour que la page s'affiche quand même
+        setCategories([]);
+
       } finally {
         setPageLoading(false);
       }
@@ -77,11 +94,17 @@ const PublishProduct = () => {
       }
       
       try {
+
         const response = await axios.get(
           `${API_BASE_URL}/sous_categories/?categorie=${formData.categorieId}`
+
+        const response = await api.get(
+          `low_categories/${formData.categorieId}/sous_categories/`
+
         );
         setSousCategories(response.data);
       } catch (error) {
+
         const mockSousCategories = {
           Cat_1: [
             { code: "S_C_1", nom: "Téléphone" },
@@ -93,6 +116,10 @@ const PublishProduct = () => {
           ]
         };
         setSousCategories(mockSousCategories[formData.categorieId] || []);
+
+        console.error("Erreur chargement sous-catégories:", error);   
+        setSousCategories([]);
+
       }
     };
     
@@ -191,14 +218,21 @@ const PublishProduct = () => {
       submitData.append("sous_categorie", formData.sousCategorieId);
       
       formData.images.forEach((image) => {
-        submitData.append("images", image.file);
+        submitData.append("images_upload", image.file);
       });
-      
-      await axios.post(`${API_BASE_URL}/annonces/`, submitData, {
-        headers: { "Content-Type": "multipart/form-data" }
+      submitData.append("statut","Disponible")
+
+      submitData.append("image",formData.images[0])
+
+      await api.post(`annonces/`, submitData, {
+        headers: { 
+          "Content-Type": "multipart/form-data",
+          Authorization:`Bearer ${token}`
+        },
       });
+      console.log(submitData);
       
-      navigate("/publier/succes");
+      navigate("/");
     } catch (error) {
       setErrors({ submit: "Erreur lors de la publication. Veuillez réessayer." });
     } finally {
