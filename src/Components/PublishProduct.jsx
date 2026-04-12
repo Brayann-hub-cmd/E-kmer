@@ -40,7 +40,6 @@ const PublishProduct = () => {
     "Ngaoundéré", "Bamenda", "Bertoua", "Ebolowa", "Kribi",
     "Limbe", "Buea", "Dschang", "Foumban", "Mbalmayo"
   ];
-  const token = localStorage.getItem('token')
   // Charger les catégories depuis l'API
   useEffect(() => {
     const fetchCategories = async () => {
@@ -197,16 +196,13 @@ const PublishProduct = () => {
       });
       submitData.append("statut","Disponible")
 
-      submitData.append("image",formData.images[0])
+      submitData.append("image",formData.images[0].file)
 
-      await api.post(`annonces/`, submitData, {
-        headers: { 
-          "Content-Type": "multipart/form-data",
-          Authorization:`Bearer ${token}`
-        },
-      });
-      console.log(submitData);
-      
+      for (let [key,value] of submitData.entries()) {
+        console.log(key,value);
+      }
+      console.log(localStorage.getItem('token'))
+      await api.post(`annonces/`, submitData);
       navigate("/");
     } catch (error) {
       console.error("Erreur publication:", error);
