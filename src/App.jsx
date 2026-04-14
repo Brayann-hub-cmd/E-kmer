@@ -33,6 +33,7 @@ function App() {
     {
       path:'/vendre/',
       element:<Userventes />
+
     },
     {
       path:'/publish_annonce/',
@@ -42,6 +43,7 @@ function App() {
     {
       path:'/settings/',
       element:<UserSettings/>
+
     }
   ])
   return (
