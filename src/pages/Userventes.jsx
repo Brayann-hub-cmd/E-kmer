@@ -1,18 +1,40 @@
 import SideBar from "../Components/Userventes/SideBar"
 import StatsCard from "../Components/Userventes/StatsCard"
 import ProductCard from "../Components/Userventes/ProductCard"
-import { Link } from "react-router-dom"
-import Navbar from "../Components/Navbar";
-import Footer from "../Components/Footer";
-
+import { Link, useNavigate } from "react-router-dom"
+import { useEffect, useState } from "react";
+import api from "../api";
+import toast from "react-hot-toast";
 export default function Userventes() {
   const products = [1, 2]; // mock (remplace par API)
-
+  const [user, setUser] = useState(null)
+  const navigate = useNavigate()
+  useEffect(
+    () => {
+      const getUser = async () => {
+        try {
+          const response = await api.get(`auth/profile/`)
+          setUser(response.data)
+        } catch (error) {
+          if (error.response?.status === 401) {
+            toast.error(error.response.data.error)
+          } else {
+            toast.error(error.response.data.error)
+          }
+          localStorage.removeItem('token')
+          navigate('/')
+        }
+      }
+      getUser();
+    }, []
+  )
   return (
     <div className="flex flex-col min-h-screen">
 
       <div className="flex bg-gray-100 min-h-screen">
-        <SideBar />
+        {
+          user ? (<SideBar user={user} />) : (<SideBar />)
+        }
 
         <div className="flex-1 p-6">
           {/* STATS */}
@@ -23,14 +45,8 @@ export default function Userventes() {
           </div>
 
           {/* HEADER */}
-          <div className="flex  justify-between items-center mb-4">
-            <h2 className="text-xl font-semibold">Mes produits de vente</h2>
-
-            {/* section header */}
-
-            <h2 className="text-lg font-semibold">Mes produits de vente</h2>
-
-            <Link to="/publier/" className="rounded hover:bg-orange-600 transition">
+          <div className="flex  justify-evenly items-center mb-4">
+            <Link to="/publier/" className="transition">
               <button className="bg-orange-500 text-white px-4 py-2 rounded-full text-sm">
                 + Publier un produit
               </button>
