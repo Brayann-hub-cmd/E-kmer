@@ -4,7 +4,7 @@ import { FaMapMarkerAlt, FaCalendarAlt, FaChevronLeft, FaChevronRight } from "re
 import api from "../api";
 import { useMemo } from "react";
 
-function PopularOffers({ title, setTitle, categorie, setCategorie }) {
+function PopularOffers({ title, categorie }) {
   const scrollContainerRef = useRef(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
@@ -87,6 +87,8 @@ function PopularOffers({ title, setTitle, categorie, setCategorie }) {
   const handleSearch = async () => {
 
     try {
+      console.log("Recherche: ",title);
+      
       let response = []
       if (categorie.code !== "CAT_000") {
         const matchTitle = await api.get(`annonce/search/?titre=${title}&categorie=${categorie.code}`)
@@ -108,8 +110,10 @@ useEffect(
   ()=>{
     console.log("Popular Offers useEffect déclenché:",title,categorie);
     
-    handleSearch()
-  },[title,categorie]
+    if(title){
+      handleSearch()
+    }
+  },[title]
 )
 
   return (

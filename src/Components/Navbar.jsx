@@ -7,7 +7,7 @@ import {
   FaChevronDown,
 } from "react-icons/fa";
 import api from "../api";
-export default function Navbar({ title="", setTitle=()=>{}, categorie="CAT_000", setCategorie=()=>{} }) {
+export default function Navbar({ setTitle, setCategorie }) {
   const [category, setCategory] = useState({
     code: "CAT_000",
     nom: "Toutes les categories",
@@ -49,13 +49,13 @@ export default function Navbar({ title="", setTitle=()=>{}, categorie="CAT_000",
 
   const handleSearch = async (e) => {
     e.preventDefault();
-    console.log("SetTitle type:",typeof setTitle)
-    console.log("props reçues: ",{title,setTitle,categorie,setCategorie})
+    console.log("props reçues: ", { setTitle, setCategorie })
     if (!searchTerm.trim()) return;
 
     setIsSearching(true);
     setShowResults(true);
     setTitle(searchTerm)
+    setCategorie(categorySelected)
     try {
     } catch (error) {
       console.error("Erreur de recherche:", error);
@@ -82,7 +82,6 @@ export default function Navbar({ title="", setTitle=()=>{}, categorie="CAT_000",
   const handleCategoryChange = (selectedCategory) => {
     setCategorySelected(selectedCategory);
     setCategory(selectedCategory)
-    setCategorie(categorie)
     setIsCategoryOpen(false);
   };
 
