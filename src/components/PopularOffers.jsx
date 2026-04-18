@@ -4,46 +4,44 @@ import { FaMapMarkerAlt, FaCalendarAlt, FaChevronLeft, FaChevronRight } from "re
 import api from "../api";
 import { useMemo } from "react";
 
-function PopularOffers() {
+function PopularOffers({ title, setTitle, categorie, setCategorie }) {
   const scrollContainerRef = useRef(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
   const [data, setData] = useState([])
-  const [produits, setProduits] = useState([])
+  const [dataR, setDataR] = useState([])
   useEffect(() => {
     const getAnnonces = async () => {
       try {
         const response = await api.get('annonces/')
-        setData((data)=>response.data)
+        setData((data) => response.data)
+        setDataR((dataR) => response.data)
       } catch (error) {
         console.error("Erreur chargement produits:", error);
       }
     }
 
-    getAnnonces(); 
+    getAnnonces();
   }, [])
 
   const filtered = useMemo(() => {
-  if (!Array.isArray(data)) return [];
+    if (!Array.isArray(data)) return [];
+    return console.log(data), data.map((annonce) => ({
+      code: annonce.code,
+      title: annonce.titre,
+      prix: annonce.prix,
+      image: annonce.image,
+      localisation: annonce.localisation,
+      created_at: annonce.created_at,
+      description: annonce.description,
+      statut: annonce.statut,
+      qte: annonce.qte,
+      vendeur: annonce.vendeur,
+      autres_images: annonce.images,
+      slug: `${annonce.code}`
+    }));
+  }, [data]);
 
-  console.log("DATA =", data);
-
-  return console.log(data), data.map((annonce) => ({
-    code: annonce.code,
-    title: annonce.titre,
-    prix: annonce.prix,
-    image: annonce.image,
-    localisation: annonce.localisation,
-    created_at: annonce.created_at,
-    description: annonce.description,
-    statut: annonce.statut,
-    qte: annonce.qte,
-    vendeur: annonce.vendeur,
-    autres_images: annonce.images,
-    slug: `${annonce.code}`
-  }));
-}, [data]);
-  
   // Vérifier si on peut défiler
   const checkScroll = () => {
     if (scrollContainerRef.current) {
@@ -52,7 +50,6 @@ function PopularOffers() {
       setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10);
     }
   };
-
 
   const scroll = (direction) => {
     if (scrollContainerRef.current) {
@@ -86,6 +83,34 @@ function PopularOffers() {
   const getCardWidthClass = () => {
     return "w-[200px] xs:w-[220px] sm:w-[240px] md:w-[260px] lg:w-[280px] xl:w-[300px]";
   };
+
+  const handleSearch = async () => {
+
+    try {
+      let response = []
+      if (categorie.code !== "CAT_000") {
+        const matchTitle = await api.get(`annonce/search/?titre=${title}&categorie=${categorie.code}`)
+        response = matchTitle.data
+      }
+      else {
+        const matchTitle = await api.get(`annonce/search/?titre=${title}`)
+        response = matchTitle.data
+      }
+      console.log("dans popular offer",response);
+      setData(response);
+    } catch (error) {
+      console.error("Erreur de recherche:", error);
+      setData(dataR);
+    }
+  };
+
+useEffect(
+  ()=>{
+    console.log("Popular Offers useEffect déclenché:",title,categorie);
+    
+    handleSearch()
+  },[title,categorie]
+)
 
   return (
     <section className="py-4 sm:py-6 md:py-8 lg:py-10 px-3 sm:px-4 md:px-6 relative bg-gray-50">

@@ -7,11 +7,11 @@ import {
   FaChevronDown,
 } from "react-icons/fa";
 import api from "../api";
-export default function Navbar() {
-  const [category, setCategory] = useState({ 
-    code: "CAT_000", 
+export default function Navbar({ title="", setTitle=()=>{}, categorie="CAT_000", setCategorie=()=>{} }) {
+  const [category, setCategory] = useState({
+    code: "CAT_000",
     nom: "Toutes les categories",
-    path: "/toutes-categories" 
+    path: "/toutes-categories"
   });
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const [language, setLanguage] = useState("FRA");
@@ -22,53 +22,41 @@ export default function Navbar() {
   const [showResults, setShowResults] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [categories,setCategories] = useState([])
+  const [categories, setCategories] = useState([])
   const searchRef = useRef(null);
   const navigate = useNavigate();
-
+  const [categorySelected, setCategorySelected] = useState("CAT_000")
   // Refs séparées pour chaque vue
   const categoryDesktopRef = useRef(null);
   const categoryTabletRef = useRef(null);
   const categoryMobileRef = useRef(null);
-  
+
   const languageDesktopRef = useRef(null);
   const languageTabletRef = useRef(null);
   const languageMobileRef = useRef(null);
-  useEffect(()=>{
-    const getCategorie = async ()=>{
+  useEffect(() => {
+    const getCategorie = async () => {
       try {
         const response = await api.get("categories/")
-        setCategories((categories)=>response.data)
+        setCategories((categories) => response.data)
       } catch (error) {
         toast.error("Une erreur est survenue lors de la collection des catégories de produits:" + error, { position: 'top-center' })
       }
     }
 
     getCategorie();
-  },[])
-  // Données mock des produits pour la recherche
-  const mockProduits = [
-    { code: "P001", title: "Casque Sony", prix: 15000, categorie: "CAT_001", localisation: "Douala" },
-    { code: "P002", title: "Jacket en cuir", prix: 80000, categorie: "CAT_006", localisation: "Yaoundé" },
-    { code: "P003", title: "Pixel 8 Pro", prix: 250000, categorie: "CAT_001", localisation: "Bafoussam" },
-    { code: "P004", title: "Friteuse Philips", prix: 120000, categorie: "CAT_001", localisation: "Douala" },
-    { code: "P005", title: "Air Jordan", prix: 20000, categorie: "CAT_006", localisation: "Garoua" },
-  ];
+  }, [])
 
   const handleSearch = async (e) => {
     e.preventDefault();
+    console.log("SetTitle type:",typeof setTitle)
+    console.log("props reçues: ",{title,setTitle,categorie,setCategorie})
     if (!searchTerm.trim()) return;
-    
+
     setIsSearching(true);
     setShowResults(true);
-    
+    setTitle(searchTerm)
     try {
-      const results = mockProduits.filter(produit => {
-        const matchTitle = produit.title.toLowerCase().includes(searchTerm.toLowerCase());
-        const matchCategory = category.id === "CAT_000" || produit.categorie === category.id;
-        return matchTitle && matchCategory;
-      });
-      setSearchResults(results);
     } catch (error) {
       console.error("Erreur de recherche:", error);
       setSearchResults([]);
@@ -92,7 +80,9 @@ export default function Navbar() {
   }, []);
 
   const handleCategoryChange = (selectedCategory) => {
-    setCategory(selectedCategory);
+    setCategorySelected(selectedCategory);
+    setCategory(selectedCategory)
+    setCategorie(categorie)
     setIsCategoryOpen(false);
   };
 
@@ -109,10 +99,10 @@ export default function Navbar() {
   return (
     <header className="bg-black text-white sticky top-0 z-50">
       <div className="container mx-auto px-3 sm:px-4 py-3">
-        
+
         {/* ===== DESKTOP LAYOUT ===== */}
         <div className="hidden lg:flex items-center justify-between gap-4">
-          
+
           {/* LOGO */}
           <Link to="/" className="flex-shrink-0">
             <img src="/logo.png" alt="eKMER" className="h-10 w-auto" />
@@ -174,8 +164,8 @@ export default function Navbar() {
           </div>
 
           {/* LOGIN - Transformé en Link */}
-          <Link 
-            to="auth/login" 
+          <Link
+            to="auth/login"
             className="flex items-center gap-2 text-sm hover:text-orange-500 whitespace-nowrap transition-colors"
           >
             <FaUser className="text-sm" />
@@ -183,15 +173,15 @@ export default function Navbar() {
           </Link>
 
           {/* REGISTER - Transformé en Link */}
-          <Link 
-            to="auth/register" 
+          <Link
+            to="auth/register"
             className="text-sm font-medium hover:text-orange-500 whitespace-nowrap transition-colors"
           >
             S'inscrire
           </Link>
 
           {/* CART - Transformé en Link */}
-          <Link 
+          <Link
             to={'/panier'}
             className="relative hover:text-orange-500 transition-colors"
           >
@@ -203,18 +193,18 @@ export default function Navbar() {
         {/* ===== TABLET LAYOUT (md à lg) ===== */}
         <div className="hidden md:flex lg:hidden items-center justify-between gap-2">
           <Link to="/"><img src="/logo.png" alt="eKMER" className="h-8 w-auto" /></Link>
-          
+
           <div className="flex-1 max-w-md relative" ref={searchRef}>
             <form onSubmit={handleSearch} className="flex items-center bg-gray-100 rounded-lg h-10">
               <div className="relative h-full" ref={categoryTabletRef}>
                 <button type="button" onClick={() => setIsCategoryOpen(!isCategoryOpen)} className="flex items-center gap-1 px-2 text-gray-700 bg-gray-200 h-full text-xs whitespace-nowrap rounded-l-lg">
-                  <span className="truncate max-w-[70px]">{category.name}</span>
+                  <span className="truncate max-w-[70px]">{category.nom}</span>
                   <FaChevronDown className="text-[10px]" />
                 </button>
                 {isCategoryOpen && (
                   <div className="absolute top-full left-0 mt-1 bg-white border rounded-lg shadow-xl w-48 max-h-80 overflow-y-auto z-50">
                     {categories.map((cat) => (
-                      <button key={cat.code} onClick={() => handleCategoryChange(cat)} className="w-full text-left px-3 py-2 text-xs hover:bg-orange-500 hover:text-white">{cat.nom}</button>
+                      <button key={cat.code} onClick={() => handleCategoryChange(cat)} className="w-full text-left px-3 py-2 text-xs hover:bg-orange-500 text-black hover:text-white">{cat.nom}</button>
                     ))}
                   </div>
                 )}
@@ -289,13 +279,13 @@ export default function Navbar() {
             <form onSubmit={handleSearch} className="flex items-center bg-gray-100 rounded-lg h-10">
               <div className="relative h-full" ref={categoryMobileRef}>
                 <button type="button" onClick={() => setIsCategoryOpen(!isCategoryOpen)} className="flex items-center gap-1 px-2 text-gray-700 bg-gray-200 h-full text-xs whitespace-nowrap rounded-l-lg">
-                  <span className="truncate max-w-[60px]">{category.name}</span>
+                  <span className="truncate max-w-[60px]">{category.nom}</span>
                   <FaChevronDown className="text-[10px]" />
                 </button>
                 {isCategoryOpen && (
                   <div className="absolute top-full left-0 mt-1 bg-white border rounded-lg shadow-xl w-48 max-h-60 overflow-y-auto z-50">
                     {categories.map((cat) => (
-                      <button key={cat.id} onClick={() => handleCategoryChange(cat)} className="w-full text-left px-3 py-2.5 text-xs hover:bg-orange-500 hover:text-white">{cat.nom}</button>
+                      <button key={cat.code} onClick={() => handleCategoryChange(cat)} className="w-full text-left px-3 py-2.5 text-xs hover:bg-orange-500 text-black hover:text-white">{cat.nom}</button>
                     ))}
                   </div>
                 )}

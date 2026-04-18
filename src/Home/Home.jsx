@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Footer from '../Components/Footer';
 import Hero1Blue from '../components/Hero1Blue';
 import PopularOffers from '../components/PopularOffers';
@@ -9,11 +9,13 @@ import SellSection from '../components/SellSection';
 
 
 const Home = () => {
+  const [categorie,setCategorie] = useState("CAT_000")
+  const [title,setTitle] = useState("")
   return (
     <div className="min-h-screen flex flex-col">
-      <Navbar/>
+      <Navbar title={title} setTitle={setTitle} categorie={categorie} setCategorie={setCategorie}/>
       <Header/>
-      <PopularOffers/>
+      <PopularOffers title={title} setTitle={setTitle} categorie={categorie} setCategorie={setCategorie}/>
       <Hero1Blue/>
       <RecentProduct/>
       <SellSection />
