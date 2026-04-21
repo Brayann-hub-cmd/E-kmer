@@ -4,7 +4,7 @@ import Login from "./pages/auth/Login";
 import SignUp from "./pages/SignUp/SignUp"
 import Userventes from "./pages/Userventes"
 import PageCategorie from './pages/CategoriePage/CategoriePage';
-import PublishProduct from "./Components/PublishProduct";
+import PublishProduct from "./components/PublishProduct";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import  UserSettings from "./pages/UserSettings";
 function App() {
@@ -18,8 +18,9 @@ function App() {
       element:<SignUp />
     },
     {
-      path:'/auth/login',
-      element:<Login />
+
+      path:'auth/login',
+      element:<PublishProduct />
     },
     {
       path:'/categorie/:categorieSlug',
