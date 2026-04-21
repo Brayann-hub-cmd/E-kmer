@@ -19,14 +19,14 @@ import api from '../api';
 const Footer = () => {
     const [data, setData] = useState([]);
 
-    // 🔹 Fetch categories
+    //  Fetch categories
     useEffect(() => {
         const getCategories = async () => {
             try {
                 const response = await api.get("categories/");
                 console.log("API RESPONSE:", response.data);
 
-                // 🔥 Gestion DRF pagination OU réponse simple
+                //  Gestion DRF pagination OU réponse simple
                 const categoriesData =
                     response.data?.results || response.data;
 
@@ -40,7 +40,7 @@ const Footer = () => {
         getCategories();
     }, []);
 
-    // 🔹 Transformation sécurisée
+    //  Transformation sécurisée
     const categories = useMemo(() => {
         if (!Array.isArray(data)) return [];
 
@@ -55,7 +55,7 @@ const Footer = () => {
         }));
     }, [data]);
 
-    // 🔹 AOS init
+    //  AOS init
     useEffect(() => {
         AOS.init({
             duration: 1000,

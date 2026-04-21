@@ -21,7 +21,7 @@ function Login() {
         const userData = response.data.user
         toast.success(`Soyez la bienvenu M./Mme ${userData.username} !`)
         setTimeout(()=>{
-          navigate('/', { state: { user: userData } })
+          navigate('/')
         },1500)
       } catch (error) {
         if (error.response?.status === 401) {
