@@ -6,12 +6,20 @@ import {
   FaChevronDown,
 } from "react-icons/fa";
 import api from "../api";
+<<<<<<< HEAD
 
 export default function Navbar() {
   const [category, setCategory] = useState({
     code: "CAT_000",
     nom: "Toutes les categories",
     path: "/toutes-categories",
+=======
+export default function Navbar({ setTitle, setCategorie }) {
+  const [category, setCategory] = useState({
+    code: "CAT_000",
+    nom: "Toutes les categories",
+    path: "/toutes-categories"
+>>>>>>> 92e17beac2711cb45f15b87a855051725367eebd
   });
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const [language, setLanguage] = useState("FRA");
@@ -22,6 +30,7 @@ export default function Navbar() {
   const [showResults, setShowResults] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+<<<<<<< HEAD
   const [categories, setCategories] = useState([]);
   const searchRef = useRef(null);
   const navigate = useNavigate();
@@ -32,6 +41,29 @@ export default function Navbar() {
   const languageDesktopRef = useRef(null);
   const languageTabletRef = useRef(null);
   const languageMobileRef = useRef(null);
+=======
+  const [categories, setCategories] = useState([])
+  const searchRef = useRef(null);
+  const navigate = useNavigate();
+  const [categorySelected, setCategorySelected] = useState("CAT_000")
+  // Refs séparées pour chaque vue
+  const categoryDesktopRef = useRef(null);
+  const categoryTabletRef = useRef(null);
+  const categoryMobileRef = useRef(null);
+
+  const languageDesktopRef = useRef(null);
+  const languageTabletRef = useRef(null);
+  const languageMobileRef = useRef(null);
+  useEffect(() => {
+    const getCategorie = async () => {
+      try {
+        const response = await api.get("categories/")
+        setCategories((categories) => response.data)
+      } catch (error) {
+        toast.error("Une erreur est survenue lors de la collection des catégories de produits:" + error, { position: 'top-center' })
+      }
+    }
+>>>>>>> 92e17beac2711cb45f15b87a855051725367eebd
 
   useEffect(() => {
     const getCategorie = async () => {
@@ -43,6 +75,7 @@ export default function Navbar() {
       }
     };
     getCategorie();
+<<<<<<< HEAD
   }, []);
 
   const mockProduits = [
@@ -52,10 +85,15 @@ export default function Navbar() {
     { code: "P004", title: "Friteuse Philips", prix: 120000, categorie: "CAT_001", localisation: "Douala" },
     { code: "P005", title: "Air Jordan", prix: 20000, categorie: "CAT_006", localisation: "Garoua" },
   ];
+=======
+  }, [])
+>>>>>>> 92e17beac2711cb45f15b87a855051725367eebd
 
   const handleSearch = async (e) => {
     e.preventDefault();
+    console.log("props reçues: ", { setTitle, setCategorie })
     if (!searchTerm.trim()) return;
+<<<<<<< HEAD
     setIsSearching(true);
     setShowResults(true);
     try {
@@ -65,6 +103,14 @@ export default function Navbar() {
         return matchTitle && matchCategory;
       });
       setSearchResults(results);
+=======
+
+    setIsSearching(true);
+    setShowResults(true);
+    setTitle(searchTerm)
+    setCategorie(categorySelected)
+    try {
+>>>>>>> 92e17beac2711cb45f15b87a855051725367eebd
     } catch (error) {
       setSearchResults([]);
     } finally {
@@ -84,7 +130,8 @@ export default function Navbar() {
   }, []);
 
   const handleCategoryChange = (selectedCategory) => {
-    setCategory(selectedCategory);
+    setCategorySelected(selectedCategory);
+    setCategory(selectedCategory)
     setIsCategoryOpen(false);
   };
 
@@ -112,12 +159,19 @@ export default function Navbar() {
 
   return (
     <header className="bg-black text-white sticky top-0 z-50">
+<<<<<<< HEAD
       <div className="container mx-auto px-4 sm:px-6 py-3">
 
         {/* ═══════════════════════════════════════
             DESKTOP (≥ lg)
         ═══════════════════════════════════════ */}
         <div className="hidden lg:flex items-center justify-between gap-6">
+=======
+      <div className="container mx-auto px-3 sm:px-4 py-3">
+
+        {/* ===== DESKTOP LAYOUT ===== */}
+        <div className="hidden lg:flex items-center justify-between gap-4">
+>>>>>>> 92e17beac2711cb45f15b87a855051725367eebd
 
           {/* LOGO */}
           <Link to="/" className="flex-shrink-0 flex items-center gap-1.5">
@@ -310,6 +364,75 @@ export default function Navbar() {
             </form>
           </div>
 
+<<<<<<< HEAD
+=======
+          {/* LANGUAGE */}
+          <div className="relative" ref={languageDesktopRef}>
+            <button onClick={() => setIsLanguageOpen(!isLanguageOpen)} className="flex items-center gap-2 text-sm hover:text-orange-500">
+              <span className="text-base">{flagIcon}</span>
+              <span className="font-medium">{language}</span>
+              <FaChevronDown className="text-xs" />
+            </button>
+            {isLanguageOpen && (
+              <div className="absolute top-full right-0 mt-2 bg-white text-gray-900 rounded-lg shadow-xl w-32 overflow-hidden z-50">
+                <button onClick={() => handleLanguageChange("FRA")} className="w-full flex items-center gap-2 px-4 py-3 text-sm hover:bg-orange-500 hover:text-white">🇫🇷 Français</button>
+                <button onClick={() => handleLanguageChange("ENG")} className="w-full flex items-center gap-2 px-4 py-3 text-sm hover:bg-orange-500 hover:text-white">🇬🇧 English</button>
+              </div>
+            )}
+          </div>
+
+          {/* LOGIN - Transformé en Link */}
+          <Link
+            to="auth/login"
+            className="flex items-center gap-2 text-sm hover:text-orange-500 whitespace-nowrap transition-colors"
+          >
+            <FaUser className="text-sm" />
+            <span>Se connecter</span>
+          </Link>
+
+          {/* REGISTER - Transformé en Link */}
+          <Link
+            to="auth/register"
+            className="text-sm font-medium hover:text-orange-500 whitespace-nowrap transition-colors"
+          >
+            S'inscrire
+          </Link>
+
+          {/* CART - Transformé en Link */}
+          <Link
+            to={'/panier'}
+            className="relative hover:text-orange-500 transition-colors"
+          >
+            <FaShoppingCart className="text-lg" />
+            <span className="absolute -top-2 -right-2 bg-orange-500 text-white text-xs rounded-full min-w-[18px] h-[18px] flex items-center justify-center">{cartCount}</span>
+          </Link>
+        </div>
+
+        {/* ===== TABLET LAYOUT (md à lg) ===== */}
+        <div className="hidden md:flex lg:hidden items-center justify-between gap-2">
+          <Link to="/"><img src="/logo.png" alt="eKMER" className="h-8 w-auto" /></Link>
+
+          <div className="flex-1 max-w-md relative" ref={searchRef}>
+            <form onSubmit={handleSearch} className="flex items-center bg-gray-100 rounded-lg h-10">
+              <div className="relative h-full" ref={categoryTabletRef}>
+                <button type="button" onClick={() => setIsCategoryOpen(!isCategoryOpen)} className="flex items-center gap-1 px-2 text-gray-700 bg-gray-200 h-full text-xs whitespace-nowrap rounded-l-lg">
+                  <span className="truncate max-w-[70px]">{category.nom}</span>
+                  <FaChevronDown className="text-[10px]" />
+                </button>
+                {isCategoryOpen && (
+                  <div className="absolute top-full left-0 mt-1 bg-white border rounded-lg shadow-xl w-48 max-h-80 overflow-y-auto z-50">
+                    {categories.map((cat) => (
+                      <button key={cat.code} onClick={() => handleCategoryChange(cat)} className="w-full text-left px-3 py-2 text-xs hover:bg-orange-500 text-black hover:text-white">{cat.nom}</button>
+                    ))}
+                  </div>
+                )}
+              </div>
+              <input type="text" placeholder="Rechercher..." value={searchTerm} onChange={handleInputChange} className="flex-1 px-2 text-gray-900 outline-none text-xs bg-transparent" />
+              <button type="submit" className="bg-orange-500 hover:bg-orange-600 px-3 h-full rounded-r-lg"><FaSearch className="text-white text-xs" /></button>
+            </form>
+          </div>
+
+>>>>>>> 92e17beac2711cb45f15b87a855051725367eebd
           <div className="relative" ref={languageTabletRef}>
             <FlagButton />
             {isLanguageOpen && (
@@ -380,6 +503,7 @@ export default function Navbar() {
               style={{ background: "#fff", border: "1.5px solid #E0E0E0", height: 40 }}
             >
               <div className="relative h-full" ref={categoryMobileRef}>
+<<<<<<< HEAD
                 <button
                   type="button"
                   onClick={() => setIsCategoryOpen(!isCategoryOpen)}
@@ -393,6 +517,16 @@ export default function Navbar() {
                   <div className="absolute top-full left-0 mt-1 bg-white border rounded-xl shadow-xl w-48 max-h-60 overflow-y-auto z-50">
                     {[{ code: "CAT_000", nom: "Toutes les categories" }, ...categories].map((cat) => (
                       <button key={cat.code} onClick={() => handleCategoryChange(cat)} className="w-full text-left px-3 py-2.5 text-xs text-gray-700 hover:bg-orange-500 hover:text-white">{cat.nom}</button>
+=======
+                <button type="button" onClick={() => setIsCategoryOpen(!isCategoryOpen)} className="flex items-center gap-1 px-2 text-gray-700 bg-gray-200 h-full text-xs whitespace-nowrap rounded-l-lg">
+                  <span className="truncate max-w-[60px]">{category.nom}</span>
+                  <FaChevronDown className="text-[10px]" />
+                </button>
+                {isCategoryOpen && (
+                  <div className="absolute top-full left-0 mt-1 bg-white border rounded-lg shadow-xl w-48 max-h-60 overflow-y-auto z-50">
+                    {categories.map((cat) => (
+                      <button key={cat.code} onClick={() => handleCategoryChange(cat)} className="w-full text-left px-3 py-2.5 text-xs hover:bg-orange-500 text-black hover:text-white">{cat.nom}</button>
+>>>>>>> 92e17beac2711cb45f15b87a855051725367eebd
                     ))}
                   </div>
                 )}
