@@ -1,15 +1,15 @@
 // src/components/CategorySection.jsx
-import  { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import ProductCard from "./ProductCard";
 import api from "../api"
-const CategorySection = ({ sousCategorie, categorieId }) => {
+const CategorySection = ({ sousCategorie }) => {
   const [produits, setProduits] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
-  const loadProduits = async (page) => {
+  const loadProduits = useCallback(async (page) => {
     setLoading(true);
     try {
       const limit = 2;
@@ -46,11 +46,11 @@ const CategorySection = ({ sousCategorie, categorieId }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [sousCategorie.code]);
 
   useEffect(() => {
     loadProduits(1);
-  }, [sousCategorie.code]);
+  }, [loadProduits]);
 
   const goToPage = (page) => {
     if (page >= 1 && page <= totalPages) {

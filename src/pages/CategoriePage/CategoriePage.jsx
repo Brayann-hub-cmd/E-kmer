@@ -19,7 +19,8 @@ const CategoriePage = () => {
   const [activeSousCategorie, setActiveSousCategorie] = useState(null);
   //Recuperation de la catégorie sélectionnée
   useEffect(() => {
-    const getCategorie = async (code) => {
+    const getCategorie = async () => {
+      if (!categorieId) return;
       try {
         const response = await api.get(`categories/${categorieId}/`)
         setCategorie(prev => ({
@@ -32,16 +33,16 @@ const CategoriePage = () => {
       }
     }
     getCategorie();
-  }, [])
+  }, [categorieId])
   //Initialisation de la variable categorieNom
   useEffect(() => {
-    setCategorieNom((categorieNom) => categorie.nom);
+    setCategorieNom(categorie.nom);
   }, [categorie])
   useEffect(() => {
     const getCategories = async () => {
       try {
         const response = await api.get("categories/")
-        setCategories((categories) => response.data)
+        setCategories(response.data)
       } catch (error) {
         toast.error("Erreur survenue lors de la collection des catégories de produits:" + error, { position: 'top-center' })
       }
@@ -59,16 +60,6 @@ const CategoriePage = () => {
       return map;
     }, [categories]
   )
-  const allSousCategories = async (id_categorie) =>{
-    try {
-      const response = await api.get(`low_categories/${id_categorie}/sous_categories/`)
-      return response.data
-    } catch (error) {
-      toast.error("Erreur survenue lors de la collection des sous catégories" + error, { position: 'top-center' })
-      return []
-    }
-  }
-  
   useEffect(() => {
     const loadSousCategories = async () => {
       if (!categorieId) {
@@ -127,10 +118,6 @@ const CategoriePage = () => {
           <p className="text-gray-500 mt-1">
             Découvrez tous nos produits
           </p>
-          {categorieId && process.env.NODE_ENV === "development" && (
-            <p className="text-xs text-gray-400 mt-1">
-            </p>
-          )}
         </div>
 
         {/* Barre "Rechercher par Catégories" */}

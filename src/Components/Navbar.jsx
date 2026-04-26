@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import {
   FaSearch,
   FaUser,
@@ -19,16 +19,11 @@ export default function Navbar() {
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const [language, setLanguage] = useState("FRA");
   const [isLanguageOpen, setIsLanguageOpen] = useState(false);
-  const [cartCount, setCartCount] = useState(2);
+  const [cartCount] = useState(2);
   const [searchTerm, setSearchTerm] = useState("");
-  const [searchResults, setSearchResults] = useState([]);
-  const [showResults, setShowResults] = useState(false);
-  const [isSearching, setIsSearching] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
   const [categories, setCategories] = useState([]);
 
   const searchRef = useRef(null);
-  const navigate = useNavigate();
 
   const categoryDesktopRef = useRef(null);
   const categoryTabletRef = useRef(null);
@@ -109,35 +104,22 @@ export default function Navbar() {
   // ==========================
   // RECHERCHE
   // ==========================
-  const handleSearch = async (e) => {
+  const handleSearch = (e) => {
     e.preventDefault();
     if (!searchTerm.trim()) return;
 
-    setIsSearching(true);
-    setShowResults(true);
+    const results = mockProduits.filter((produit) => {
+      const matchTitle = produit.title
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase());
 
-    try {
-      const results = mockProduits.filter((produit) => {
-        const matchTitle = produit.title
-          .toLowerCase()
-          .includes(searchTerm.toLowerCase());
+      const matchCategory =
+        category.code === "CAT_000" || produit.categorie === category.code;
 
-        const matchCategory =
-          category.code === "CAT_000" || produit.categorie === category.code;
+      return matchTitle && matchCategory;
+    });
 
-        return matchTitle && matchCategory;
-      });
-
-      setSearchResults(results);
-
-      // OPTIONNEL : si tu veux rediriger vers une page de recherche
-      // navigate(`/recherche?mot=${searchTerm}`);
-    } catch (error) {
-      console.error("Erreur de recherche:", error);
-      setSearchResults([]);
-    } finally {
-      setIsSearching(false);
-    }
+    console.log("Résultats de recherche :", results);
   };
 
   const handleInputChange = (e) => {
@@ -147,7 +129,7 @@ export default function Navbar() {
   useEffect(() => {
     function handleClickOutside(event) {
       if (searchRef.current && !searchRef.current.contains(event.target)) {
-        setShowResults(false);
+        // search results are not currently rendered in this component
       }
     }
 
@@ -166,9 +148,6 @@ export default function Navbar() {
   };
 
   const flagIcon = language === "FRA" ? "🇫🇷" : "🇬🇧";
-
-  const toggleMenu = () => setMenuOpen(!menuOpen);
-  const closeMenu = () => setMenuOpen(false);
 
   return (
     <header className="bg-black text-white sticky top-0 z-50">
@@ -372,7 +351,7 @@ export default function Navbar() {
             )}
           </div>
 
-          <Link to="/auth/login" className="hover:text-orange-500">
+          <Link to="/login" className="hover:text-orange-500">
             <FaUser className="text-sm" />
           </Link>
 
@@ -425,7 +404,7 @@ export default function Navbar() {
                 )}
               </div>
 
-              <Link to="/auth/login" className="hover:text-orange-500">
+              <Link to="/login" className="hover:text-orange-500">
                 <FaUser className="text-sm" />
               </Link>
 

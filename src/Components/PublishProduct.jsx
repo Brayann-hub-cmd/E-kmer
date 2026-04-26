@@ -51,9 +51,8 @@ const PublishProduct = () => {
         setCategories(response.data);
         setApiError(null);
       } catch (error) {
-  
+        console.error("Erreur chargement catégories:", error);
         setApiError("Impossible de charger les catégories. Vérifiez votre connexion au réseau.");
-        // Données mock pour que la page s'affiche quand même
         setCategories([]);
       } finally {
         setPageLoading(false);

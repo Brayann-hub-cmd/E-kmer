@@ -54,12 +54,6 @@ export default {
         'spin-slow': 'spin 3s linear infinite',
 
       },
-
-
-      fontFamily: {
-        sans: ["InterVariable", ...defaultTheme.fontFamily.sans],
-
-      },
     },
   },
 }

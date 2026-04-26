@@ -1,8 +1,8 @@
-import SideBar from "../Components/Userventes/SideBar"
-import StatsCard from "../Components/Userventes/StatsCard"
-import ProductCard from "../Components/Userventes/ProductCard"
+import SideBar from "../components/Userventes/SideBar"
+import StatsCard from "../components/Userventes/StatsCard"
+import ProductCard from "../components/Userventes/ProductCard"
 import { Link } from "react-router-dom"
-import Navbar from "../Components/Navbar";
+import Navbar from "../components/Navbar";
 import Footer from "../Components/Footer";
 
 export default function Userventes() {
@@ -30,7 +30,7 @@ export default function Userventes() {
 
            
 
-            <Link to="/publier/" className="rounded hover:bg-orange-600 transition">
+            <Link to="/publier" className="rounded hover:bg-orange-600 transition">
               <button className="bg-orange-500 text-white px-4 py-2 rounded-full text-sm">
                 + Publier un produit
               </button>

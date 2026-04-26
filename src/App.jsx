@@ -1,55 +1,56 @@
-import { Toaster } from "react-hot-toast";
-import Home from "./pages/Home/Home";
+
 import Login from "./pages/auth/Login";
-import SignUp from "./pages/SignUp/SignUp"
-import Userventes from "./pages/Userventes"
-import PageCategorie from './pages/CategoriePage/CategoriePage';
-import PublishProduct from "./Components/PublishProduct";
+import SignUp from "./pages/SignUp/SignUp";
+import Home from "./pages/Home/Home";
+import Userventes from "./pages/Userventes";
+import MesAchats from "./pages/MesAchats";
+import Favoris from "./pages/Favoris";
+import UserSettings from "./pages/UserSettings";
+import PublishPage from "./pages/PublishPage";
+import ErrorPage from "./components/ErrorPage";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import  UserSettings from "./pages/UserSettings";
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Home />,
+  },
+  {
+    path: "/login",
+    element: <Login />,
+  },
+  {
+    path: "auth/register",
+    element: <SignUp />,
+  },
+  {
+    path: "/vendre",
+    element: <Userventes />,
+  },
+  {
+    path: "/achats",
+    element: <MesAchats />,
+  },
+  {
+    path: "/favoris",
+    element: <Favoris />,
+  },
+  {
+    path: "/settings",
+    element: <UserSettings />,
+  },
+  {
+    path: "/publier",
+    element: <PublishPage />,
+  },
+  {
+    path: "*",
+    element: <ErrorPage />,
+  },
+]);
+
 function App() {
-  const router = createBrowserRouter([
-    {
-      path:'/',
-      element:<Home />
-    },
-    {
-      path:'/auth/register',
-      element:<SignUp />
-    },
-    {
-      path:'/auth/login',
-      element:<Login />
-    },
-    {
-      path:'/categorie/:categorieSlug',
-      element:<PageCategorie/>
-    },
-    {
-
-      path:'/publier/',
-      element:<PublishProduct />
-    },
-    {
-      path:'/vendre/',
-      element:<Userventes />
-    },
-    {
-      path:'/publish_annonce/',
-      element:<PublishProduct/>
-
-    },
-    {
-      path:'/settings/',
-      element:<UserSettings/>
-    }
-  ])
-  return (
-    <>
-      <Toaster />
-      <RouterProvider router={router}/>
-    </>
-  )
+  return <RouterProvider router={router} />;
 }
 
 export default App;

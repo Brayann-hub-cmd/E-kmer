@@ -1,5 +1,5 @@
-import SideBar from "../Components/Userventes/SideBar"
-import InputField from "../Components/Userventes/InputField";
+import SideBar from "../components/Userventes/SideBar"
+import InputField from "../components/Userventes/InputField";
 import { FaUser, FaEnvelope, FaPhone } from "react-icons/fa";
 
 

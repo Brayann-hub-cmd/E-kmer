@@ -186,7 +186,7 @@ const SignUp = () => {
         );
 
         setTimeout(() => {
-          navigate('/auth/login')
+          navigate('/login')
         }, 1500)
 
       } catch (error) {
@@ -534,7 +534,7 @@ const SignUp = () => {
         {/* Lien de connexion */}
         <p className={`text-center text-sm ${textStyle}`}>
           Vous avez déjà un compte ?{' '}
-          <Link to={'/auth/login'} className={linkStyle}>
+          <Link to={'/login'} className={linkStyle}>
             Se connecter
           </Link>
         </p>

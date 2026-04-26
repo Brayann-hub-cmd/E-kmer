@@ -1,20 +1,20 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { FaMapMarkerAlt, FaCalendarAlt, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import api from "../api";
-import { useMemo } from "react";
 
 function PopularOffers() {
   const scrollContainerRef = useRef(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
   const [data, setData] = useState([])
-  const [produits, setProduits] = useState([])
+
+  // Charger les données
   useEffect(() => {
     const getAnnonces = async () => {
       try {
         const response = await api.get('annonces/')
-        setData((data)=>response.data)
+        setData(response.data)
       } catch (error) {
         console.error("Erreur chargement produits:", error);
       }
@@ -23,27 +23,26 @@ function PopularOffers() {
     getAnnonces(); 
   }, [])
 
+  // Transformer les données
   const filtered = useMemo(() => {
-  if (!Array.isArray(data)) return [];
+    if (!Array.isArray(data)) return [];
 
-  console.log("DATA =", data);
+    return data.map((annonce) => ({
+      code: annonce.code,
+      title: annonce.titre,
+      prix: annonce.prix,
+      image: annonce.image,
+      localisation: annonce.localisation,
+      created_at: annonce.created_at,
+      description: annonce.description,
+      statut: annonce.statut,
+      qte: annonce.qte,
+      vendeur: annonce.vendeur,
+      autres_images: annonce.images,
+      slug: `${annonce.code}`
+    }));
+  }, [data]);
 
-  return console.log(data), data.map((annonce) => ({
-    code: annonce.code,
-    title: annonce.titre,
-    prix: annonce.prix,
-    image: annonce.image,
-    localisation: annonce.localisation,
-    created_at: annonce.created_at,
-    description: annonce.description,
-    statut: annonce.statut,
-    qte: annonce.qte,
-    vendeur: annonce.vendeur,
-    autres_images: annonce.images,
-    slug: `${annonce.code}`
-  }));
-}, [data]);
-  
   // Vérifier si on peut défiler
   const checkScroll = () => {
     if (scrollContainerRef.current) {
@@ -53,7 +52,22 @@ function PopularOffers() {
     }
   };
 
+  // Écouter les changements de filtrage et la taille de la fenêtre
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+    
+    checkScroll();
+    container.addEventListener('scroll', checkScroll);
+    window.addEventListener('resize', checkScroll);
+    
+    return () => {
+      container.removeEventListener('scroll', checkScroll);
+      window.removeEventListener('resize', checkScroll);
+    };
+  }, [filtered]);
 
+  // Gérer le défilement horizontal
   const scroll = (direction) => {
     if (scrollContainerRef.current) {
       const container = scrollContainerRef.current;
@@ -69,6 +83,7 @@ function PopularOffers() {
       });
     }
   };
+
   // Formatage de la date
   const formatDate = (dateString) => {
     const date = new Date(dateString);
