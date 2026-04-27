@@ -231,11 +231,7 @@ const Footer = () => {
                 <div className=" my-20"></div>
 
                 {/* Footer bottom */}
-                <div
-                    className="text-center text-gray-400 text-sm"
-                    data-aos="fade-up"
-                    data-aos-delay="600"
-                >
+                <div className="text-center text-gray-400 text-sm">
                     <p>© 2026 E-kmer. Tous droits réservés.</p>
                 </div>
             </div>

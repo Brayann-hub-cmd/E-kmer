@@ -489,6 +489,7 @@ const PublishProduct = () => {
           </div>
         </form>
       </div>
+      <Footer />
     </div>
   );
 };
