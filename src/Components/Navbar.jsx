@@ -6,12 +6,11 @@ import {
   FaChevronDown,
 } from "react-icons/fa";
 import api from "../api";
-
 export default function Navbar() {
-  const [category, setCategory] = useState({
-    code: "CAT_000",
+  const [category, setCategory] = useState({ 
+    code: "CAT_000", 
     nom: "Toutes les categories",
-    path: "/toutes-categories",
+    path: "/toutes-categories" 
   });
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const [language, setLanguage] = useState("FRA");
@@ -22,29 +21,30 @@ export default function Navbar() {
   const [showResults, setShowResults] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [categories, setCategories] = useState([]);
+  const [categories,setCategories] = useState([])
   const searchRef = useRef(null);
   const navigate = useNavigate();
 
+  // Refs séparées pour chaque vue
   const categoryDesktopRef = useRef(null);
   const categoryTabletRef = useRef(null);
   const categoryMobileRef = useRef(null);
+  
   const languageDesktopRef = useRef(null);
   const languageTabletRef = useRef(null);
   const languageMobileRef = useRef(null);
-
-  useEffect(() => {
-    const getCategorie = async () => {
+  useEffect(()=>{
+    const getCategorie = async ()=>{
       try {
-        const response = await api.get("categories/");
-        setCategories(response.data);
+        const response = await api.get("categories/")
+        setCategories((categories)=>response.data)
       } catch (error) {
         console.error("Erreur catégories:", error);
       }
     };
     getCategorie();
-  }, []);
-
+  },[])
+  // Données mock des produits pour la recherche
   const mockProduits = [
     { code: "P001", title: "Casque Sony", prix: 15000, categorie: "CAT_001", localisation: "Douala" },
     { code: "P002", title: "Jacket en cuir", prix: 80000, categorie: "CAT_006", localisation: "Yaoundé" },
@@ -56,12 +56,14 @@ export default function Navbar() {
   const handleSearch = async (e) => {
     e.preventDefault();
     if (!searchTerm.trim()) return;
+    
     setIsSearching(true);
     setShowResults(true);
+    
     try {
-      const results = mockProduits.filter((produit) => {
+      const results = mockProduits.filter(produit => {
         const matchTitle = produit.title.toLowerCase().includes(searchTerm.toLowerCase());
-        const matchCategory = category.code === "CAT_000" || produit.categorie === category.code;
+        const matchCategory = category.id === "CAT_000" || produit.categorie === category.id;
         return matchTitle && matchCategory;
       });
       setSearchResults(results);
@@ -84,7 +86,8 @@ export default function Navbar() {
   }, []);
 
   const handleCategoryChange = (selectedCategory) => {
-    setCategory(selectedCategory);
+    setCategorySelected(selectedCategory);
+    setCategory(selectedCategory)
     setIsCategoryOpen(false);
   };
 
@@ -112,13 +115,11 @@ export default function Navbar() {
 
   return (
     <header className="bg-black text-white sticky top-0 z-50">
-      <div className="container mx-auto px-4 sm:px-6 py-3">
-
-        {/* ═══════════════════════════════════════
-            DESKTOP (≥ lg)
-        ═══════════════════════════════════════ */}
-        <div className="hidden lg:flex items-center justify-between gap-6">
-
+      <div className="container mx-auto px-3 sm:px-4 py-3">
+        
+        {/* ===== DESKTOP LAYOUT ===== */}
+        <div className="hidden lg:flex items-center justify-between gap-4">
+          
           {/* LOGO */}
           <Link to="/" className="flex-shrink-0 flex items-center gap-1.5">
             <img src="/logo.png" alt="eKMER" className="h-9 w-auto" />
@@ -230,10 +231,10 @@ export default function Navbar() {
             )}
           </div>
 
-          {/* ── SE CONNECTER ── */}
-          <Link
-            to="auth/login"
-            className="flex items-center gap-2 text-sm text-white hover:text-orange-400 whitespace-nowrap transition-colors flex-shrink-0"
+          {/* LOGIN - Transformé en Link */}
+          <Link 
+            to="auth/login" 
+            className="flex items-center gap-2 text-sm hover:text-orange-500 whitespace-nowrap transition-colors"
           >
             {/* Icône utilisateur cerclée */}
             <span
@@ -248,28 +249,21 @@ export default function Navbar() {
             <span>Se connecter</span>
           </Link>
 
-          {/* ── S'INSCRIRE ── */}
-          <Link
-            to="auth/register"
-            className="text-sm font-semibold text-white hover:text-orange-400 whitespace-nowrap transition-colors flex-shrink-0"
+          {/* REGISTER - Transformé en Link */}
+          <Link 
+            to="auth/register" 
+            className="text-sm font-medium hover:text-orange-500 whitespace-nowrap transition-colors"
           >
             S'inscrire
           </Link>
 
-          {/* ── PANIER ── */}
-          <Link to="/panier" className="relative hover:text-orange-400 transition-colors flex-shrink-0">
-            {/* Icône panier outline */}
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
-              <line x1="3" y1="6" x2="21" y2="6"/>
-              <path d="M16 10a4 4 0 01-8 0"/>
-            </svg>
-            <span
-              className="absolute -top-2 -right-2 text-white text-[10px] rounded-full flex items-center justify-center font-bold"
-              style={{ background: "#F07B10", minWidth: 18, height: 18, padding: "0 3px" }}
-            >
-              {cartCount}
-            </span>
+          {/* CART - Transformé en Link */}
+          <Link 
+            to={'/panier'}
+            className="relative hover:text-orange-500 transition-colors"
+          >
+            <FaShoppingCart className="text-lg" />
+            <span className="absolute -top-2 -right-2 bg-orange-500 text-white text-xs rounded-full min-w-[18px] h-[18px] flex items-center justify-center">{cartCount}</span>
           </Link>
         </div>
 
@@ -286,19 +280,14 @@ export default function Navbar() {
               style={{ background: "#fff", border: "1.5px solid #E0E0E0", height: 40 }}
             >
               <div className="relative h-full" ref={categoryTabletRef}>
-                <button
-                  type="button"
-                  onClick={() => setIsCategoryOpen(!isCategoryOpen)}
-                  className="flex items-center gap-1 px-3 h-full text-gray-700 text-xs whitespace-nowrap"
-                  style={{ borderRight: "1.5px solid #E0E0E0" }}
-                >
-                  <span className="truncate max-w-[80px]">{category.nom}</span>
-                  <FaChevronDown className="text-[10px] text-gray-500" />
+                <button type="button" onClick={() => setIsCategoryOpen(!isCategoryOpen)} className="flex items-center gap-1 px-2 text-gray-700 bg-gray-200 h-full text-xs whitespace-nowrap rounded-l-lg">
+                  <span className="truncate max-w-[70px]">{category.name}</span>
+                  <FaChevronDown className="text-[10px]" />
                 </button>
                 {isCategoryOpen && (
-                  <div className="absolute top-full left-0 mt-1 bg-white border rounded-xl shadow-xl w-48 max-h-72 overflow-y-auto z-50">
-                    {[{ code: "CAT_000", nom: "Toutes les categories" }, ...categories].map((cat) => (
-                      <button key={cat.code} onClick={() => handleCategoryChange(cat)} className="w-full text-left px-3 py-2 text-xs text-gray-700 hover:bg-orange-500 hover:text-white">{cat.nom}</button>
+                  <div className="absolute top-full left-0 mt-1 bg-white border rounded-lg shadow-xl w-48 max-h-80 overflow-y-auto z-50">
+                    {categories.map((cat) => (
+                      <button key={cat.code} onClick={() => handleCategoryChange(cat)} className="w-full text-left px-3 py-2 text-xs hover:bg-orange-500 hover:text-white">{cat.nom}</button>
                     ))}
                   </div>
                 )}
@@ -380,19 +369,14 @@ export default function Navbar() {
               style={{ background: "#fff", border: "1.5px solid #E0E0E0", height: 40 }}
             >
               <div className="relative h-full" ref={categoryMobileRef}>
-                <button
-                  type="button"
-                  onClick={() => setIsCategoryOpen(!isCategoryOpen)}
-                  className="flex items-center gap-1 px-2 h-full text-gray-700 text-xs whitespace-nowrap"
-                  style={{ borderRight: "1.5px solid #E0E0E0" }}
-                >
-                  <span className="truncate max-w-[60px]">{category.nom}</span>
-                  <FaChevronDown className="text-[10px] text-gray-500" />
+                <button type="button" onClick={() => setIsCategoryOpen(!isCategoryOpen)} className="flex items-center gap-1 px-2 text-gray-700 bg-gray-200 h-full text-xs whitespace-nowrap rounded-l-lg">
+                  <span className="truncate max-w-[60px]">{category.name}</span>
+                  <FaChevronDown className="text-[10px]" />
                 </button>
                 {isCategoryOpen && (
-                  <div className="absolute top-full left-0 mt-1 bg-white border rounded-xl shadow-xl w-48 max-h-60 overflow-y-auto z-50">
-                    {[{ code: "CAT_000", nom: "Toutes les categories" }, ...categories].map((cat) => (
-                      <button key={cat.code} onClick={() => handleCategoryChange(cat)} className="w-full text-left px-3 py-2.5 text-xs text-gray-700 hover:bg-orange-500 hover:text-white">{cat.nom}</button>
+                  <div className="absolute top-full left-0 mt-1 bg-white border rounded-lg shadow-xl w-48 max-h-60 overflow-y-auto z-50">
+                    {categories.map((cat) => (
+                      <button key={cat.id} onClick={() => handleCategoryChange(cat)} className="w-full text-left px-3 py-2.5 text-xs hover:bg-orange-500 hover:text-white">{cat.nom}</button>
                     ))}
                   </div>
                 )}
