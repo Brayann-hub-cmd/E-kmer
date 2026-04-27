@@ -4,7 +4,8 @@ import Login from "./pages/auth/Login";
 import SignUp from "./pages/SignUp/SignUp"
 import Userventes from "./pages/Userventes"
 import PageCategorie from './pages/CategoriePage/CategoriePage';
-import PublishProduct from "./Components/PublishProduct";
+import PublishProduct from "./components/PublishProduct";
+import ProductDetail from "./pages/ProductDetails/ProductDetail";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 function App() {
   const router = createBrowserRouter([
@@ -17,7 +18,8 @@ function App() {
       element:<SignUp />
     },
     {
-      path:'/auth/login',
+
+      path:'auth/login',
       element:<Login />
     },
     {
