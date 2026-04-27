@@ -108,8 +108,6 @@ function PopularOffers({ title, categorie }) {
 
 useEffect(
   ()=>{
-    console.log("Popular Offers useEffect déclenché:",title,categorie);
-    
     if(title){
       handleSearch()
     }

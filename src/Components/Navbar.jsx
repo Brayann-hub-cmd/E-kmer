@@ -49,7 +49,6 @@ export default function Navbar({ setTitle, setCategorie }) {
 
   const handleSearch = async (e) => {
     e.preventDefault();
-    console.log("props reçues: ", { setTitle, setCategorie })
     if (!searchTerm.trim()) return;
 
     setIsSearching(true);
