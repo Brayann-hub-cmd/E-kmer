@@ -5,8 +5,10 @@ import {
   FaUser,
   FaShoppingCart,
   FaChevronDown,
+  FaSignOutAlt,  // ← AJOUT : icône déconnexion
 } from "react-icons/fa";
 import api from "../api";
+
 export default function Navbar({ setTitle, setCategorie }) {
   const [category, setCategory] = useState({
     code: "CAT_000",
@@ -26,6 +28,24 @@ export default function Navbar({ setTitle, setCategorie }) {
   const searchRef = useRef(null);
   const navigate = useNavigate();
   const [categorySelected, setCategorySelected] = useState("CAT_000")
+
+  // ── AJOUT : état de connexion ──────────────────────────────────
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    // Vérifie si un token existe dans le localStorage
+    const token = localStorage.getItem("access_token");
+    setIsLoggedIn(!!token);
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
+    setIsLoggedIn(false);
+    navigate("/auth/login");
+  };
+  // ──────────────────────────────────────────────────────────────
+
   // Refs séparées pour chaque vue
   const categoryDesktopRef = useRef(null);
   const categoryTabletRef = useRef(null);
@@ -34,6 +54,7 @@ export default function Navbar({ setTitle, setCategorie }) {
   const languageDesktopRef = useRef(null);
   const languageTabletRef = useRef(null);
   const languageMobileRef = useRef(null);
+
   useEffect(() => {
     const getCategorie = async () => {
       try {
@@ -43,7 +64,6 @@ export default function Navbar({ setTitle, setCategorie }) {
         toast.error("Une erreur est survenue lors de la collection des catégories de produits:" + error, { position: 'top-center' })
       }
     }
-
     getCategorie();
   }, [])
 
@@ -161,16 +181,27 @@ export default function Navbar({ setTitle, setCategorie }) {
             )}
           </div>
 
-          {/* LOGIN - Transformé en Link */}
-          <Link
-            to="auth/login"
-            className="flex items-center gap-2 text-sm hover:text-orange-500 whitespace-nowrap transition-colors"
-          >
-            <FaUser className="text-sm" />
-            <span>Se connecter</span>
-          </Link>
+          {/* ── AJOUT : Se connecter / Se déconnecter (Desktop) ── */}
+          {isLoggedIn ? (
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-2 text-sm hover:text-orange-500 whitespace-nowrap transition-colors"
+            >
+              <FaSignOutAlt className="text-sm" />
+              <span>Se déconnecter</span>
+            </button>
+          ) : (
+            <Link
+              to="auth/login"
+              className="flex items-center gap-2 text-sm hover:text-orange-500 whitespace-nowrap transition-colors"
+            >
+              <FaUser className="text-sm" />
+              <span>Se connecter</span>
+            </Link>
+          )}
+          {/* ─────────────────────────────────────────────────── */}
 
-          {/* REGISTER - Transformé en Link */}
+          {/* REGISTER */}
           <Link
             to="auth/register"
             className="text-sm font-medium hover:text-orange-500 whitespace-nowrap transition-colors"
@@ -178,7 +209,7 @@ export default function Navbar({ setTitle, setCategorie }) {
             S'inscrire
           </Link>
 
-          {/* CART - Transformé en Link */}
+          {/* CART */}
           <Link
             to={'/panier'}
             className="relative hover:text-orange-500 transition-colors"
@@ -222,17 +253,22 @@ export default function Navbar({ setTitle, setCategorie }) {
             )}
           </div>
 
-          {/* LOGIN - Tablet transformé en Link */}
-          <Link to={'/auth/login'} className="hover:text-orange-500">
-            <FaUser className="text-sm" />
-          </Link>
+          {/* ── AJOUT : Se connecter / Se déconnecter (Tablet) ── */}
+          {isLoggedIn ? (
+            <button onClick={handleLogout} className="hover:text-orange-500 transition-colors">
+              <FaSignOutAlt className="text-sm" />
+            </button>
+          ) : (
+            <Link to={'/auth/login'} className="hover:text-orange-500">
+              <FaUser className="text-sm" />
+            </Link>
+          )}
+          {/* ─────────────────────────────────────────────────── */}
 
-          {/* REGISTER - Tablet transformé en Link */}
           <Link to={'/auth/register'} className="text-xs font-medium hover:text-orange-500 whitespace-nowrap">
             S'inscrire
           </Link>
 
-          {/* CART - Tablet transformé en Link */}
           <Link to={'/panier'} className="relative hover:text-orange-500">
             <FaShoppingCart className="text-sm" />
             <span className="absolute -top-2 -right-2 bg-orange-500 text-white text-[10px] rounded-full w-4 h-4 flex items-center justify-center">{cartCount}</span>
@@ -254,17 +290,22 @@ export default function Navbar({ setTitle, setCategorie }) {
                 )}
               </div>
 
-              {/* LOGIN - Mobile transformé en Link */}
-              <Link to={'/auth/login'} className="hover:text-orange-500">
-                <FaUser className="text-sm" />
-              </Link>
+              {/* ── AJOUT : Se connecter / Se déconnecter (Mobile) ── */}
+              {isLoggedIn ? (
+                <button onClick={handleLogout} className="hover:text-orange-500 transition-colors">
+                  <FaSignOutAlt className="text-sm" />
+                </button>
+              ) : (
+                <Link to={'/auth/login'} className="hover:text-orange-500">
+                  <FaUser className="text-sm" />
+                </Link>
+              )}
+              {/* ─────────────────────────────────────────────────── */}
 
-              {/* REGISTER - Mobile transformé en Link */}
               <Link to={'/auth/register'} className="text-xs font-medium hover:text-orange-500 whitespace-nowrap">
                 S'inscrire
               </Link>
 
-              {/* CART - Mobile transformé en Link */}
               <Link to={'/panier'} className="relative hover:text-orange-500">
                 <FaShoppingCart className="text-sm" />
                 <span className="absolute -top-2 -right-2 bg-orange-500 text-white text-[8px] rounded-full w-3.5 h-3.5 flex items-center justify-center">{cartCount}</span>
