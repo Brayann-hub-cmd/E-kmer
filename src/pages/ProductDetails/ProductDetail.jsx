@@ -27,8 +27,8 @@ const ProductDetail = () => {
     description: "",
     images: [],
     vendeur: {
-      nom: "",
-      membre_depuis: "",
+      username: "",
+      created_at: "",
       avatar: ""
     }
   });
@@ -52,7 +52,6 @@ const ProductDetail = () => {
       
       try {
         const response = await api.get(`annonces/${id}/`);
-        console.log("Produit chargé:", response.data);
         setProduct(response.data);
         setCurrentImageIndex(0);
         setQuantity(1);
@@ -111,9 +110,15 @@ const ProductDetail = () => {
 
   // Formatage de la date d'adhésion du vendeur
   const formatMemberSince = (dateString) => {
-    if (!dateString) return "2024";
-    if (dateString.length === 4) return dateString;
-    return new Date(dateString).getFullYear();
+    const date = new Date(dateString);
+    const today = new Date();
+    const diffTime = Math.abs(today - date);
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+    if (diffDays === 0) return "Aujourd'hui";
+    if (diffDays === 1) return "Hier";
+    if (diffDays < 7) return `Il y a ${diffDays} jours`;
+    return date.toLocaleDateString('fr-FR');
   };
 
   // Affichage du chargement
@@ -329,7 +334,7 @@ const ProductDetail = () => {
                   {product.vendeur?.avatar ? (
                     <img
                       src={product.vendeur.avatar}
-                      alt={product.vendeur.nom}
+                      alt={product.vendeur.username}
                       className="w-14 h-14 rounded-full object-cover"
                     />
                   ) : (
@@ -337,10 +342,10 @@ const ProductDetail = () => {
                   )}
                   <div>
                     <div className="font-bold text-gray-900 text-sm">
-                      {product.vendeur?.nom || "Vendeur"}
+                      {product.vendeur?.username || "Vendeur"}
                     </div>
                     <div className="text-sm text-orange-500">
-                      Membre depuis {formatMemberSince(product.vendeur?.membre_depuis)}
+                      Membre depuis {formatMemberSince(product.vendeur?.created_at)}
                     </div>
                   </div>
                 </div>
