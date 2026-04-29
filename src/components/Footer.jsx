@@ -212,8 +212,9 @@ const Footer = () => {
 
                 <div className="my-16"></div>
 
+                {/* Footer bottom */}
                 <div className="text-center text-gray-400 text-sm">
-                    © 2026 E-kmer. Tous droits réservés.
+                    <p>© 2026 E-kmer. Tous droits réservés.</p>
                 </div>
             </div>
         </footer>

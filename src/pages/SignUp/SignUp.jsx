@@ -5,8 +5,6 @@ import {
   FaLock,
   FaEye,
   FaEyeSlash,
-  FaMoon,
-  FaSun,
   FaEnvelope
 } from 'react-icons/fa';
 import {
@@ -15,8 +13,10 @@ import {
 
 import { Link, useNavigate } from 'react-router-dom';
 import api from '../../api';
+
 const SignUp = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  
   // État pour gérer les valeurs du formulaire
   const [formData, setFormData] = useState({
     nomComplet: '',
@@ -38,14 +38,6 @@ const SignUp = () => {
 
   // État pour le champ touché (validation en temps réel)
   const [touched, setTouched] = useState({});
-
-  // État pour le mode (jour/nuit)
-  const [isDarkMode, setIsDarkMode] = useState(false);
-
-  // Fonction pour basculer le mode
-  const toggleDarkMode = () => {
-    setIsDarkMode(!isDarkMode);
-  };
 
   // Fonction de validation du formulaire
   const validerFormulaire = (donnees = formData) => {
@@ -156,18 +148,20 @@ const SignUp = () => {
     e.preventDefault();
 
     const nouvellesErreurs = validerFormulaire();
-    const telephoneInput = formData.telephone.split(' ')
-    const telephone = telephoneInput[0] + telephoneInput[1] + telephoneInput[2] + telephoneInput[3]
+    const telephoneInput = formData.telephone.split(' ');
+    const telephone = telephoneInput[0] + telephoneInput[1] + telephoneInput[2] + telephoneInput[3];
+    
     if (Object.keys(nouvellesErreurs).length === 0) {
       try {
-        const role = "user"
+        const role = "user";
         const response = await api.post('auth/register/', {
           username: formData.nomComplet,
           telephone: telephone,
           email: formData.email,
           password: formData.motDePasse,
           role: role
-        })
+        });
+        
         // Succès - Afficher la notification
         toast.success(
           <div className="flex items-center gap-2">
@@ -186,18 +180,16 @@ const SignUp = () => {
         );
 
         setTimeout(() => {
-          navigate('/auth/login')
-        }, 1500)
+          navigate('/auth/login');
+        }, 1500);
 
       } catch (error) {
         if (error.response?.status === 400) {
-          toast.error(error.response.data.error)
-        }
-        else if (error.response?.status === 500) {
-          toast.error("Un problème avec le serveur est survenue!")
-        }
-        else {
-          toast.error(`Erreur : `, error)
+          toast.error(error.response.data.error);
+        } else if (error.response?.status === 500) {
+          toast.error("Un problème avec le serveur est survenue!");
+        } else {
+          toast.error(`Erreur : `, error);
         }
       }
 
@@ -229,96 +221,30 @@ const SignUp = () => {
       });
     }
   };
- 
-  // Styles conditionnels basés sur le mode
-  const pageStyle = isDarkMode
-    ? "min-h-screen bg-gray-900 flex items-center justify-center p-4"
-    : "min-h-screen bg-gray-50 flex items-center justify-center p-4";
-
-  const cardStyle = isDarkMode
-    ? "bg-gray-800 rounded-xl shadow-lg w-full max-w-[420px] p-8 border border-gray-700"
-    : "bg-white rounded-xl shadow-lg w-full max-w-[420px] p-8";
-
-  const titleStyle = isDarkMode
-    ? "text-2xl font-bold text-center mb-1 text-white"
-    : "text-2xl font-bold text-center mb-1 text-gray-900";
-
-  const subtitleStyle = isDarkMode
-    ? "text-center text-gray-400 text-sm mb-6"
-    : "text-center text-gray-500 text-sm mb-6";
-
-  const labelStyle = isDarkMode
-    ? "block text-sm font-medium text-gray-300 mb-1"
-    : "block text-sm font-medium text-gray-700 mb-1";
-
-  const inputStyle = (hasError) => {
-    const baseStyle = "w-full pl-10 pr-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent";
-    const borderStyle = hasError
-      ? "border-red-500"
-      : isDarkMode ? "border-gray-600" : "border-gray-300";
-    const bgStyle = isDarkMode ? "bg-gray-800 text-white placeholder-gray-500" : "bg-white text-gray-900 placeholder-gray-400";
-
-    return `${baseStyle} ${borderStyle} ${bgStyle}`;
-  };
-
-  const inputPasswordStyle = (hasError) => {
-    const baseStyle = "w-full pl-10 pr-10 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent";
-    const borderStyle = hasError
-      ? "border-red-500"
-      : isDarkMode ? "border-gray-600" : "border-gray-300";
-    const bgStyle = isDarkMode ? "bg-gray-800 text-white placeholder-gray-500" : "bg-white text-gray-900 placeholder-gray-400";
-
-    return `${baseStyle} ${borderStyle} ${bgStyle}`;
-  };
-
-  const iconStyle = isDarkMode ? "text-gray-500" : "text-gray-400";
-  const iconHoverStyle = isDarkMode ? "hover:text-gray-300" : "hover:text-gray-600";
-  const errorTextStyle = isDarkMode ? "mt-1 text-xs text-red-400" : "mt-1 text-xs text-red-500";
-  const helperTextStyle = isDarkMode ? "mt-1 text-xs text-gray-500" : "mt-1 text-xs text-gray-400";
-  const linkStyle = isDarkMode
-    ? "text-orange-400 hover:text-orange-300 font-medium"
-    : "text-orange-500 hover:text-orange-600 font-medium";
-  const textStyle = isDarkMode ? "text-gray-400" : "text-gray-600";
-  const separatorStyle = isDarkMode ? "px-2 bg-gray-800 text-gray-500" : "px-2 bg-white text-gray-500";
-  const borderStyle = isDarkMode ? "w-full border-t border-gray-700" : "w-full border-t border-gray-300";
-  const checkboxStyle = isDarkMode
-    ? "mt-1 h-4 w-4 text-orange-500 border-gray-600 rounded focus:ring-orange-500 bg-gray-800"
-    : "mt-1 h-4 w-4 text-orange-500 border-gray-300 rounded focus:ring-orange-500";
 
   return (
-    <div className={pageStyle}>
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
       {/* Toast Container */}
       <Toaster
         toastOptions={{
           style: {
-            background: isDarkMode ? '#1f2937' : '#ffffff',
-            color: isDarkMode ? '#f3f4f6' : '#1f2937',
+            background: '#ffffff',
+            color: '#1f2937',
           },
         }}
       />
 
-      {/* Bouton de bascule de mode */}
-      <button
-        onClick={toggleDarkMode}
-        className={`fixed top-4 right-4 p-2 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 ${isDarkMode
-          ? 'bg-gray-700 text-yellow-400'
-          : 'bg-white text-gray-700'
-          }`}
-      >
-        {isDarkMode ? <FaSun className="text-xl" /> : <FaMoon className="text-xl" />}
-      </button>
-
       {/* Card d'inscription */}
-      <div className={cardStyle}>
+      <div className="bg-white rounded-xl shadow-lg w-full max-w-[420px] p-8">
 
         {/* Titre */}
-        <h1 className={titleStyle}>
+        <h1 className="text-2xl font-bold text-center mb-1 text-gray-900">
           Inscription à{' '}
           <span className="text-orange-500">E-kmer</span>
         </h1>
 
         {/* Sous-titre */}
-        <p className={subtitleStyle}>
+        <p className="text-center text-gray-500 text-sm mb-6">
           Créez votre compte pour commencer à acheter et vendre
         </p>
 
@@ -327,12 +253,12 @@ const SignUp = () => {
 
           {/* Champ Nom complet */}
           <div>
-            <label className={labelStyle}>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
               Nom complet
             </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <FaUser className={iconStyle} />
+                <FaUser className="text-gray-400" />
               </div>
               <input
                 type="text"
@@ -341,22 +267,24 @@ const SignUp = () => {
                 onChange={handleChange}
                 onBlur={handleBlur}
                 placeholder="Votre nom complet"
-                className={inputStyle(touched.nomComplet && erreurs.nomComplet)}
+                className={`w-full pl-10 pr-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
+                  touched.nomComplet && erreurs.nomComplet ? 'border-red-500' : 'border-gray-300'
+                } bg-white text-gray-900 placeholder-gray-400`}
               />
             </div>
             {touched.nomComplet && erreurs.nomComplet && (
-              <p className={errorTextStyle}>{erreurs.nomComplet}</p>
+              <p className="mt-1 text-xs text-red-500">{erreurs.nomComplet}</p>
             )}
           </div>
 
           {/* Champ Email */}
           <div>
-            <label className={labelStyle}>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
               Adresse email
             </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <FaEnvelope className={iconStyle} />
+                <FaEnvelope className="text-gray-400" />
               </div>
               <input
                 type="email"
@@ -365,17 +293,19 @@ const SignUp = () => {
                 onChange={handleChange}
                 onBlur={handleBlur}
                 placeholder="votre@email.com"
-                className={inputStyle(touched.email && erreurs.email)}
+                className={`w-full pl-10 pr-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
+                  touched.email && erreurs.email ? 'border-red-500' : 'border-gray-300'
+                } bg-white text-gray-900 placeholder-gray-400`}
               />
             </div>
             {touched.email && erreurs.email && (
-              <p className={errorTextStyle}>{erreurs.email}</p>
+              <p className="mt-1 text-xs text-red-500">{erreurs.email}</p>
             )}
           </div>
 
           {/* Champ Téléphone */}
           <div>
-            <label className={labelStyle}>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
               Numéro de téléphone
             </label>
             <div className="relative">
@@ -398,13 +328,15 @@ const SignUp = () => {
                 }}
                 onBlur={handleBlur}
                 placeholder="+237 6XX XXX XXX"
-                className={inputStyle(touched.telephone && erreurs.telephone)}
+                className={`w-full pl-24 pr-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
+                  touched.telephone && erreurs.telephone ? 'border-red-500' : 'border-gray-300'
+                } bg-white text-gray-900 placeholder-gray-400`}
               />
             </div>
             {touched.telephone && erreurs.telephone ? (
-              <p className={errorTextStyle}>{erreurs.telephone}</p>
+              <p className="mt-1 text-xs text-red-500">{erreurs.telephone}</p>
             ) : (
-              <p className={helperTextStyle}>
+              <p className="mt-1 text-xs text-gray-400">
                 Format: +237 6XX XXX XXX
               </p>
             )}
@@ -412,12 +344,12 @@ const SignUp = () => {
 
           {/* Champ Mot de passe */}
           <div>
-            <label className={labelStyle}>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
               Mot de passe
             </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <FaLock className={iconStyle} />
+                <FaLock className="text-gray-400" />
               </div>
               <input
                 type={afficherMdp.motDePasse ? 'text' : 'password'}
@@ -426,7 +358,9 @@ const SignUp = () => {
                 onChange={handleChange}
                 onBlur={handleBlur}
                 placeholder="**********"
-                className={inputPasswordStyle(touched.motDePasse && erreurs.motDePasse)}
+                className={`w-full pl-10 pr-10 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
+                  touched.motDePasse && erreurs.motDePasse ? 'border-red-500' : 'border-gray-300'
+                } bg-white text-gray-900 placeholder-gray-400`}
               />
               <button
                 type="button"
@@ -437,25 +371,25 @@ const SignUp = () => {
                 }))}
               >
                 {afficherMdp.motDePasse ? (
-                  <FaEyeSlash className={`${iconStyle} ${iconHoverStyle}`} />
+                  <FaEyeSlash className="text-gray-400 hover:text-gray-600" />
                 ) : (
-                  <FaEye className={`${iconStyle} ${iconHoverStyle}`} />
+                  <FaEye className="text-gray-400 hover:text-gray-600" />
                 )}
               </button>
             </div>
             {touched.motDePasse && erreurs.motDePasse && (
-              <p className={errorTextStyle}>{erreurs.motDePasse}</p>
+              <p className="mt-1 text-xs text-red-500">{erreurs.motDePasse}</p>
             )}
           </div>
 
           {/* Champ Confirmer mot de passe */}
           <div>
-            <label className={labelStyle}>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
               Confirmer le mot de passe
             </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <FaLock className={iconStyle} />
+                <FaLock className="text-gray-400" />
               </div>
               <input
                 type={afficherMdp.confirmer ? 'text' : 'password'}
@@ -464,7 +398,9 @@ const SignUp = () => {
                 onChange={handleChange}
                 onBlur={handleBlur}
                 placeholder="**********"
-                className={inputPasswordStyle(touched.confirmerMotDePasse && erreurs.confirmerMotDePasse)}
+                className={`w-full pl-10 pr-10 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
+                  touched.confirmerMotDePasse && erreurs.confirmerMotDePasse ? 'border-red-500' : 'border-gray-300'
+                } bg-white text-gray-900 placeholder-gray-400`}
               />
               <button
                 type="button"
@@ -475,14 +411,14 @@ const SignUp = () => {
                 }))}
               >
                 {afficherMdp.confirmer ? (
-                  <FaEyeSlash className={`${iconStyle} ${iconHoverStyle}`} />
+                  <FaEyeSlash className="text-gray-400 hover:text-gray-600" />
                 ) : (
-                  <FaEye className={`${iconStyle} ${iconHoverStyle}`} />
+                  <FaEye className="text-gray-400 hover:text-gray-600" />
                 )}
               </button>
             </div>
             {touched.confirmerMotDePasse && erreurs.confirmerMotDePasse && (
-              <p className={errorTextStyle}>{erreurs.confirmerMotDePasse}</p>
+              <p className="mt-1 text-xs text-red-500">{erreurs.confirmerMotDePasse}</p>
             )}
           </div>
 
@@ -494,28 +430,27 @@ const SignUp = () => {
               checked={formData.accepteConditions}
               onChange={handleChange}
               onBlur={handleBlur}
-              className={checkboxStyle}
+              className="mt-1 h-4 w-4 text-orange-500 border-gray-300 rounded focus:ring-orange-500"
             />
-            <label className={`ml-2 text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+            <label className="ml-2 text-sm text-gray-600">
               J'accepte les{' '}
-              <a href="#" className={linkStyle}>
+              <a href="#" className="text-orange-500 hover:text-orange-600 font-medium">
                 conditions d'utilisation
               </a>{' '}
               et la{' '}
-              <a href="#" className={linkStyle}>
+              <a href="#" className="text-orange-500 hover:text-orange-600 font-medium">
                 politique de confidentialité
               </a>
             </label>
           </div>
           {touched.accepteConditions && erreurs.accepteConditions && (
-            <p className={`text-xs mt-1 ${isDarkMode ? 'text-red-400' : 'text-red-500'}`}>{erreurs.accepteConditions}</p>
+            <p className="text-xs mt-1 text-red-500">{erreurs.accepteConditions}</p>
           )}
 
           {/* Bouton principal */}
           <button
             type="submit"
-            className={`w-full bg-orange-500 text-white py-3 px-4 rounded-lg hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 ${isDarkMode ? 'focus:ring-offset-gray-800' : 'focus:ring-offset-white'
-              } transition-colors font-medium mt-6`}
+            className="w-full bg-orange-500 text-white py-3 px-4 rounded-lg hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-white transition-colors font-medium mt-6"
           >
             Créer mon compte
           </button>
@@ -524,17 +459,17 @@ const SignUp = () => {
         {/* Séparateur */}
         <div className="relative my-6">
           <div className="absolute inset-0 flex items-center">
-            <div className={borderStyle}></div>
+            <div className="w-full border-t border-gray-300"></div>
           </div>
           <div className="relative flex justify-center text-sm">
-            <span className={separatorStyle}>ou</span>
+            <span className="px-2 bg-white text-gray-500">ou</span>
           </div>
         </div>
 
         {/* Lien de connexion */}
-        <p className={`text-center text-sm ${textStyle}`}>
+        <p className="text-center text-sm text-gray-600">
           Vous avez déjà un compte ?{' '}
-          <Link to={'/auth/login'} className={linkStyle}>
+          <Link to={'/auth/login'} className="text-orange-500 hover:text-orange-600 font-medium">
             Se connecter
           </Link>
         </p>

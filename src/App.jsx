@@ -5,52 +5,45 @@ import SignUp from "./pages/SignUp/SignUp"
 import Userventes from "./pages/Userventes"
 import PageCategorie from './pages/CategoriePage/CategoriePage';
 import PublishProduct from "./components/PublishProduct";
+import ProductDetail from "./pages/ProductDetails/ProductDetail";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import  UserSettings from "./pages/UserSettings";
 function App() {
   const router = createBrowserRouter([
     {
-      path:'/',
-      element:<Home />
+      path: '/',
+      element: <Home />
     },
     {
-      path:'/auth/register',
-      element:<SignUp />
-    },
-    {
-
-      path:'auth/login',
-      element:<PublishProduct />
-    },
-    {
-      path:'/categorie/:categorieSlug',
-      element:<PageCategorie/>
+      path: '/auth/register',
+      element: <SignUp />
     },
     {
 
-      path:'/publier/',
-      element:<PublishProduct />
+      path: 'auth/login',
+      element: <Login />
     },
     {
-      path:'/vendre/',
-      element:<Userventes />
-
+      path: '/categorie/:categorieSlug',
+      element: <PageCategorie />
     },
     {
-      path:'/publish_annonce/',
-      element:<PublishProduct/>
-
+      path: '/publier/',
+      element: <PublishProduct />
     },
     {
-      path:'/settings/',
-      element:<UserSettings/>
-
+      path: '/vendre/',
+      element: <Userventes />
+    },
+    {
+      path: '/produit/:id',
+      element: <ProductDetail />
     }
   ])
   return (
     <>
       <Toaster />
-      <RouterProvider router={router}/>
+      <RouterProvider router={router} />
     </>
   )
 }
