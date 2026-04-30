@@ -1,7 +1,7 @@
 // src/components/CategorySection.jsx
 import  { useState, useEffect } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
-import ProductCard from "../pages/ProductDetails/ProductDetail";
+import ProductCard from "./productCard";
 import api from "../api"
 const CategorySection = ({ sousCategorie, categorieId }) => {
   const [produits, setProduits] = useState([]);
