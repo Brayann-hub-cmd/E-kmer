@@ -6,6 +6,10 @@ import Userventes from "./pages/Userventes"
 import PageCategorie from './pages/CategoriePage/CategoriePage';
 import PublishProduct from "./components/PublishProduct";
 import ProductDetail from "./pages/ProductDetails/ProductDetail";
+import MesAchats from "./Components/Userventes/MesAchats";
+import Sidebar from "./Components/Userventes/SideBar";
+import MesFavoris from "./components/Userventes/MesFavoris";
+import Parametres from "./components/Userventes/Parametres";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 function App() {
   const router = createBrowserRouter([
@@ -37,6 +41,22 @@ function App() {
     {
       path: '/produit/:id',
       element: <ProductDetail />
+    },
+    {
+      path: '/profile/',
+      element: <Userventes />
+    },
+    {
+      path: '/profile/achats',
+      element: <MesAchats />
+    },
+    {
+      path: '/profile/favoris',
+      element: <MesFavoris  />
+    },
+    {
+      path: '/profile/parametres',
+      element: <Parametres />
     }
   ])
   return (
