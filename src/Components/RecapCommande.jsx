@@ -16,7 +16,7 @@ export default function RecapCommande({ commande, livraison, onConfirm, onBack }
         <div className="border-t pt-3 space-y-1 text-sm">
           <div className="flex justify-between"><span>Sous-total</span><span>{sousTotal.toLocaleString()} FCFA</span></div>
           <div className="flex justify-between"><span>Livraison</span><span>{livraison.fraisTotal.toLocaleString()} FCFA</span></div>
-          <div className="flex justify-between font-bold text-base pt-2"><span>Total</span><span className="text-orange-500">{total.toLocaleString()} FCFA}</span></div>
+          <div className="flex justify-between font-bold text-base pt-2"><span>Total</span><span className="text-orange-500">{total.toLocaleString()} FCFA</span></div>
         </div>
         {livraison.modeLivraison === "domicile" && (
           <div className="bg-gray-50 p-3 rounded-xl text-sm"><p className="font-semibold">Adresse de livraison</p><p>{livraison.adresse.nomComplet}, {livraison.adresse.telephone}<br/>{livraison.adresse.quartier}, {livraison.adresse.ville}<br/>{livraison.adresse.adresseComplete}<br/>Service: {livraison.service.nom}</p></div>
