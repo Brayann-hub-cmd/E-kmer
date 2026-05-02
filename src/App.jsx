@@ -10,6 +10,9 @@ import MesAchats from "./Components/Userventes/MesAchats";
 import Sidebar from "./Components/Userventes/SideBar";
 import MesFavoris from "./components/Userventes/MesFavoris";
 import Parametres from "./components/Userventes/Parametres";
+import MesVentes from "./components/Userventes/MesVentes"
+import Panier from "../../../Downloads/Panier";
+import Paiement from "./pages/Paiement/Paiement";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 function App() {
   const router = createBrowserRouter([
@@ -57,6 +60,18 @@ function App() {
     {
       path: '/profile/parametres',
       element: <Parametres />
+    }, 
+    {
+      path: '/panier',
+      element: <Panier />
+    }, 
+    {
+      path: '/paiement',
+      element: <Paiement />
+    },
+    {
+      path: '/profile',
+      element: <MesVentes />
     }
   ])
   return (

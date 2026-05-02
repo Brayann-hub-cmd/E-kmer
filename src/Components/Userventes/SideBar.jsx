@@ -42,7 +42,7 @@ export default function SideBar({ user }) {
 
   // Menu items avec leurs chemins
   const menuItems = [
-    { key: "ventes",     label: "Mes ventes",  icon: FaStore,        path: "/profile/"            },
+    { key: "ventes",     label: "Mes ventes",  icon: FaStore,        path: "/profile"            },
     { key: "achats",     label: "Mes achats",  icon: FaShoppingCart, path: "/profile/achats"      },
     { key: "favoris",    label: "Mes favoris", icon: FaHeart,        path: "/profile/favoris"     },
     { key: "parametres", label: "Paramètres",  icon: FaCog,          path: "/profile/parametres"  },
