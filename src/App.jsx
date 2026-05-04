@@ -7,11 +7,10 @@ import PageCategorie from './pages/CategoriePage/CategoriePage';
 import PublishProduct from "./components/PublishProduct";
 import ProductDetail from "./pages/ProductDetails/ProductDetail";
 import MesAchats from "./Components/Userventes/MesAchats";
-import Sidebar from "./Components/Userventes/SideBar";
 import MesFavoris from "./components/Userventes/MesFavoris";
 import Parametres from "./components/Userventes/Parametres";
 import MesVentes from "./components/Userventes/MesVentes"
-import Panier from "../../../Downloads/Panier";
+import PanierCard from "./pages/Panier/Panier"
 import Paiement from "./pages/Paiement/Paiement";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 function App() {
@@ -38,16 +37,12 @@ function App() {
       element: <PublishProduct />
     },
     {
-      path: '/vendre/',
+      path: '/vendre',
       element: <Userventes />
     },
     {
       path: '/produit/:id',
       element: <ProductDetail />
-    },
-    {
-      path: '/profile/',
-      element: <Userventes />
     },
     {
       path: '/profile/achats',
@@ -63,14 +58,14 @@ function App() {
     }, 
     {
       path: '/panier',
-      element: <Panier />
+      element: <PanierCard />
     }, 
     {
       path: '/paiement',
       element: <Paiement />
     },
     {
-      path: '/profile',
+      path: '/profile/',
       element: <MesVentes />
     }
   ])

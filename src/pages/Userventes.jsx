@@ -16,13 +16,13 @@ export default function Userventes() {
         setUser(response.data);
         
         // Redirection selon si boutique existe
-        if (response.data.nom_boutique) {
+        if (response.data.username) {
           navigate("/profile");  // Mes ventes
         } else {
-          navigate("/profile/parametres");  // Créer boutique
+          navigate("/auth/login"); //login page
         }
       } catch (error) {
-        toast.error("Erreur de chargement");
+        toast.error("Connectez-vous !");
         localStorage.removeItem("token");
         navigate("/");
       } finally {

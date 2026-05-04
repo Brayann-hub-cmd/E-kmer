@@ -1,67 +1,74 @@
+// src/components/ProductCard.jsx
+import React from "react";
 import { Link } from "react-router-dom";
-import { FaMapMarkerAlt, FaCalendarAlt } from "react-icons/fa";
-function ProductCard({ product }) {
-    const getCardWidthClass = () => {
-        return "w-[200px] xs:w-[220px] sm:w-[240px] md:w-[260px] lg:w-[280px] xl:w-[300px]";
-    };
+import { FaMapMarkerAlt, FaClock } from "react-icons/fa";
 
-    const formatDate = (dateString) => {
-        const date = new Date(dateString);
-        const today = new Date();
-        const diffTime = Math.abs(today - date);
-        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+const ProductCard = ({ product }) => {
+  // Formatage du prix avec espaces
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat('fr-FR').format(price) + " FCFA";
+  };
 
-        if (diffDays === 0) return "Aujourd'hui";
-        if (diffDays === 1) return "Hier";
-        if (diffDays < 7) return `Il y a ${diffDays} jours`;
-        return date.toLocaleDateString('fr-FR');
-    };
-    return (
-        <div
-            key={product.code}
-            className={`flex-none ${getCardWidthClass()} bg-[#F2F2F2] rounded-lg sm:rounded-xl shadow hover:shadow-xl transition-all duration-300 overflow-hidden`}
-        >
-            {/* Image avec les mêmes bordures arrondies que la carte */}
-            <Link to={`/produit/${product.code}`} className="block w-full">
-                <img
-                    src={product.image}
-                    alt={product.title}
-                    className="w-full h-[120px] xs:h-[130px] sm:h-[140px] md:h-[160px] lg:h-[160px] object-cover"
-                />
-            </Link>
+  // Formatage de la date
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const today = new Date();
+    const diffTime = Math.abs(today - date);
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+    
+    if (diffDays === 0) return "Aujourd'hui";
+    if (diffDays === 1) return "Hier";
+    if (diffDays < 7) return `Il y a ${diffDays} jours`;
+    return date.toLocaleDateString('fr-FR');
+  };
 
-            {/* Contenu avec padding */}
-            <div className="p-2.5 sm:p-3 md:p-4">
-                <Link to={`/produit/${product.code}`}>
-                    <h3 className="font-semibold text-xs xs:text-sm sm:text-base md:text-lg mb-1 line-clamp-1 hover:text-orange-500 transition-colors">
-                        {product.title}
-                    </h3>
-                </Link>
+  return (
+    <div className="bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden group">
+      {/* Image */}
+      <Link to={`/produit/${product.code}`} className="block overflow-hidden">
+        <img
+          src={product.image ? product.image : "/placeholder-image.jpg"}
+          alt={product.title}
+          className="w-full h-40 object-cover bg-gray-100 group-hover:scale-105 transition-transform duration-300"
+        />
+      </Link>
 
-                <p className="text-orange-500 font-bold text-sm xs:text-base sm:text-lg md:text-xl mb-1.5 sm:mb-2">
-                    {product.prix}
-                </p>
+      {/* Contenu */}
+      <div className="p-3">
+        {/* Titre */}
+        <Link to={`/produit/${product.code}`} className="block hover:text-orange-500 transition-colors">
+          <h3 className="text-sm font-semibold text-gray-800 line-clamp-1 mb-1">
+            {product.title}
+          </h3>
+        </Link>
 
-                {/* Lieu avec icône */}
-                <div className="flex items-center text-gray-600 text-[10px] xs:text-xs sm:text-sm mb-1">
-                    <FaMapMarkerAlt className="text-orange-500 mr-1 flex-shrink-0 text-[10px] xs:text-xs sm:text-sm" />
-                    <span className="truncate">{product.localisation}</span>
-                </div>
+        {/* Prix */}
+        <p className="text-orange-500 font-bold text-base mb-2">
+          {formatPrice(product.prix)}
+        </p>
 
-                {/* Date avec icône */}
-                <div className="flex items-center text-gray-500 text-[10px] xs:text-xs sm:text-sm mb-2 sm:mb-3">
-                    <FaCalendarAlt className="text-orange-500 mr-1 flex-shrink-0 text-[10px] xs:text-xs sm:text-sm" />
-                    <span className="truncate">{formatDate(product.created_at)}</span>
-                </div>
-
-                <Link
-                    to={`/produit/${product.code}`}
-                    className="inline-block mt-1 bg-orange-500 text-white text-[10px] xs:text-xs sm:text-sm md:text-base px-2 xs:px-3 sm:px-4 py-1 xs:py-1.5 sm:py-2 rounded-lg hover:bg-orange-600 transition-colors w-full text-center font-medium"
-                >
-                    Voir les détails
-                </Link>
-            </div>
+        {/* Localisation */}
+        <div className="flex items-center gap-1 mb-1">
+          <FaMapMarkerAlt className="text-orange-500 text-[10px]" />
+          <span className="text-gray-500 text-xs truncate">{product.localisation}</span>
         </div>
-    )
-}
+
+        {/* Date */}
+        <div className="flex items-center gap-1 mb-3">
+          <FaClock className="text-orange-500 text-[10px]" />
+          <span className="text-gray-400 text-xs">{formatDate(product.created_at)}</span>
+        </div>
+
+        {/* Bouton */}
+        <Link
+          to={`/produit/${product.code}`}
+          className="block w-full text-center bg-orange-500 hover:bg-orange-600 text-white text-xs font-medium py-2 rounded-lg transition-colors"
+        >
+          Voir les détails
+        </Link>
+      </div>
+    </div>
+  );
+};
+
 export default ProductCard;

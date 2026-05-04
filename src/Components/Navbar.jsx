@@ -5,7 +5,7 @@ import {
   FaUser,
   FaShoppingCart,
   FaChevronDown,
-  FaSignOutAlt,  // ← AJOUT : icône déconnexion
+  FaSignOutAlt, 
 } from "react-icons/fa";
 import api from "../api";
 
@@ -29,22 +29,21 @@ export default function Navbar({ setTitle, setCategorie }) {
   const navigate = useNavigate();
   const [categorySelected, setCategorySelected] = useState("CAT_000")
 
-  // ── AJOUT : état de connexion ──────────────────────────────────
+  //AJOUT : état de connexion 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
     // Vérifie si un token existe dans le localStorage
-    const token = localStorage.getItem("access_token");
+    const token = localStorage.getItem("token");
     setIsLoggedIn(!!token);
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem("access_token");
-    localStorage.removeItem("refresh_token");
+    localStorage.removeItem("token");
+    // localStorage.removeItem("refresh_token");
     setIsLoggedIn(false);
     navigate("/auth/login");
   };
-  // ──────────────────────────────────────────────────────────────
 
   // Refs séparées pour chaque vue
   const categoryDesktopRef = useRef(null);
@@ -199,7 +198,6 @@ export default function Navbar({ setTitle, setCategorie }) {
               <span>Se connecter</span>
             </Link>
           )}
-          {/* ─────────────────────────────────────────────────── */}
 
           {/* REGISTER */}
           <Link
@@ -219,7 +217,7 @@ export default function Navbar({ setTitle, setCategorie }) {
           </Link>
         </div>
 
-        {/* ===== TABLET LAYOUT (md à lg) ===== */}
+        {/*  TABLET LAYOUT (md à lg)  */}
         <div className="hidden md:flex lg:hidden items-center justify-between gap-2">
           <Link to="/"><img src="/logo.png" alt="eKMER" className="h-8 w-auto" /></Link>
 
@@ -253,7 +251,7 @@ export default function Navbar({ setTitle, setCategorie }) {
             )}
           </div>
 
-          {/* ── AJOUT : Se connecter / Se déconnecter (Tablet) ── */}
+          {/* AJOUT : Se connecter / Se déconnecter (Tablet) */}
           {isLoggedIn ? (
             <button onClick={handleLogout} className="hover:text-orange-500 transition-colors">
               <FaSignOutAlt className="text-sm" />
@@ -263,7 +261,6 @@ export default function Navbar({ setTitle, setCategorie }) {
               <FaUser className="text-sm" />
             </Link>
           )}
-          {/* ─────────────────────────────────────────────────── */}
 
           <Link to={'/auth/register'} className="text-xs font-medium hover:text-orange-500 whitespace-nowrap">
             S'inscrire

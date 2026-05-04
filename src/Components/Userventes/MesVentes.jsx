@@ -5,67 +5,71 @@ import { FaCheck, FaEdit, FaTrash, FaEye } from "react-icons/fa";
 import SideBar from "./SideBar";
 import api from "../../api";
 import toast from "react-hot-toast";
-
+const LINK = import.meta.env.VITE_API_URL
 // ── Carte produit en vente ───────────────────────────────────
 const SellCard = ({ product, onEdit, onDelete, onView }) => {
   return (
     <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-      <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
-        
-        {/* Image */}
-        <img
-          src={product.image || "/placeholder.webp"}
-          alt={product.titre}
-          className="w-24 h-24 object-cover rounded-lg flex-shrink-0"
-        />
+      {
+        product.lignes.map((ligne) => (
+          <div key={ligne.id} className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
 
-        {/* Infos */}
-        <div className="flex-1">
-          <h3 className="font-semibold text-lg text-gray-800">{product.titre}</h3>
-          <p className="text-orange-500 font-bold text-lg">{product.prix.toLocaleString()} FCFA</p>
-          <div className="flex flex-wrap gap-4 mt-1 text-sm text-gray-500">
-            <p>Stock: <strong className="text-gray-700">{product.qte} unités</strong></p>
-            <p>Vendus: <strong className="text-gray-700">{product.vendus || 0}</strong></p>
-            <p>Vues: <strong className="text-gray-700">{product.vues || 0}</strong></p>
-          </div>
-        </div>
+            {/* Image */}
+            <img
+              src={LINK+ligne.annonce_image}
+              alt={ligne.annonce_titre}
+              className="w-24 h-24 object-cover rounded-lg flex-shrink-0"
+            />
 
-        {/* Statut + Actions */}
-        <div className="flex flex-col sm:flex-row gap-3 items-end sm:items-center">
-          {/* Statut */}
-          <div className="flex items-center gap-2 bg-green-100 px-3 py-1 rounded-full">
-            <div className="w-2 h-2 bg-green-600 rounded-full"></div>
-            <span className="text-green-700 text-sm font-medium">Actif</span>
-          </div>
+            {/* Infos */}
+            <div className="flex-1">
+              <h3 className="font-semibold text-lg text-gray-800">{ligne.annonce_titre}</h3>
+              <p className="text-orange-500 font-bold text-lg">{(ligne.prix_unitaire ?? 0).toLocaleString()} FCFA</p>
+              <div className="flex flex-wrap gap-4 mt-1 text-sm text-gray-500">
+                <p>Stock: <strong className="text-gray-700">{ligne.annonce_qte} unités</strong></p>
+                <p>Vendus: <strong className="text-gray-700">{ligne.quantite || 0}</strong></p>
+                <p>Vues: <strong className="text-gray-700">{ligne.vues || 0}</strong></p>
+              </div>
+            </div>
 
-          {/* Actions */}
-          <div className="flex gap-2">
-            <button
-              onClick={() => onEdit(product.code)}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg text-sm flex items-center gap-1 transition-colors"
-            >
-              <FaEdit /> Modifier
-            </button>
-            <button
-              onClick={() => onView(product.code)}
-              className="bg-gray-500 hover:bg-gray-600 text-white px-3 py-1.5 rounded-lg text-sm flex items-center gap-1 transition-colors"
-            >
-              <FaEye /> Voir
-            </button>
-            <button
-              onClick={() => onDelete(product.code, product.titre)}
-              className="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded-lg text-sm flex items-center gap-1 transition-colors"
-            >
-              <FaTrash /> Supprimer
-            </button>
+            {/* Statut + Actions */}
+            <div className="flex flex-col sm:flex-row gap-3 items-end sm:items-center">
+              {/* Statut */}
+              <div className="flex items-center gap-2 bg-green-100 px-3 py-1 rounded-full">
+                <div className="w-2 h-2 bg-green-600 rounded-full"></div>
+                <span className="text-green-700 text-sm font-medium">{product.status}</span>
+              </div>
+
+              {/* Actions */}
+              <div className="flex gap-2">
+                <button
+                  onClick={() => onEdit(product.code)}
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg text-sm flex items-center gap-1 transition-colors"
+                >
+                  <FaEdit /> Modifier
+                </button>
+                <button
+                  onClick={() => onView(product.code)}
+                  className="bg-gray-500 hover:bg-gray-600 text-white px-3 py-1.5 rounded-lg text-sm flex items-center gap-1 transition-colors"
+                >
+                  <FaEye /> Voir
+                </button>
+                <button
+                  onClick={() => onDelete(product.code, product.annonce_titre)}
+                  className="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded-lg text-sm flex items-center gap-1 transition-colors"
+                >
+                  <FaTrash /> Supprimer
+                </button>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
+        ))
+      }
     </div>
   );
 };
 
-// ── Page principale Mes ventes ────────────────────────────────
+// Page principale Mes ventes 
 export default function MySell() {
   const [user, setUser] = useState(null);
   const [products, setProducts] = useState([]);
@@ -80,17 +84,9 @@ export default function MySell() {
         const userRes = await api.get("auth/profile/");
         setUser(userRes.data);
 
-        // Récupérer les produits du vendeur
-        // TODO: Remplacer par l'endpoint réel
-        // const productsRes = await api.get("vendeur/annonces/");
-        // setProducts(productsRes.data);
-        
-        // Données mock pour le test
-        setProducts([
-          { code: "A001", titre: "iPhone 14 Pro", prix: 450000, qte: 3, vendus: 2, vues: 245, image: "/OIP.webp" },
-          { code: "A002", titre: "Air Jordan", prix: 120000, qte: 5, vendus: 1, vues: 128, image: "/OIP.webp" },
-          { code: "A003", titre: "Casque Sony", prix: 150000, qte: 0, vendus: 4, vues: 89, image: "/OIP.webp" },
-        ]);
+        const productsRes = await api.get("ventes/vendeur/");
+        setProducts(productsRes.data);
+
       } catch (error) {
         console.error("Erreur:", error);
         toast.error("Erreur de chargement");
@@ -132,7 +128,7 @@ export default function MySell() {
   return (
     <div className="min-h-screen bg-gray-100">
       <div className="flex flex-col md:flex-row">
-        
+
         {/* Sidebar */}
         <div className="w-full md:w-auto">
           <SideBar user={user} activeTab="ventes" />
