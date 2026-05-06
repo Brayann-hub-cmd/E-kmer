@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import logo from '../../public/logo.png'
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 
@@ -97,11 +96,9 @@ const Footer = () => {
                     <div className="space-y-4" data-aos="fade-up">
                         <div className="relative w-64 right-9">
 
-                            <Link to="/">
-                                <img src="/logo2 1.png" alt="Logo" />
-                            </Link>
+                            
 
-                            <a href='/' className='cursor-pointer'><img src={logo} alt="Logo" /></a>
+                            <a href='/' className='cursor-pointer'><img src="/logo.png" alt="Logo" /></a>
 
                         </div>
                         <p className="text-gray-300 text-sm">
