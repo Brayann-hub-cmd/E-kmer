@@ -6,6 +6,12 @@ import Userventes from "./pages/Userventes"
 import PageCategorie from './pages/CategoriePage/CategoriePage';
 import PublishProduct from "./components/PublishProduct";
 import ProductDetail from "./pages/ProductDetails/ProductDetail";
+import MesAchats from "./Components/Userventes/MesAchats";
+import MesFavoris from "./components/Userventes/MesFavoris";
+import Parametres from "./components/Userventes/Parametres";
+import MesVentes from "./components/Userventes/MesVentes"
+import PanierCard from "./pages/Panier/Panier"
+import Paiement from "./pages/Paiement/Paiement";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import  UserSettings from "./pages/UserSettings";
 function App() {
@@ -32,12 +38,36 @@ function App() {
       element: <PublishProduct />
     },
     {
-      path: '/vendre/',
+      path: '/vendre',
       element: <Userventes />
     },
     {
       path: '/produit/:id',
       element: <ProductDetail />
+    },
+    {
+      path: '/profile/achats',
+      element: <MesAchats />
+    },
+    {
+      path: '/profile/favoris',
+      element: <MesFavoris  />
+    },
+    {
+      path: '/profile/parametres',
+      element: <Parametres />
+    }, 
+    {
+      path: '/panier',
+      element: <PanierCard />
+    }, 
+    {
+      path: '/paiement',
+      element: <Paiement />
+    },
+    {
+      path: '/profile/',
+      element: <MesVentes />
     }
   ])
   return (

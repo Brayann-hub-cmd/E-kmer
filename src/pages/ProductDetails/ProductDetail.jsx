@@ -1,7 +1,7 @@
 // src/pages/ProductDetail.jsx
 import React, { useState, useEffect } from 'react';
 import Footer from '../../Components/Footer';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { 
   FaShoppingCart, 
   FaPlusCircle, 
@@ -94,12 +94,30 @@ const ProductDetail = () => {
     setIsFavorite(!isFavorite);
   };
 
-  const handleAddToCart = () => {
-    console.log(`Ajouté au panier: ${product.titre}, Quantité: ${quantity}, Code: ${product.code}`);
+  const handleAddToCart = async () => {
+    try {
+      // Appel API pour ajouter au panier
+      await api.post("panier/", {
+        produit_id: product.code,
+        quantite: quantity
+      });
+      console.log(`Ajouté au panier: ${product.titre}, Quantité: ${quantity}, Code: ${product.code}`);
+    } catch (error) {
+      console.error("Erreur ajout au panier:", error);
+    }
   };
 
-  const handleBuyNow = () => {
-    console.log(`Achat immédiat: ${product.titre}, Quantité: ${quantity}`);
+  const handleBuyNow = async () => {
+    try {
+      // Ajouter au panier puis rediriger vers paiement
+      await api.post("panier/", {
+        produit_id: product.code,
+        quantite: quantity
+      });
+      navigate("/paiement");
+    } catch (error) {
+      console.error("Erreur achat immédiat:", error);
+    }
   };
 
   // Découper la description en paragraphes
@@ -270,21 +288,23 @@ const ProductDetail = () => {
               
               {/* Boutons d'action */}
               <div className="flex flex-col gap-3 mt-4">
-                <button
-                  onClick={handleBuyNow}
-                  className="flex items-center justify-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-xl py-3 px-4 transition-colors w-full"
-                >
-                  <FaShoppingCart className="text-base" />
-                  Acheter maintenant
-                </button>
-                
-                <button
+                <Link
+                  to="/panier"
                   onClick={handleAddToCart}
                   className="flex items-center justify-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-xl py-3 px-4 transition-colors w-full"
                 >
-                  <FaPlusCircle className="text-base" />
+                  <FaShoppingCart className="text-base" />
                   Ajouter au panier
-                </button>
+                </Link>
+                
+                <Link
+                  to="/paiement"
+                  onClick={handleBuyNow}
+                  className="flex items-center justify-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-xl py-3 px-4 transition-colors w-full"
+                >
+                  <FaPlusCircle className="text-base" />
+                  Acheter maintenant
+                </Link>
                 
                 <button
                   onClick={toggleFavorite}

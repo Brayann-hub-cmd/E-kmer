@@ -7,26 +7,27 @@ import { useMemo } from "react";
 function PopularOffers({ title, categorie }) {
   const scrollContainerRef = useRef(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(true);
+  const [canScrollRight, setCanScrollRight] = useState(false);
   const [data, setData] = useState([])
   const [dataR, setDataR] = useState([])
+  const [showButtons, setShowButtons] = useState(false); // ← Nouvel état
+
   useEffect(() => {
     const getAnnonces = async () => {
       try {
         const response = await api.get('annonces/')
-        setData((data) => response.data)
-        setDataR((dataR) => response.data)
+        setData(response.data)
+        setDataR(response.data)
       } catch (error) {
         console.error("Erreur chargement produits:", error);
       }
     }
-
     getAnnonces();
   }, [])
 
   const filtered = useMemo(() => {
     if (!Array.isArray(data)) return [];
-    return console.log(data), data.map((annonce) => ({
+    return data.map((annonce) => ({
       code: annonce.code,
       title: annonce.titre,
       prix: annonce.prix,
@@ -42,14 +43,23 @@ function PopularOffers({ title, categorie }) {
     }));
   }, [data]);
 
-  // Vérifier si on peut défiler
+  // Vérifier si on peut défiler ET si les boutons sont nécessaires
   const checkScroll = () => {
     if (scrollContainerRef.current) {
       const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
+      const hasScroll = scrollWidth > clientWidth; // ← Vérifie si le contenu dépasse
+      setShowButtons(hasScroll);
       setCanScrollLeft(scrollLeft > 0);
       setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10);
     }
   };
+
+  // Vérifier au chargement et au redimensionnement
+  useEffect(() => {
+    checkScroll();
+    window.addEventListener('resize', checkScroll);
+    return () => window.removeEventListener('resize', checkScroll);
+  }, [filtered]); // ← Re-vérifie quand les données changent
 
   const scroll = (direction) => {
     if (scrollContainerRef.current) {
@@ -66,6 +76,7 @@ function PopularOffers({ title, categorie }) {
       });
     }
   };
+
   // Formatage de la date
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -85,9 +96,8 @@ function PopularOffers({ title, categorie }) {
   };
 
   const handleSearch = async () => {
-
     try {
-      console.log("Recherche: ",title);
+      console.log("Recherche: ", title);
       
       let response = []
       if (categorie.code !== "CAT_000") {
@@ -98,7 +108,7 @@ function PopularOffers({ title, categorie }) {
         const matchTitle = await api.get(`annonce/search/?titre=${title}`)
         response = matchTitle.data
       }
-      console.log("dans popular offer",response);
+      console.log("dans popular offer", response);
       setData(response);
     } catch (error) {
       console.error("Erreur de recherche:", error);
@@ -106,13 +116,11 @@ function PopularOffers({ title, categorie }) {
     }
   };
 
-useEffect(
-  ()=>{
-    if(title){
+  useEffect(() => {
+    if (title) {
       handleSearch()
     }
-  },[title]
-)
+  }, [title])
 
   return (
     <section className="py-4 sm:py-6 md:py-8 lg:py-10 px-3 sm:px-4 md:px-6 relative bg-gray-50">
@@ -125,34 +133,41 @@ useEffect(
 
       {/* Carrousel Container */}
       <div className="relative group">
-        {/* Boutons de navigation */}
-        <button
-          onClick={() => scroll('left')}
-          disabled={!canScrollLeft}
-          className={`absolute left-0 top-1/2 -translate-y-1/2 z-20 bg-white hover:bg-white text-gray-800 p-2 sm:p-3 rounded-full shadow-lg transition-all duration-300 -ml-3 sm:-ml-4 ${canScrollLeft
-            ? 'opacity-100 hover:scale-110'
-            : 'opacity-30 cursor-not-allowed'
-            }`}
-          aria-label="Défiler vers la gauche"
-        >
-          <FaChevronLeft className="text-base sm:text-lg md:text-xl" />
-        </button>
+        {/* Boutons de navigation - Affichage conditionnel */}
+        {showButtons && (
+          <>
+            <button
+              onClick={() => scroll('left')}
+              disabled={!canScrollLeft}
+              className={`absolute left-0 top-1/2 -translate-y-1/2 z-20 bg-white hover:bg-white text-gray-800 p-2 sm:p-3 rounded-full shadow-lg transition-all duration-300 -ml-3 sm:-ml-4 ${
+                canScrollLeft
+                  ? 'opacity-100 hover:scale-110'
+                  : 'opacity-30 cursor-not-allowed'
+              }`}
+              aria-label="Défiler vers la gauche"
+            >
+              <FaChevronLeft className="text-base sm:text-lg md:text-xl" />
+            </button>
 
-        <button
-          onClick={() => scroll('right')}
-          disabled={!canScrollRight}
-          className={`absolute right-0 top-1/2 -translate-y-1/2 z-20 bg-white/90 hover:bg-white text-gray-800 p-2 sm:p-3 rounded-full shadow-lg transition-all duration-300 -mr-3 sm:-mr-4 ${canScrollRight
-            ? 'opacity-100 hover:scale-110'
-            : 'opacity-30 cursor-not-allowed'
-            }`}
-          aria-label="Défiler vers la droite"
-        >
-          <FaChevronRight className="text-base sm:text-lg md:text-xl" />
-        </button>
+            <button
+              onClick={() => scroll('right')}
+              disabled={!canScrollRight}
+              className={`absolute right-0 top-1/2 -translate-y-1/2 z-20 bg-white/90 hover:bg-white text-gray-800 p-2 sm:p-3 rounded-full shadow-lg transition-all duration-300 -mr-3 sm:-mr-4 ${
+                canScrollRight
+                  ? 'opacity-100 hover:scale-110'
+                  : 'opacity-30 cursor-not-allowed'
+              }`}
+              aria-label="Défiler vers la droite"
+            >
+              <FaChevronRight className="text-base sm:text-lg md:text-xl" />
+            </button>
+          </>
+        )}
 
         {/* Carrousel défilant horizontalement */}
         <div
           ref={scrollContainerRef}
+          onScroll={checkScroll}
           className="flex overflow-x-auto gap-3 sm:gap-4 pb-4 scrollbar-hide scroll-smooth touch-pan-x"
           style={{
             scrollbarWidth: 'none',
@@ -210,10 +225,12 @@ useEffect(
         </div>
       </div>
 
-      {/* Message de défilement (optionnel) */}
-      <p className="text-center text-gray-400 text-xs mt-4 sm:hidden">
-        ← Faites glisser pour voir plus d'articles →
-      </p>
+      {/* Message de défilement (optionnel) - visible seulement si boutons cachés ET contenu dépasse */}
+      {!showButtons && scrollContainerRef.current?.scrollWidth > scrollContainerRef.current?.clientWidth && (
+        <p className="text-center text-gray-400 text-xs mt-4 sm:hidden">
+          ← Faites glisser pour voir plus d'articles →
+        </p>
+      )}
 
       {/* Styles CSS personnalisés */}
       <style>{`
@@ -226,7 +243,6 @@ useEffect(
           -webkit-box-orient: vertical;
           overflow: hidden;
         }
-        /* Breakpoint personnalisé pour très petits écrans */
         @media (min-width: 480px) {
           .xs\\:w-\\[220px\\] {
             width: 220px;

@@ -5,8 +5,10 @@ import {
   FaUser,
   FaShoppingCart,
   FaChevronDown,
+  FaSignOutAlt, 
 } from "react-icons/fa";
 import api from "../api";
+
 export default function Navbar({ setTitle, setCategorie }) {
   const [category, setCategory] = useState({
     code: "CAT_000",
@@ -26,16 +28,34 @@ export default function Navbar({ setTitle, setCategorie }) {
   const searchRef = useRef(null);
   const navigate = useNavigate();
   const [categorySelected, setCategorySelected] = useState("CAT_000")
+
+  //AJOUT : état de connexion 
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    // Vérifie si un token existe dans le localStorage
+    const token = localStorage.getItem("token");
+    setIsLoggedIn(!!token);
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    // localStorage.removeItem("refresh_token");
+    setIsLoggedIn(false);
+    navigate("/auth/login");
+  };
+
   // Refs séparées pour chaque vue
   const categoryDesktopRef = useRef(null);
   const categoryTabletRef = useRef(null);
   const categoryMobileRef = useRef(null);
-  
+
   const languageDesktopRef = useRef(null);
   const languageTabletRef = useRef(null);
   const languageMobileRef = useRef(null);
-  useEffect(()=>{
-    const getCategorie = async ()=>{
+
+  useEffect(() => {
+    const getCategorie = async () => {
       try {
         const response = await api.get("categories/")
         setCategories((categories) => response.data)
@@ -43,7 +63,6 @@ export default function Navbar({ setTitle, setCategorie }) {
         toast.error("Une erreur est survenue lors de la collection des catégories de produits:" + error, { position: 'top-center' })
       }
     }
-
     getCategorie();
   }, [])
 
@@ -97,9 +116,10 @@ export default function Navbar({ setTitle, setCategorie }) {
   return (
     <header className="bg-black text-white sticky top-0 z-50">
       <div className="container mx-auto px-3 sm:px-4 py-3">
-        
+
         {/* ===== DESKTOP LAYOUT ===== */}
         <div className="hidden lg:flex items-center justify-between gap-4">
+
           {/* LOGO */}
           <Link to="/" className="flex-shrink-0">
             <img src="/logo.png" alt="eKMER" className="h-10 w-auto" />
@@ -160,16 +180,26 @@ export default function Navbar({ setTitle, setCategorie }) {
             )}
           </div>
 
-          {/* LOGIN - Transformé en Link */}
-          <Link
-            to="auth/login"
-            className="flex items-center gap-2 text-sm hover:text-orange-500 whitespace-nowrap transition-colors"
-          >
-            <FaUser className="text-sm" />
-            <span>Se connecter</span>
-          </Link>
+          {/* ── AJOUT : Se connecter / Se déconnecter (Desktop) ── */}
+          {isLoggedIn ? (
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-2 text-sm hover:text-orange-500 whitespace-nowrap transition-colors"
+            >
+              <FaSignOutAlt className="text-sm" />
+              <span>Se déconnecter</span>
+            </button>
+          ) : (
+            <Link
+              to="auth/login"
+              className="flex items-center gap-2 text-sm hover:text-orange-500 whitespace-nowrap transition-colors"
+            >
+              <FaUser className="text-sm" />
+              <span>Se connecter</span>
+            </Link>
+          )}
 
-          {/* REGISTER - Transformé en Link */}
+          {/* REGISTER */}
           <Link
             to="auth/register"
             className="text-sm font-medium hover:text-orange-500 whitespace-nowrap transition-colors"
@@ -177,7 +207,7 @@ export default function Navbar({ setTitle, setCategorie }) {
             S'inscrire
           </Link>
 
-          {/* CART - Transformé en Link */}
+          {/* CART */}
           <Link
             to={'/panier'}
             className="relative hover:text-orange-500 transition-colors"
@@ -187,7 +217,7 @@ export default function Navbar({ setTitle, setCategorie }) {
           </Link>
         </div>
 
-        {/* ===== TABLET LAYOUT (md à lg) ===== */}
+        {/*  TABLET LAYOUT (md à lg)  */}
         <div className="hidden md:flex lg:hidden items-center justify-between gap-2">
           <Link to="/"><img src="/logo.png" alt="eKMER" className="h-8 w-auto" /></Link>
 
@@ -221,17 +251,21 @@ export default function Navbar({ setTitle, setCategorie }) {
             )}
           </div>
 
-          {/* LOGIN - Tablet transformé en Link */}
-          <Link to={'/auth/login'} className="hover:text-orange-500">
-            <FaUser className="text-sm" />
-          </Link>
+          {/* AJOUT : Se connecter / Se déconnecter (Tablet) */}
+          {isLoggedIn ? (
+            <button onClick={handleLogout} className="hover:text-orange-500 transition-colors">
+              <FaSignOutAlt className="text-sm" />
+            </button>
+          ) : (
+            <Link to={'/auth/login'} className="hover:text-orange-500">
+              <FaUser className="text-sm" />
+            </Link>
+          )}
 
-          {/* REGISTER - Tablet transformé en Link */}
           <Link to={'/auth/register'} className="text-xs font-medium hover:text-orange-500 whitespace-nowrap">
             S'inscrire
           </Link>
 
-          {/* CART - Tablet transformé en Link */}
           <Link to={'/panier'} className="relative hover:text-orange-500">
             <FaShoppingCart className="text-sm" />
             <span className="absolute -top-2 -right-2 bg-orange-500 text-white text-[10px] rounded-full w-4 h-4 flex items-center justify-center">{cartCount}</span>
@@ -253,17 +287,22 @@ export default function Navbar({ setTitle, setCategorie }) {
                 )}
               </div>
 
-              {/* LOGIN - Mobile transformé en Link */}
-              <Link to={'/auth/login'} className="hover:text-orange-500">
-                <FaUser className="text-sm" />
-              </Link>
+              {/* ── AJOUT : Se connecter / Se déconnecter (Mobile) ── */}
+              {isLoggedIn ? (
+                <button onClick={handleLogout} className="hover:text-orange-500 transition-colors">
+                  <FaSignOutAlt className="text-sm" />
+                </button>
+              ) : (
+                <Link to={'/auth/login'} className="hover:text-orange-500">
+                  <FaUser className="text-sm" />
+                </Link>
+              )}
+              {/* ─────────────────────────────────────────────────── */}
 
-              {/* REGISTER - Mobile transformé en Link */}
               <Link to={'/auth/register'} className="text-xs font-medium hover:text-orange-500 whitespace-nowrap">
                 S'inscrire
               </Link>
 
-              {/* CART - Mobile transformé en Link */}
               <Link to={'/panier'} className="relative hover:text-orange-500">
                 <FaShoppingCart className="text-sm" />
                 <span className="absolute -top-2 -right-2 bg-orange-500 text-white text-[8px] rounded-full w-3.5 h-3.5 flex items-center justify-center">{cartCount}</span>
@@ -276,7 +315,7 @@ export default function Navbar({ setTitle, setCategorie }) {
             <form onSubmit={handleSearch} className="flex items-center bg-gray-100 rounded-lg h-10">
               <div className="relative h-full" ref={categoryMobileRef}>
                 <button type="button" onClick={() => setIsCategoryOpen(!isCategoryOpen)} className="flex items-center gap-1 px-2 text-gray-700 bg-gray-200 h-full text-xs whitespace-nowrap rounded-l-lg">
-                  <span className="truncate max-w-[60px]">{category.name}</span>
+                  <span className="truncate max-w-[60px]">{category.nom}</span>
                   <FaChevronDown className="text-[10px]" />
                 </button>
                 {isCategoryOpen && (
