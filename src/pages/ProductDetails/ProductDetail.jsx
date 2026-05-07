@@ -12,6 +12,7 @@ import {
   FaUserCircle
 } from 'react-icons/fa';
 import api from '../../api';
+import BackToHome from '../../components/BackToHome';
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -193,6 +194,10 @@ const ProductDetail = () => {
       {/* <Navbar /> - À décommenter quand le composant Navbar sera intégré */}
       
       <main className="max-w-6xl mx-auto px-4 py-8">
+        
+        {/* ← BOUTON RETOUR ACCUEIL */}
+        <BackToHome />
+
         {/* Grille principale */}
         <div className="grid grid-cols-1 lg:grid-cols-[65%_35%] gap-8">
           

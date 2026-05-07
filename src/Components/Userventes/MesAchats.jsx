@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import SideBar from "./SideBar";
+import BackToHome from "../BackToHome";
 import api from "../../api";
 import toast from "react-hot-toast";
 import { FaCheckCircle, FaClock, FaTruck, FaTimesCircle } from "react-icons/fa";
@@ -117,6 +118,10 @@ export default function MesAchats() {
 
         {/* Contenu principal */}
         <div className="flex-1 p-4 sm:p-6">
+          
+          {/* ← BOUTON RETOUR ACCUEIL */}
+          <BackToHome />
+
           <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6">
             Mes achats
           </h1>

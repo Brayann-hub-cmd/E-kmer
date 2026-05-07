@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import SideBar from "./SideBar";
+import BackToHome from "../../components/BackToHome";
 import api from "../../api";
 import toast from "react-hot-toast";
 import { FaShoppingCart, FaHeart } from "react-icons/fa";
@@ -84,6 +85,10 @@ export default function MesFavoris() {
         {user ? <SideBar user={user} activeTab="favoris" /> : <SideBar activeTab="favoris" />}
 
         <div className="flex-1 p-6">
+          
+          {/* ← BOUTON RETOUR ACCUEIL */}
+          <BackToHome />
+
           <h1 className="text-2xl font-bold text-gray-900 mb-6">Mes favoris</h1>
 
           {favoris.length === 0 ? (

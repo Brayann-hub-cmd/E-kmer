@@ -3,9 +3,11 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaCheck, FaEdit, FaTrash, FaEye } from "react-icons/fa";
 import SideBar from "./SideBar";
+import BackToHome from "../BackToHome";
 import api from "../../api";
 import toast from "react-hot-toast";
 const LINK = import.meta.env.VITE_API_URL
+
 // ── Carte produit en vente ───────────────────────────────────
 const SellCard = ({ product, onEdit, onDelete, onView }) => {
   return (
@@ -136,6 +138,10 @@ export default function MySell() {
 
         {/* Contenu principal */}
         <div className="flex-1 p-4 sm:p-6">
+          
+          {/* ← BOUTON RETOUR ACCUEIL */}
+          <BackToHome />
+
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-2xl font-bold text-gray-800">Mes produits en vente</h1>
             <button

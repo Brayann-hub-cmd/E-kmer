@@ -5,7 +5,8 @@ import {
   FaUser,
   FaShoppingCart,
   FaChevronDown,
-  FaSignOutAlt, 
+  FaSignOutAlt,
+  FaTimes,
 } from "react-icons/fa";
 import api from "../api";
 
@@ -24,32 +25,32 @@ export default function Navbar({ setTitle, setCategorie }) {
   const [showResults, setShowResults] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [categories, setCategories] = useState([])
+  const [categories, setCategories] = useState([]);
   const searchRef = useRef(null);
   const navigate = useNavigate();
-  const [categorySelected, setCategorySelected] = useState("CAT_000")
+  const [categorySelected, setCategorySelected] = useState("CAT_000");
 
-  //AJOUT : état de connexion 
+  // État de connexion
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  // État pour la modale de confirmation de déconnexion
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   useEffect(() => {
-    // Vérifie si un token existe dans le localStorage
     const token = localStorage.getItem("token");
     setIsLoggedIn(!!token);
   }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
-    // localStorage.removeItem("refresh_token");
     setIsLoggedIn(false);
+    setShowLogoutModal(false);
     navigate("/auth/login");
   };
 
-  // Refs séparées pour chaque vue
+  // Refs
   const categoryDesktopRef = useRef(null);
   const categoryTabletRef = useRef(null);
   const categoryMobileRef = useRef(null);
-
   const languageDesktopRef = useRef(null);
   const languageTabletRef = useRef(null);
   const languageMobileRef = useRef(null);
@@ -57,23 +58,22 @@ export default function Navbar({ setTitle, setCategorie }) {
   useEffect(() => {
     const getCategorie = async () => {
       try {
-        const response = await api.get("categories/")
-        setCategories((categories) => response.data)
+        const response = await api.get("categories/");
+        setCategories(response.data);
       } catch (error) {
-        toast.error("Une erreur est survenue lors de la collection des catégories de produits:" + error, { position: 'top-center' })
+        console.error("Erreur chargement catégories:", error);
       }
-    }
+    };
     getCategorie();
-  }, [])
+  }, []);
 
   const handleSearch = async (e) => {
     e.preventDefault();
     if (!searchTerm.trim()) return;
-
     setIsSearching(true);
     setShowResults(true);
-    setTitle(searchTerm)
-    setCategorie(categorySelected)
+    setTitle(searchTerm);
+    setCategorie(categorySelected);
     try {
     } catch (error) {
       console.error("Erreur de recherche:", error);
@@ -99,7 +99,7 @@ export default function Navbar({ setTitle, setCategorie }) {
 
   const handleCategoryChange = (selectedCategory) => {
     setCategorySelected(selectedCategory);
-    setCategory(selectedCategory)
+    setCategory(selectedCategory);
     setIsCategoryOpen(false);
   };
 
@@ -112,6 +112,42 @@ export default function Navbar({ setTitle, setCategorie }) {
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
   const closeMenu = () => setMenuOpen(false);
+
+  // Modale de confirmation de déconnexion
+  const LogoutModal = () => (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm">
+      <div className="bg-white rounded-2xl shadow-xl max-w-md w-full mx-4 overflow-hidden">
+        <div className="flex justify-between items-center p-4 border-b border-gray-200">
+          <h3 className="text-lg font-semibold text-gray-900">Confirmation de déconnexion</h3>
+          <button
+            onClick={() => setShowLogoutModal(false)}
+            className="text-gray-400 hover:text-gray-600 transition-colors"
+          >
+            <FaTimes />
+          </button>
+        </div>
+        <div className="p-6">
+          <p className="text-gray-600">
+            Êtes-vous sûr de vouloir vous déconnecter ?
+          </p>
+        </div>
+        <div className="flex gap-3 p-4 border-t border-gray-200 bg-gray-50">
+          <button
+            onClick={() => setShowLogoutModal(false)}
+            className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors"
+          >
+            Annuler
+          </button>
+          <button
+            onClick={handleLogout}
+            className="flex-1 px-4 py-2 bg-orange-500 hover:bg-red-600 text-white rounded-lg transition-colors"
+          >
+            Se déconnecter
+          </button>
+        </div>
+      </div>
+    </div>
+  );
 
   return (
     <header className="bg-black text-white sticky top-0 z-50">
@@ -180,10 +216,10 @@ export default function Navbar({ setTitle, setCategorie }) {
             )}
           </div>
 
-          {/* ── AJOUT : Se connecter / Se déconnecter (Desktop) ── */}
+          {/* Se connecter / Se déconnecter (Desktop) */}
           {isLoggedIn ? (
             <button
-              onClick={handleLogout}
+              onClick={() => setShowLogoutModal(true)}
               className="flex items-center gap-2 text-sm hover:text-orange-500 whitespace-nowrap transition-colors"
             >
               <FaSignOutAlt className="text-sm" />
@@ -217,7 +253,7 @@ export default function Navbar({ setTitle, setCategorie }) {
           </Link>
         </div>
 
-        {/*  TABLET LAYOUT (md à lg)  */}
+        {/* TABLET LAYOUT (md à lg) */}
         <div className="hidden md:flex lg:hidden items-center justify-between gap-2">
           <Link to="/"><img src="/logo.png" alt="eKMER" className="h-8 w-auto" /></Link>
 
@@ -251,9 +287,8 @@ export default function Navbar({ setTitle, setCategorie }) {
             )}
           </div>
 
-          {/* AJOUT : Se connecter / Se déconnecter (Tablet) */}
           {isLoggedIn ? (
-            <button onClick={handleLogout} className="hover:text-orange-500 transition-colors">
+            <button onClick={() => setShowLogoutModal(true)} className="hover:text-orange-500 transition-colors">
               <FaSignOutAlt className="text-sm" />
             </button>
           ) : (
@@ -287,9 +322,8 @@ export default function Navbar({ setTitle, setCategorie }) {
                 )}
               </div>
 
-              {/* ── AJOUT : Se connecter / Se déconnecter (Mobile) ── */}
               {isLoggedIn ? (
-                <button onClick={handleLogout} className="hover:text-orange-500 transition-colors">
+                <button onClick={() => setShowLogoutModal(true)} className="hover:text-orange-500 transition-colors">
                   <FaSignOutAlt className="text-sm" />
                 </button>
               ) : (
@@ -297,7 +331,6 @@ export default function Navbar({ setTitle, setCategorie }) {
                   <FaUser className="text-sm" />
                 </Link>
               )}
-              {/* ─────────────────────────────────────────────────── */}
 
               <Link to={'/auth/register'} className="text-xs font-medium hover:text-orange-500 whitespace-nowrap">
                 S'inscrire
@@ -332,6 +365,9 @@ export default function Navbar({ setTitle, setCategorie }) {
           </div>
         </div>
       </div>
+
+      {/* Modale de confirmation de déconnexion */}
+      {showLogoutModal && <LogoutModal />}
     </header>
   );
 }

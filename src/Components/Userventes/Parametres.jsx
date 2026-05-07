@@ -2,6 +2,7 @@
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import SideBar from "./SideBar";
+import BackToHome from "../../components/BackToHome";
 import api from "../../api";
 import toast from "react-hot-toast";
 import { FaUser, FaEnvelope, FaPhone, FaStore, FaSave, FaCamera, FaTimes, FaUpload } from "react-icons/fa";
@@ -207,6 +208,10 @@ export default function Parametres() {
         {user ? <SideBar user={user} activeTab="parametres" /> : <SideBar activeTab="parametres" />}
 
         <div className="flex-1 p-4 sm:p-6">
+          
+          {/* ← BOUTON RETOUR ACCUEIL */}
+          <BackToHome />
+
           <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-6">Paramètres du compte</h1>
 
           <form onSubmit={handleSubmit}>
