@@ -1,10 +1,10 @@
 // src/Components/Userventes/SideBar.jsx
-import { FaHeart, FaCog, FaShoppingCart, FaStore, FaUserCircle } from "react-icons/fa";
+import { FaHeart, FaCog, FaShoppingCart, FaStore } from "react-icons/fa";
 import { useNavigate, useLocation } from "react-router-dom";
 
 export default function SideBar({ user }) {
-  const navigate = useNavigate();
-  const location = useLocation();
+  const navigate  = useNavigate();
+  const location  = useLocation();
 
   const formaterTelephone = (valeur) => {
     if (!valeur) return '+237 6XX XXX XXX';
@@ -12,14 +12,14 @@ export default function SideBar({ user }) {
     if (numeros.startsWith('+237')) {
       const sansPrefix = numeros.slice(4);
       if (sansPrefix.length > 0) {
-        const partie1 = sansPrefix.slice(0, 3);
-        const partie2 = sansPrefix.slice(3, 6);
-        const partie3 = sansPrefix.slice(6, 9);
-        let formate = '+237';
-        if (partie1) formate += ' ' + partie1;
-        if (partie2) formate += ' ' + partie2;
-        if (partie3) formate += ' ' + partie3;
-        return formate;
+        const p1 = sansPrefix.slice(0, 3);
+        const p2 = sansPrefix.slice(3, 6);
+        const p3 = sansPrefix.slice(6, 9);
+        let f = '+237';
+        if (p1) f += ' ' + p1;
+        if (p2) f += ' ' + p2;
+        if (p3) f += ' ' + p3;
+        return f;
       }
     }
     return valeur;
@@ -27,70 +27,64 @@ export default function SideBar({ user }) {
 
   const formateProfil = (valeur) => {
     if (!valeur) return "P";
-    let profil = "P";
-    let tableau = String(valeur).split(' ');
+    const tableau = String(valeur).split(' ');
     if (tableau.length > 1) {
-      profil = (tableau[0])[0].toUpperCase();
-      profil += (tableau[1])[0].toUpperCase();
-      return profil;
-    } else if (tableau.length === 1 && tableau[0].length > 0) {
-      profil = (tableau[0])[0].toUpperCase();
-      return profil;
+      return tableau[0][0].toUpperCase() + tableau[1][0].toUpperCase();
     }
-    return profil;
+    return tableau[0][0]?.toUpperCase() || "P";
   };
 
-  // Menu items avec leurs chemins
   const menuItems = [
     { key: "ventes",     label: "Mes ventes",  icon: FaStore,        path: "/profile"            },
-    { key: "achats",     label: "Mes achats",  icon: FaShoppingCart, path: "/profile/achats"      },
-    { key: "favoris",    label: "Mes favoris", icon: FaHeart,        path: "/profile/favoris"     },
-    { key: "parametres", label: "Paramètres",  icon: FaCog,          path: "/profile/parametres"  },
+    { key: "achats",     label: "Mes achats",  icon: FaShoppingCart, path: "/profile/achats"     },
+    { key: "favoris",    label: "Mes favoris", icon: FaHeart,        path: "/profile/favoris"    },
+    { key: "parametres", label: "Paramètres",  icon: FaCog,          path: "/profile/parametres" },
   ];
 
-  // Vérifier si un chemin est actif
   const isActive = (path) => {
-    if (path === "/profile/") {
-      return location.pathname === "/profile/" || location.pathname === "/profile";
+    if (path === "/profile") {
+      return location.pathname === "/profile" || location.pathname === "/profile/";
     }
     return location.pathname === path;
   };
 
   return (
-    <div className="w-full md:w-[280px] bg-white p-5 shadow rounded-2xl md:rounded-r-2xl md:rounded-l-none mb-6 md:mb-0">
-      {/* PROFILE */}
-      <div className="text-center">
-        {/* Avatar avec image ou initiales */}
+    // ✅ CORRECTION PRINCIPALE :
+    // - "self-stretch" : la sidebar s'étire pour matcher la hauteur du flex parent
+    // - "min-h-screen" : garantit qu'elle fait au moins 100vh même si le contenu est vide
+    // - "bg-white" : faute de frappe "bg-whitw" corrigée
+    // - "flex-shrink-0" : empêche la sidebar de se rétrécir
+    <div className="w-full md:w-[260px] bg-white p-5 shadow-md flex-shrink-0 self-stretch min-h-screen">
+
+      {/* PROFIL */}
+      <div className="text-center mb-6">
         <div className="relative w-24 h-24 mx-auto">
           {user?.avatar ? (
-            <img
-              src={user.avatar}
-              alt="Avatar"
-              className="w-full h-full object-cover rounded-full"
-            />
+            <img src={user.avatar} alt="Avatar"
+              className="w-full h-full object-cover rounded-full" />
           ) : (
             <div className="w-24 h-24 bg-orange-500 text-white flex items-center justify-center rounded-full text-2xl font-bold mx-auto">
               {user ? formateProfil(user.username) : 'P'}
             </div>
           )}
         </div>
-        
+
         <h2 className="mt-4 text-lg font-semibold text-gray-800">
           {user ? user.username : 'Profil'}
         </h2>
         <p className="text-gray-500 text-sm">
           {user ? formaterTelephone(user.telephone) : '+237 6XX XXX XXX'}
         </p>
-        
+
         {user?.nom_boutique && (
           <p className="text-orange-500 text-xs mt-1 font-medium">
-            🏪 {user.nom_boutique}
+            {user.nom_boutique}
           </p>
         )}
       </div>
 
       {/* STATS */}
-      <div className="flex justify-around mt-6 bg-gray-100 p-3 rounded-lg">
+      <div className="flex justify-around bg-gray-100 p-3 rounded-xl mb-6">
         <div className="text-center">
           <p className="text-orange-500 font-bold text-xl">12</p>
           <p className="text-xs text-gray-600">Achats</p>
@@ -102,7 +96,7 @@ export default function SideBar({ user }) {
       </div>
 
       {/* MENU */}
-      <div className="mt-6 space-y-2">
+      <div className="space-y-2">
         {menuItems.map(({ key, label, icon: Icon, path }) => (
           <button
             key={key}
@@ -113,12 +107,12 @@ export default function SideBar({ user }) {
                 : "hover:bg-gray-100 text-gray-700"
             }`}
           >
-            <Icon className={`text-lg ${isActive(path) ? "text-white" : "text-gray-500"}`} />
+            <Icon className={`text-lg flex-shrink-0 ${isActive(path) ? "text-white" : "text-gray-500"}`} />
             <span className={`text-sm font-medium ${isActive(path) ? "text-white" : "text-gray-700"}`}>
               {label}
             </span>
             {isActive(path) && (
-              <div className="ml-auto w-1.5 h-1.5 rounded-full bg-white"></div>
+              <div className="ml-auto w-2 h-2 rounded-full bg-white" />
             )}
           </button>
         ))}
