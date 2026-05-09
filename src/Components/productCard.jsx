@@ -46,7 +46,7 @@ const ProductCard = ({ product }) => {
     e.preventDefault();
     e.stopPropagation();
     if (isLoading) return;
-    
+
     setIsLoading(true);
     try {
       if (isLiked) {
@@ -77,7 +77,7 @@ const ProductCard = ({ product }) => {
     const today = new Date();
     const diffTime = Math.abs(today - date);
     const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-    
+
     if (diffDays === 0) return "Aujourd'hui";
     if (diffDays === 1) return "Hier";
     if (diffDays < 7) return `Il y a ${diffDays} jours`;
@@ -86,7 +86,7 @@ const ProductCard = ({ product }) => {
 
   return (
     <div className="bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden group relative">
-      
+
       {/* Badge de vues - en haut à gauche */}
       <div className="absolute top-2 left-2 z-10 bg-black/60 backdrop-blur-sm text-white text-[10px] px-2 py-1 rounded-full flex items-center gap-1">
         <FaEye className="text-[9px]" />
@@ -115,7 +115,7 @@ const ProductCard = ({ product }) => {
       {/* Image */}
       <Link to={`/produit/${product?.code}`} className="block overflow-hidden">
         <img
-          src={product?.image ? LINK+product.image : "/placeholder-image.jpg"}
+          src={product?.image ? LINK + product.image : "/placeholder-image.jpg"}
           alt={product?.title || "Produit"}
           className="w-full h-40 object-cover bg-gray-100 group-hover:scale-105 transition-transform duration-300"
         />
