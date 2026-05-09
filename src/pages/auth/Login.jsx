@@ -19,7 +19,7 @@ function Login() {
         const response = await api.post('auth/login/', { email: email, password: password })
         localStorage.setItem('token', response.data.token)
         const userData = response.data.user
-        toast.success(`Soyez la bienvenu M./Mme ${userData.username} !`)
+        toast.success(`Bienvenu M./Mme ${userData.username} !`)
         setTimeout(()=>{
           navigate('/')
         },1500)
@@ -36,7 +36,7 @@ function Login() {
         const response = await api.post('auth/login/tel', { telephone: phone, password: password })
         localStorage.setItem('token', response.data.token)
         const userData = response.data.user
-        toast.success(`Soyez la bienvenu M./Mme ${userData.username} !`)
+        toast.success(`Bienvenu M./Mme ${userData.username} !`)
         setTimeout(()=>{
           navigate('/', { state: { user: userData } })
         },1500)
