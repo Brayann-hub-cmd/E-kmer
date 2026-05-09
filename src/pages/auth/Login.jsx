@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import { AiOutlineLock, AiOutlinePhone, AiOutlineMail } from "react-icons/ai";
 import { MdAlternateEmail } from "react-icons/md";
 import { Link, useNavigate } from "react-router-dom";
+import BackToHome from "../../components/BackToHome";
 import api from '../../api'
 import toast from "react-hot-toast";
+
 function Login() {
   const [loginMethod, setLoginMethod] = useState("phone");
   const [phone, setPhone] = useState("");
@@ -11,6 +13,7 @@ function Login() {
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const navigate = useNavigate()
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     // Handle login logic here
@@ -22,7 +25,7 @@ function Login() {
         toast.success(`Bienvenu M./Mme ${userData.username} !`)
         setTimeout(()=>{
           navigate('/')
-        },1500)
+        }, 1500)
       } catch (error) {
         if (error.response?.status === 401) {
           toast.error('Email ou mot de passe incorrect.')
@@ -39,7 +42,7 @@ function Login() {
         toast.success(`Bienvenu M./Mme ${userData.username} !`)
         setTimeout(()=>{
           navigate('/', { state: { user: userData } })
-        },1500)
+        }, 1500)
       } catch (error) {
         if (error.response?.status === 401) {
           toast.error('Téléphone ou mot de passe incorrect.')
@@ -52,8 +55,14 @@ function Login() {
 
   return (
     <div className="min-h-screen bg-[#F3F3F3] flex items-center justify-center">
-      <div className="bg-white rounded-lg shadow-md p-8 w-[420px]">
-        <div className="text-center mb-6">
+      <div className="bg-white rounded-lg shadow-md p-8 w-[420px] relative">
+        
+        {/* ← BOUTON RETOUR ACCUEIL */}
+        <div className="absolute top-4 left-4">
+          <BackToHome />
+        </div>
+
+        <div className="text-center mb-6 mt-6">
           <h1 className="text-2xl font-bold mb-2">
             Connexion à <span className="text-orange-500">E-kmer</span>
           </h1>

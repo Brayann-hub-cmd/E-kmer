@@ -10,8 +10,8 @@ import {
 import {
   BsCheckCircle
 } from 'react-icons/bs';
-
 import { Link, useNavigate } from 'react-router-dom';
+import BackToHome from '../../components/BackToHome';
 import api from '../../api';
 
 const SignUp = () => {
@@ -235,10 +235,15 @@ const SignUp = () => {
       />
 
       {/* Card d'inscription */}
-      <div className="bg-white rounded-xl shadow-lg w-full max-w-[420px] p-8">
+      <div className="bg-white rounded-xl shadow-lg w-full max-w-[420px] p-8 relative">
+        
+        {/* ← BOUTON RETOUR ACCUEIL */}
+        <div className="absolute top-4 left-4">
+          <BackToHome />
+        </div>
 
         {/* Titre */}
-        <h1 className="text-2xl font-bold text-center mb-1 text-gray-900">
+        <h1 className="text-2xl font-bold text-center mb-1 text-gray-900 mt-4">
           Inscription à{' '}
           <span className="text-orange-500">E-kmer</span>
         </h1>

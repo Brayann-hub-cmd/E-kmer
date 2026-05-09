@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaTrash } from "react-icons/fa";
 import api from "../../api";
+import BackToHome from "../../components/BackToHome";
 
 // ── Données mock ──────────────────────────────────────────────
 // Supprimé - remplacé par appel API
@@ -143,6 +144,10 @@ export default function Panier() {
       {/* <Navbar /> */}
 
       <div className="max-w-6xl mx-auto px-4 py-8">
+        
+        {/* ← BOUTON RETOUR ACCUEIL */}
+        <BackToHome />
+
         {/* Titre */}
         <h1 className="text-3xl font-bold text-gray-900">Mon Panier</h1>
         <p className="text-gray-400 text-sm mt-1 mb-8">
