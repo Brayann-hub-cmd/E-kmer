@@ -12,7 +12,7 @@ import {
   FaUserCircle
 } from 'react-icons/fa';
 import api from '../../api';
-import BackToHome from '../../components/BackToHome';
+import BackToHome from '../../Components/BackToHome';
 
 const ProductDetail = () => {
   const { id } = useParams();

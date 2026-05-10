@@ -10,6 +10,7 @@ const LINK = import.meta.env.VITE_API_URL
 
 // ── Carte produit en vente ───────────────────────────────────
 const SellCard = ({ product, onEdit, onDelete, onView }) => {
+  const navigate = useNavigate()
   return (
     <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
       {
@@ -91,7 +92,7 @@ export default function MySell() {
 
       } catch (error) {
         console.error("Erreur:", error);
-        toast.error("Erreur de chargement");
+        navigate('/')
       } finally {
         setLoading(false);
       }

@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaTrash } from "react-icons/fa";
 import api from "../../api";
-import BackToHome from "../../components/BackToHome";
+import BackToHome from "../../Components/BackToHome";
 
 // ── Données mock ──────────────────────────────────────────────
 // Supprimé - remplacé par appel API
@@ -128,7 +128,7 @@ export default function Panier() {
   };
 
   const sousTotal = items.reduce((acc, item) => acc + item.prix * item.quantite, 0);
-  const total     = sousTotal + LIVRAISON;
+  const total = sousTotal + LIVRAISON;
 
   if (loadingPanier) {
     return (
@@ -144,7 +144,7 @@ export default function Panier() {
       {/* <Navbar /> */}
 
       <div className="max-w-6xl mx-auto px-4 py-8">
-        
+
         {/* ← BOUTON RETOUR ACCUEIL */}
         <BackToHome />
 
