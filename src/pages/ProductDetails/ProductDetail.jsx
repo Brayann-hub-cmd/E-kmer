@@ -98,8 +98,8 @@ const ProductDetail = () => {
   const handleAddToCart = async () => {
     try {
       // Appel API pour ajouter au panier
-      await api.post("panier/", {
-        produit_id: product.code,
+      await api.post("panier/items/", {
+        annonce: product.code,
         quantite: quantity
       });
       console.log(`Ajouté au panier: ${product.titre}, Quantité: ${quantity}, Code: ${product.code}`);
