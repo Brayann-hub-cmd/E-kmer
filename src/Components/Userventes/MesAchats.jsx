@@ -27,45 +27,43 @@ const StatutBadge = ({ statut }) => {
 const AchatCard = ({ achat, onVoirDetails }) => (
   <div className="bg-white rounded-xl sm:rounded-2xl p-3 sm:p-5 shadow-sm border border-gray-100">
     {/* Layout responsive : colonne sur mobile, ligne sur desktop */}
-    {achat.lignes.map((ligne) => {
-      <div className="flex flex-col sm:flex-row gap-3 sm:gap-5 items-start sm:items-center">
+    <div className="flex flex-col sm:flex-row gap-3 sm:gap-5 items-start sm:items-center">
 
-        {/* Image */}
-        <div className="w-full sm:w-auto flex-shrink-0">
-          <img
-            src={achat.image || "/placeholder.webp"}
-            alt={achat.titre}
-            className="w-full sm:w-36 h-32 object-cover rounded-xl"
-          />
-        </div>
-
-        {/* Infos principales */}
-        <div className="flex-1 min-w-0 w-full">
-          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-4">
-            <div>
-              <h3 className="font-bold text-base sm:text-lg text-gray-900">{ligne.annonce_titre}</h3>
-              <p className="text-gray-400 text-xs sm:text-sm mt-0.5">Commande le {achat.date}</p>
-            </div>
-            <div className="self-start sm:self-auto">
-              <StatutBadge statut={achat.statut} />
-            </div>
-          </div>
-          <p className="text-orange-500 font-bold text-xl sm:text-2xl mt-2 sm:mt-3">
-            {(achat.prix_total ?? 0).toLocaleString()} FCFA
-          </p>
-        </div>
-
-        {/* Bouton */}
-        <div className="w-full sm:w-auto">
-          <button
-            onClick={() => onVoirDetails(achat.id)}
-            className="w-full sm:w-auto bg-orange-500 hover:bg-orange-600 text-white px-4 sm:px-5 py-2 rounded-lg text-sm font-semibold transition-colors"
-          >
-            Voir les détails
-          </button>
-        </div>
+      {/* Image */}
+      <div className="w-full sm:w-auto flex-shrink-0">
+        <img
+          src={achat.image || "/placeholder.webp"}
+          alt={achat.titre}
+          className="w-full sm:w-36 h-32 object-cover rounded-xl"
+        />
       </div>
-    })}
+
+      {/* Infos principales */}
+      <div className="flex-1 min-w-0 w-full">
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-4">
+          <div>
+            <h3 className="font-bold text-base sm:text-lg text-gray-900">{achat.titre}</h3>
+            <p className="text-gray-400 text-xs sm:text-sm mt-0.5">Commande le {achat.date}</p>
+          </div>
+          <div className="self-start sm:self-auto">
+            <StatutBadge statut={achat.statut} />
+          </div>
+        </div>
+        <p className="text-orange-500 font-bold text-xl sm:text-2xl mt-2 sm:mt-3">
+          {(achat.prix_total ?? 0).toLocaleString()} FCFA
+        </p>
+      </div>
+
+      {/* Bouton */}
+      <div className="w-full sm:w-auto">
+        <button
+          onClick={() => onVoirDetails(achat.id)}
+          className="w-full sm:w-auto bg-orange-500 hover:bg-orange-600 text-white px-4 sm:px-5 py-2 rounded-lg text-sm font-semibold transition-colors"
+        >
+          Voir les détails
+        </button>
+      </div>
+    </div>
   </div>
 );
 
@@ -86,6 +84,11 @@ export default function MesAchats() {
         setAchats(productsRes.data);
       } catch (error) {
         console.error("Erreur:", error);
+        if (error.response?.status === 401) {
+          toast.error("Vous devez être connecté pour accéder à cette page");
+          navigate("/auth/login");
+          return;
+        }
         setUser({ username: "Jean Dupont", telephone: "+237 6XX XXX XXX" });
       } finally {
         setLoading(false);

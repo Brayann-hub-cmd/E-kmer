@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import logo from '../../public/logo.png'
+import logo from '/logo.png?url'
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 // Icônes
@@ -31,7 +31,8 @@ const Footer = () => {
 
     const categories = useMemo(
         ()=>{
-          return console.log(data), data.map((cat)=>({
+          if (!Array.isArray(data)) return [];
+          return data.map((cat)=>({
             code: `${cat.code}`,
             name: `${cat.nom}`,
             path: `/categorie/${cat.nom.toLowerCase().replace(/\s+/g, '-').normalize("NFD").replace(/[\u0300-\u036f]/g, '')}?id=${cat.code}`,

@@ -182,11 +182,24 @@ function PopularOffers({ title, categorie }) {
             >
               {/* Image avec les mêmes bordures arrondies que la carte */}
               <Link to={`/produit/${product.slug}`} className="block w-full">
-                <img
-                  src={product.image}
-                  alt={product.title}
-                  className="w-full h-[120px] xs:h-[130px] sm:h-[140px] md:h-[160px] lg:h-[160px] object-cover"
-                />
+      
+                <div className="relative w-full h-[220px] overflow-hidden bg-gray-200">
+
+                  {/* fond flou */}
+                  <img
+                    src={product.image}
+                    className="absolute w-full h-full object-cover scale-110 blur-xl"
+                    alt=""
+                  />
+
+                  {/* image principale */}
+                  <img
+                   src={product.image}
+                   alt={product.title}
+                   className="relative w-full h-full object-contain"
+                 />
+
+                </div>
               </Link>
 
               {/* Contenu avec padding */}

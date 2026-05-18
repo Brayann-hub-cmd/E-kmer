@@ -11,6 +11,13 @@ export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
   const [categorieData, setCategorieData] = useState([]);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    // Vérifier si un token existe dans le localStorage
+    const token = localStorage.getItem("token");
+    setIsLoggedIn(!!token);
+  }, []);
 
   useEffect(() => {
     const getCategories = async () => {
@@ -188,7 +195,7 @@ export default function Header() {
 
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-6 sm:mt-8 justify-center lg:justify-start">
                 <Link
-                  to="/achats"
+                  to={isLoggedIn ? "/profile/achats" : "/auth/login"}
                   className="bg-orange-500 hover:bg-orange-600 px-6 py-3 sm:px-8 sm:py-3.5 rounded-lg font-semibold transition-all transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-orange-500/25 text-center inline-block"
                 >
                   Commencez vos achats

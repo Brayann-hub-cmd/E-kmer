@@ -33,7 +33,8 @@ function Login() {
     }
     if (loginMethod === "phone") {
       try {
-        const response = await api.post('auth/login/tel', { telephone: phone, password: password })
+        const fullPhone = "+237" + phone.replace(/\s/g, "");
+        const response = await api.post('auth/login/tel', { telephone: fullPhone, password: password })
         localStorage.setItem('token', response.data.token)
         const userData = response.data.user
         toast.success(`Soyez la bienvenu M./Mme ${userData.username} !`)

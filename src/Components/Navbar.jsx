@@ -7,6 +7,7 @@ import {
   FaChevronDown,
   FaSignOutAlt, 
 } from "react-icons/fa";
+import toast from "react-hot-toast";
 import api from "../api";
 
 export default function Navbar({ setTitle, setCategorie }) {
