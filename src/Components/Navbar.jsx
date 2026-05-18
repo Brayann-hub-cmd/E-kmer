@@ -13,22 +13,22 @@ export default function Navbar({ setTitle, setCategorie }) {
   const [category, setCategory] = useState({
     code: "CAT_000", nom: "Toutes les categories", path: "/toutes-categories"
   });
-  const [isCategoryOpen,  setIsCategoryOpen]  = useState(false);
-  const [language,         setLanguage]        = useState("FRA");
-  const [isLanguageOpen,   setIsLanguageOpen]  = useState(false);
-  const [searchTerm,       setSearchTerm]      = useState("");
-  const [searchResults,    setSearchResults]   = useState([]);
-  const [showResults,      setShowResults]     = useState(false);
-  const [isSearching,      setIsSearching]     = useState(false);
-  const [menuOpen,         setMenuOpen]        = useState(false);
-  const [categories,       setCategories]      = useState([]);
+  const [isCategoryOpen, setIsCategoryOpen] = useState(false);
+  const [language, setLanguage] = useState("FRA");
+  const [isLanguageOpen, setIsLanguageOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [showResults, setShowResults] = useState(false);
+  const [isSearching, setIsSearching] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [categories, setCategories] = useState([]);
   const [categorySelected, setCategorySelected] = useState("CAT_000");
-
+  const [panier,setPanier] = useState([])
   // ── NOUVEAUX états 
 
   // Connexion
-  const [isLoggedIn,       setIsLoggedIn]      = useState(false);
-  const [showLogoutModal,  setShowLogoutModal] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   // Panier — nombre dynamique
   const [cartCount, setCartCount] = useState(0);
@@ -41,14 +41,14 @@ export default function Navbar({ setTitle, setCategorie }) {
   // Profil utilisateur
   const [userProfile, setUserProfile] = useState(null); // { username, avatar }
 
-  const searchRef          = useRef(null);
+  const searchRef = useRef(null);
   const categoryDesktopRef = useRef(null);
-  const categoryTabletRef  = useRef(null);
-  const categoryMobileRef  = useRef(null);
+  const categoryTabletRef = useRef(null);
+  const categoryMobileRef = useRef(null);
   const languageDesktopRef = useRef(null);
-  const languageTabletRef  = useRef(null);
-  const languageMobileRef  = useRef(null);
-  const navigate           = useNavigate();
+  const languageTabletRef = useRef(null);
+  const languageMobileRef = useRef(null);
+  const navigate = useNavigate();
 
   // ── Dark mode : applique la classe sur <html> ─────────────
   useEffect(() => {
@@ -59,12 +59,20 @@ export default function Navbar({ setTitle, setCategorie }) {
     }
     localStorage.setItem("darkMode", darkMode);
   }, [darkMode]);
+  const getPanier = async () => {
+    try {
+      const res = await api.get("panier/")
+      // console.log(res.data);
+      setPanier(res.data.items)
 
+    } catch (error) {
+      setCartCount(0)
+    }
+  }
   // ── Vérification connexion + chargement profil + panier ──
   useEffect(() => {
     const token = localStorage.getItem("token");
     setIsLoggedIn(!!token);
-
     if (token) {
       // Charger le profil
       api.get("auth/profile/")
@@ -72,16 +80,13 @@ export default function Navbar({ setTitle, setCategorie }) {
         .catch(() => setUserProfile(null));
 
       // Charger le nombre d'articles dans le panier
-      api.get("panier/")
-        .then((res) => {
-          const count = Array.isArray(res.data)
-            ? res.data.reduce((acc, item) => acc + (item.quantite || 1), 0)
-            : 0;
-          setCartCount(count);
-        })
-        .catch(() => setCartCount(0));
+      getPanier()
     }
   }, []);
+
+  useEffect(()=>{
+    setCartCount(panier.length)
+  },[panier])
 
   // ── Déconnexion ───────────────────────────────────────────
   const handleLogout = () => {
@@ -97,7 +102,7 @@ export default function Navbar({ setTitle, setCategorie }) {
   useEffect(() => {
     api.get("categories/")
       .then((res) => setCategories(res.data))
-      .catch(() => {});
+      .catch(() => { });
   }, []);
 
   // ── Recherche ─────────────────────────────────────────────
@@ -214,8 +219,8 @@ export default function Navbar({ setTitle, setCategorie }) {
       title={darkMode ? "Mode clair" : "Mode sombre"}
     >
       {darkMode
-        ? <FaSun  className="text-yellow-400 text-sm" />
-        : <FaMoon className="text-blue-300 text-sm"   />
+        ? <FaSun className="text-yellow-400 text-sm" />
+        : <FaMoon className="text-blue-300 text-sm" />
       }
     </button>
   );
