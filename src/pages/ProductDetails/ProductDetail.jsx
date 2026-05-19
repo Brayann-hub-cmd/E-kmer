@@ -12,6 +12,7 @@ import {
   FaUserCircle
 } from 'react-icons/fa';
 import api from '../../api';
+import BackToHome from '../../Components/BackToHome';
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -97,8 +98,8 @@ const ProductDetail = () => {
   const handleAddToCart = async () => {
     try {
       // Appel API pour ajouter au panier
-      await api.post("panier/", {
-        produit_id: product.code,
+      await api.post("panier/items/", {
+        annonce: product.code,
         quantite: quantity
       });
       console.log(`Ajouté au panier: ${product.titre}, Quantité: ${quantity}, Code: ${product.code}`);
@@ -193,6 +194,10 @@ const ProductDetail = () => {
       {/* <Navbar /> - À décommenter quand le composant Navbar sera intégré */}
       
       <main className="max-w-6xl mx-auto px-4 py-8">
+        
+        {/* ← BOUTON RETOUR ACCUEIL */}
+        <BackToHome />
+
         {/* Grille principale */}
         <div className="grid grid-cols-1 lg:grid-cols-[65%_35%] gap-8">
           

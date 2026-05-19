@@ -4,17 +4,17 @@ import { useNavigate } from "react-router-dom";
 import SideBar from "./SideBar";
 import api from "../../api";
 import toast from "react-hot-toast";
-import { FaUser, FaEnvelope, FaPhone, FaStore, FaSave, FaCamera, FaTimes, FaUpload } from "react-icons/fa";
+import { FaUser, FaEnvelope, FaPhone, FaStore, FaSave, FaCamera, FaTimes, FaUpload, FaEdit } from "react-icons/fa";
 
 // ── Champ de formulaire ───────────────────────────────────────
-const FormField = ({ label, required, icon: Icon, type = "text", name, value, onChange, placeholder, error }) => (
+const FormField = ({ label, required, icon: Icon, type = "text", name, value, onChange, placeholder, error, disabled }) => (
   <div className="flex flex-col gap-1.5">
     <label className="text-sm font-semibold text-gray-700">
       {label} {required && <span className="text-orange-500">*</span>}
     </label>
     <div className={`flex items-center gap-3 border rounded-xl px-4 py-3 bg-white transition-colors ${
       error ? "border-red-400" : "border-gray-200 focus-within:border-orange-400"
-    }`}>
+    } ${disabled ? "bg-gray-50" : ""}`}>
       {Icon && <Icon className="text-gray-400 flex-shrink-0" />}
       <input
         type={type}
@@ -22,7 +22,8 @@ const FormField = ({ label, required, icon: Icon, type = "text", name, value, on
         value={value}
         onChange={onChange}
         placeholder={placeholder}
-        className="flex-1 outline-none text-sm text-gray-800 bg-transparent placeholder-gray-400"
+        disabled={disabled}
+        className={`flex-1 outline-none text-sm bg-transparent placeholder-gray-400 ${disabled ? "text-gray-500" : "text-gray-800"}`}
       />
     </div>
     {error && <p className="text-red-500 text-xs">{error}</p>}
@@ -30,7 +31,7 @@ const FormField = ({ label, required, icon: Icon, type = "text", name, value, on
 );
 
 // ── Champ textarea ────────────────────────────────────────────
-const FormTextArea = ({ label, required, name, value, onChange, placeholder, error }) => (
+const FormTextArea = ({ label, required, name, value, onChange, placeholder, error, disabled }) => (
   <div className="flex flex-col gap-1.5">
     <label className="text-sm font-semibold text-gray-700">
       {label} {required && <span className="text-orange-500">*</span>}
@@ -41,11 +42,23 @@ const FormTextArea = ({ label, required, name, value, onChange, placeholder, err
       onChange={onChange}
       placeholder={placeholder}
       rows={3}
-      className={`border rounded-xl px-4 py-3 text-sm text-gray-800 bg-white outline-none transition-colors resize-none ${
+      disabled={disabled}
+      className={`border rounded-xl px-4 py-3 text-sm bg-white outline-none transition-colors resize-none ${
         error ? "border-red-400" : "border-gray-200 focus:border-orange-400"
-      }`}
+      } ${disabled ? "bg-gray-50 text-gray-500" : "text-gray-800"}`}
     />
     {error && <p className="text-red-500 text-xs">{error}</p>}
+  </div>
+);
+
+// ── Mode édition ─────────────────────────────────────────────
+const InfoDisplay = ({ label, value, icon: Icon }) => (
+  <div className="flex flex-col gap-1.5">
+    <label className="text-sm font-semibold text-gray-700">{label}</label>
+    <div className="flex items-center gap-3 border rounded-xl px-4 py-3 bg-gray-50">
+      {Icon && <Icon className="text-gray-400 flex-shrink-0" />}
+      <span className="flex-1 text-sm text-gray-800">{value || "Non renseigné"}</span>
+    </div>
   </div>
 );
 
@@ -56,6 +69,7 @@ export default function Parametres() {
   const [uploading, setUploading] = useState(false);
   const [errors, setErrors] = useState({});
   const [avatarPreview, setAvatarPreview] = useState(null);
+  const [isEditing, setIsEditing] = useState(false); // Mode édition
   const fileInputRef = useRef(null);
 
   const [formData, setFormData] = useState({
@@ -64,8 +78,6 @@ export default function Parametres() {
     telephone: "",
     nom_boutique: "",
     description_boutique: "",
-    adresse_boutique: "",
-    site_web: "",
   });
 
   const navigate = useNavigate();
@@ -83,8 +95,6 @@ export default function Parametres() {
           telephone: u.telephone || "",
           nom_boutique: u.nom_boutique || "",
           description_boutique: u.description_boutique || "",
-          adresse_boutique: u.adresse_boutique || "",
-          site_web: u.site_web || "",
         });
         if (u.avatar) {
           setAvatarPreview(u.avatar);
@@ -103,13 +113,11 @@ export default function Parametres() {
     const file = e.target.files[0];
     if (!file) return;
 
-    // Vérifier le type de fichier
     if (!file.type.startsWith("image/")) {
       toast.error("Veuillez sélectionner une image");
       return;
     }
 
-    // Vérifier la taille (max 5MB)
     if (file.size > 5 * 1024 * 1024) {
       toast.error("L'image ne doit pas dépasser 5MB");
       return;
@@ -117,14 +125,12 @@ export default function Parametres() {
 
     setUploading(true);
     
-    // Prévisualisation
     const reader = new FileReader();
     reader.onloadend = () => {
       setAvatarPreview(reader.result);
     };
     reader.readAsDataURL(file);
 
-    // Upload de l'avatar
     try {
       const formDataAvatar = new FormData();
       formDataAvatar.append("avatar", file);
@@ -183,8 +189,6 @@ export default function Parametres() {
         telephone: formData.telephone,
         nom_boutique: formData.nom_boutique,
         description_boutique: formData.description_boutique,
-        adresse_boutique: formData.adresse_boutique,
-        site_web: formData.site_web,
       });
       toast.success("Profil mis à jour avec succès !");
       setUser((prev) => ({ 
@@ -194,6 +198,7 @@ export default function Parametres() {
         nom_boutique: formData.nom_boutique,
         description_boutique: formData.description_boutique,
       }));
+      setIsEditing(false); // Quitter le mode édition après sauvegarde
     } catch (error) {
       toast.error(error.response?.data?.error || "Erreur lors de la mise à jour");
     } finally {
@@ -207,7 +212,39 @@ export default function Parametres() {
         {user ? <SideBar user={user} activeTab="parametres" /> : <SideBar activeTab="parametres" />}
 
         <div className="flex-1 p-4 sm:p-6">
-          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-6">Paramètres du compte</h1>
+
+          <div className="flex justify-between items-center mb-6">
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Paramètres du compte</h1>
+            
+            {/* Bouton Modifier / Annuler */}
+            {!isEditing ? (
+              <button
+                onClick={() => setIsEditing(true)}
+                className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors"
+              >
+                <FaEdit /> Modifier
+              </button>
+            ) : (
+              <button
+                onClick={() => {
+                  setIsEditing(false);
+                  // Réinitialiser les données
+                  if (user) {
+                    setFormData({
+                      nom_complet: user.username || "",
+                      email: user.email || "",
+                      telephone: user.telephone || "",
+                      nom_boutique: user.nom_boutique || "",
+                      description_boutique: user.description_boutique || "",
+                    });
+                  }
+                }}
+                className="flex items-center gap-2 bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors"
+              >
+                Annuler
+              </button>
+            )}
+          </div>
 
           <form onSubmit={handleSubmit}>
             <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-8 shadow-sm border border-gray-100">
@@ -216,7 +253,6 @@ export default function Parametres() {
               <div className="mb-8">
                 <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-4">Photo de profil</h2>
                 <div className="flex flex-col sm:flex-row items-center gap-6">
-                  {/* Avatar */}
                   <div className="relative">
                     <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-full bg-orange-100 flex items-center justify-center overflow-hidden">
                       {avatarPreview ? (
@@ -242,7 +278,6 @@ export default function Parametres() {
                     />
                   </div>
                   
-                  {/* Actions */}
                   <div className="flex gap-3">
                     <button
                       type="button"
@@ -275,93 +310,95 @@ export default function Parametres() {
               <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-6">Informations personnelles</h2>
 
               <div className="flex flex-col gap-5">
-                <FormField
-                  label="Nom complet"
-                  required
-                  icon={FaUser}
-                  name="nom_complet"
-                  value={formData.nom_complet}
-                  onChange={handleChange}
-                  placeholder="Votre nom complet"
-                  error={errors.nom_complet}
-                />
-                <FormField
-                  label="Email"
-                  required
-                  icon={FaEnvelope}
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  placeholder="email@exemple.com"
-                  error={errors.email}
-                />
-                <FormField
-                  label="Numéro de téléphone"
-                  required
-                  icon={FaPhone}
-                  type="tel"
-                  name="telephone"
-                  value={formData.telephone}
-                  onChange={handleChange}
-                  placeholder="+237 6XX XXX XXX"
-                  error={errors.telephone}
-                />
+                {isEditing ? (
+                  <>
+                    <FormField
+                      label="Nom complet"
+                      required
+                      icon={FaUser}
+                      name="nom_complet"
+                      value={formData.nom_complet}
+                      onChange={handleChange}
+                      placeholder="Votre nom complet"
+                      error={errors.nom_complet}
+                    />
+                    <FormField
+                      label="Email"
+                      required
+                      icon={FaEnvelope}
+                      type="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      placeholder="email@exemple.com"
+                      error={errors.email}
+                    />
+                    <FormField
+                      label="Numéro de téléphone"
+                      required
+                      icon={FaPhone}
+                      type="tel"
+                      name="telephone"
+                      value={formData.telephone}
+                      onChange={handleChange}
+                      placeholder="+237 6XX XXX XXX"
+                      error={errors.telephone}
+                    />
+                  </>
+                ) : (
+                  <>
+                    <InfoDisplay label="Nom complet" icon={FaUser} value={formData.nom_complet} />
+                    <InfoDisplay label="Email" icon={FaEnvelope} value={formData.email} />
+                    <InfoDisplay label="Numéro de téléphone" icon={FaPhone} value={formData.telephone} />
+                  </>
+                )}
               </div>
 
               {/* ── Mode vendeur ── */}
               <h2 className="text-lg sm:text-xl font-bold text-gray-900 mt-8 sm:mt-10 mb-6">Mode vendeur</h2>
 
               <div className="flex flex-col gap-5">
-                <FormField
-                  label="Nom de la boutique"
-                  icon={FaStore}
-                  name="nom_boutique"
-                  value={formData.nom_boutique}
-                  onChange={handleChange}
-                  placeholder="Nom de votre boutique"
-                  error={errors.nom_boutique}
-                />
-                <FormTextArea
-                  label="Description de la boutique"
-                  name="description_boutique"
-                  value={formData.description_boutique}
-                  onChange={handleChange}
-                  placeholder="Décrivez votre boutique..."
-                  error={errors.description_boutique}
-                />
-                <FormField
-                  label="Adresse de la boutique"
-                  icon={FaStore}
-                  name="adresse_boutique"
-                  value={formData.adresse_boutique}
-                  onChange={handleChange}
-                  placeholder="Adresse de votre boutique"
-                  error={errors.adresse_boutique}
-                />
-                <FormField
-                  label="Site web"
-                  icon={FaStore}
-                  name="site_web"
-                  value={formData.site_web}
-                  onChange={handleChange}
-                  placeholder="https://mon-site.com"
-                  error={errors.site_web}
-                />
+                {isEditing ? (
+                  <>
+                    <FormField
+                      label="Nom de la boutique"
+                      icon={FaStore}
+                      name="nom_boutique"
+                      value={formData.nom_boutique}
+                      onChange={handleChange}
+                      placeholder="Nom de votre boutique"
+                      error={errors.nom_boutique}
+                    />
+                    <FormTextArea
+                      label="Description de la boutique"
+                      name="description_boutique"
+                      value={formData.description_boutique}
+                      onChange={handleChange}
+                      placeholder="Décrivez votre boutique..."
+                      error={errors.description_boutique}
+                    />
+                  </>
+                ) : (
+                  <>
+                    <InfoDisplay label="Nom de la boutique" icon={FaStore} value={formData.nom_boutique} />
+                    <InfoDisplay label="Description de la boutique" value={formData.description_boutique} />
+                  </>
+                )}
               </div>
 
-              {/* ── Bouton sauvegarder ── */}
-              <div className="mt-8 flex justify-end">
-                <button
-                  type="submit"
-                  disabled={loading || uploading}
-                  className="bg-orange-500 hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed text-white px-6 sm:px-8 py-2.5 sm:py-3 rounded-xl font-semibold flex items-center gap-2 transition-colors text-sm sm:text-base"
-                >
-                  <FaSave />
-                  {loading ? "Sauvegarde..." : "Sauvegarder"}
-                </button>
-              </div>
-
+              {/* ── Bouton sauvegarder (visible uniquement en mode édition) ── */}
+              {isEditing && (
+                <div className="mt-8 flex justify-end">
+                  <button
+                    type="submit"
+                    disabled={loading || uploading}
+                    className="bg-orange-500 hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed text-white px-6 sm:px-8 py-2.5 sm:py-3 rounded-xl font-semibold flex items-center gap-2 transition-colors text-sm sm:text-base"
+                  >
+                    <FaSave />
+                    {loading ? "Sauvegarde..." : "Sauvegarder"}
+                  </button>
+                </div>
+              )}
             </div>
           </form>
         </div>

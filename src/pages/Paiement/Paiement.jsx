@@ -5,6 +5,7 @@ import api from "../../api";
 import LivraisonChoix from "../../components/LivraisonChoix";
 import RecapCommande from "../../components/RecapCommande";
 import PaiementMobile from "../../components/PaiementMobile";
+import BackToHome from "../../components/BackToHome";
 
 export default function Paiement() {
   const [commande, setCommande] = useState([]);
@@ -42,6 +43,10 @@ export default function Paiement() {
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4">
       <div className="max-w-4xl mx-auto">
+        
+        {/* ← BOUTON RETOUR ACCUEIL */}
+        <BackToHome />
+
         <h1 className="text-3xl font-bold mb-2">Finaliser la commande</h1>
         <p className="text-gray-500 mb-6">Choisissez votre mode de livraison et payez en toute sécurité</p>
 

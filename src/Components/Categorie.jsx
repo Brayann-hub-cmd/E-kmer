@@ -1,26 +1,28 @@
 // src/components/CategorySection.jsx
-import  { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import ProductCard from "./productCard";
-import api from "../api"
+import api from "../api";
 const CategorySection = ({ sousCategorie, categorieId }) => {
   const [produits, setProduits] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [totalProduits, setTotalProduits] = useState(0);
 
   const loadProduits = async (page) => {
     setLoading(true);
     try {
-      const limit = 2;
-
-      // Appel API réel
-      const response = await api.get(`all_annonces/${sousCategorie.code}/annonces/`);
-
+      const limit = 12; // ← Augmenté à 12 produits par page
+      
+      // ✅ Ajout des paramètres page et limit
+      const response = await api.get(`all_annonces/${sousCategorie.code}/annonces/?page=${page}&limit=${limit}`);
+      
       const data = response.data;
+      const produitsData = data.results || data; 
 
       // Transformer les données au format attendu par ProductCard
-      const produitsFormates =  data.map((annonce) => ({
+      const produitsFormates = produitsData.map((annonce) => ({
         code: annonce.code,
         title: annonce.titre,
         prix: annonce.prix,
@@ -30,15 +32,16 @@ const CategorySection = ({ sousCategorie, categorieId }) => {
         description: annonce.description,
         statut: annonce.statut,
         qte: annonce.qte,
-        vendeur:annonce.vendeur,
-        autres_images:annonce.images
+        vendeur: annonce.vendeur,
+        autres_images: annonce.images
       }));
 
       setProduits(produitsFormates);
-
-      // Calculer le nombre total de pages (si l'API renvoie le total)
-      // setTotalPages(Math.ceil(data.total / limit));
-      setTotalPages(produitsFormates.length /limit); // À adapter selon la réponse de l'API
+      
+      // ✅ Calcul correct du nombre total de pages
+      const total = data.count || produitsData.length;
+      setTotalProduits(total);
+      setTotalPages(Math.ceil(total / limit));
       setCurrentPage(page);
 
     } catch (error) {
@@ -73,8 +76,15 @@ const CategorySection = ({ sousCategorie, categorieId }) => {
     );
   }
 
-  if (!produits.length) {
-    return null;
+  if (!produits.length && !loading) {
+    return (
+      <div className="mb-12">
+        <h2 className="text-2xl font-bold text-gray-800 mb-4 pb-2 border-b-2 border-orange-500 inline-block">
+          {sousCategorie.nom}
+        </h2>
+        <p className="text-gray-500 text-center py-8">Aucun produit disponible dans cette catégorie.</p>
+      </div>
+    );
   }
 
   return (
