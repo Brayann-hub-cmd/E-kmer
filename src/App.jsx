@@ -6,9 +6,13 @@ import Userventes from "./pages/Userventes"
 import PageCategorie from './pages/CategoriePage/CategoriePage';
 import PublishProduct from "./components/PublishProduct";
 import ProductDetail from "./pages/ProductDetails/ProductDetail";
+import MesArticles from "./components/Userventes/MesArticles";
+import PurchaseDetail from "./components/Userventes/PurchaseDetail";
 import MesAchats from "./Components/Userventes/MesAchats";
+import SaleDetail from "./components/Userventes/SaleDetail";
 import MesFavoris from "./components/Userventes/MesFavoris";
 import Parametres from "./components/Userventes/Parametres";
+import AllProducts from "./pages/AllProduct/AllProduct";
 import MesVentes from "./components/Userventes/MesVentes"
 import PanierCard from "./pages/Panier/Panier"
 import Paiement from "./pages/Paiement/Paiement";
@@ -67,6 +71,22 @@ function App() {
     {
       path: '/profile/',
       element: <MesVentes />
+    },
+    {
+      path: '//profile/articles/',
+      element: <MesArticles/>
+    },
+    {
+      path: "/achat/:id",
+      element: <PurchaseDetail/>
+    },
+    {
+      path: "/vente/:id",
+      element: <SaleDetail />
+    },
+    {
+      path: '/produits',        // ← AJOUTER CETTE ROUTE
+      element: <AllProducts />
     }
   ])
   return (
