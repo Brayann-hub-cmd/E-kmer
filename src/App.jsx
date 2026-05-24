@@ -10,6 +10,12 @@ import MesArticles from "./components/Userventes/MesArticles";
 import PurchaseDetail from "./components/Userventes/PurchaseDetail";
 import MesAchats from "./Components/Userventes/MesAchats";
 import SaleDetail from "./components/Userventes/SaleDetail";
+import Apropos from "./pages/FooterPages/APropos";
+import CommentCaMarche from "./pages/FooterPages/CommentCaMarche";
+import Securite from "./pages/FooterPages/Securite";
+import CentreAide from "./pages/FooterPages/CentreAide";
+import Conditions from "./pages/FooterPages/Conditions";
+import Confidentialite from "./pages/FooterPages/Confidentialite";
 import MesFavoris from "./components/Userventes/MesFavoris";
 import Parametres from "./components/Userventes/Parametres";
 import AllProducts from "./pages/AllProduct/AllProduct";
@@ -87,6 +93,30 @@ function App() {
     {
       path: '/produits',        // ← AJOUTER CETTE ROUTE
       element: <AllProducts />
+    },
+    {
+  path: "/a-propos",
+  element: <Apropos />
+    },
+    {
+      path: "/comment-ca-marche",
+      element: <CommentCaMarche />
+    },
+    {
+       path: "/securite",
+      element: <Securite />
+    },
+    {
+      path: "/aide",
+      element: <CentreAide />
+    },
+    {
+      path: "/conditions",
+      element: <Conditions />
+    },
+    {
+      path: "/confidentialite",
+      element: <Confidentialite />
     }
   ])
   return (
