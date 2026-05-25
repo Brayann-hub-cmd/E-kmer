@@ -11,8 +11,10 @@ import MesFavoris from "./components/Userventes/MesFavoris";
 import Parametres from "./components/Userventes/Parametres";
 import MesVentes from "./components/Userventes/MesVentes"
 import PanierCard from "./pages/Panier/Panier"
+import AdminLogin from "./pages/Admin/AdminLogin";
 import Paiement from "./pages/Paiement/Paiement";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+
 function App() {
   const router = createBrowserRouter([
     {
@@ -27,6 +29,10 @@ function App() {
 
       path: 'auth/login',
       element: <Login />
+    },
+    {
+      path: '/admin/login',
+      element: <AdminLogin />
     },
     {
       path: '/categorie/:categorieSlug',
