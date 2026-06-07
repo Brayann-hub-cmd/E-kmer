@@ -78,7 +78,7 @@ export default function SideBar({ user }) {
     const getArticles = async () => {
       try {
         // TODO: Remplacer par l'endpoint réel de vos annonces
-        const articlesResponse = await api.get('annonces/vendeur/');
+        const articlesResponse = await api.get('annonces-user/');
         setArticles(articlesResponse.data.length);
       } catch (error) {
         console.error("Erreur chargement articles:", error);

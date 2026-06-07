@@ -25,7 +25,44 @@ const StatutBadge = ({ statut }) => {
 export default function SaleDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [sale, setSale] = useState(null);
+  const [sale, setSale] = useState({
+    id: id,
+    code: id,
+    produit: {
+      titre: "",
+      prix: 0,
+      image: ""
+    },
+    acheteur: {
+      nom: "",
+      telephone: "",
+      email: ""
+    },
+    quantite: 1,
+    montant_total: 450000,
+    date: "",
+    statut: "",
+    adresse_livraison: ""
+  });
+  const [formSale, setFormSale] = useState(
+  //   {
+  //     "code": "V-2026-000000001",
+  //     "acheteur": "58f7fefc-8f89-453d-a22f-45695fd4ecb2",
+  //     "prix_total": 25000,
+  //     "statut": "Actif",
+  //     "mode_paiement": "",
+  //     "created_at": "2026-04-30T16:11:37.955281Z",
+  //     "lignes": [
+  //       {
+  //         "id": 1,
+  //         "annonce": "A_0000008",
+  //         "annonce_titre": "Engrais biochimique",
+  //         "quantite": 10,
+  //         "prix_unitaire": 2500
+  //       }
+  //     ]
+  //   }
+  )
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -34,39 +71,26 @@ export default function SaleDetail() {
       try {
         const userRes = await api.get("auth/profile/");
         setUser(userRes.data);
-
-        // TODO: Remplacer par l'endpoint réel
-        // const response = await api.get(`ventes/${id}/`);
-        // setSale(response.data);
-        
-        // Données mock
-        setSale({
-          id: id,
-          code: "CMD_001",
-          produit: {
-            titre: "iPhone 14 Pro",
-            prix: 450000,
-            image: "/iphone.webp"
-          },
-          acheteur: {
-            nom: "Jean Dupont",
-            telephone: "+237 6XX XXX XXX",
-            email: "jean@email.com"
-          },
-          quantite: 1,
-          montant_total: 450000,
-          date: "2026-05-20T10:30:00Z",
-          statut: "livre",
-          adresse_livraison: "Douala, Bonamoussadi"
-        });
+        const response = await api.get(`ventes/${id}/`);
+        setFormSale(response.data)
       } catch (error) {
-        toast.error("Erreur de chargement");
+        toast.error(error?.response?.data?.error || 'erreur de chargement');
       } finally {
         setLoading(false);
       }
     };
     fetchData();
   }, [id]);
+
+  useEffect(() => {
+    try {
+
+    } catch (error) {
+      toast.error(error?.response?.data?.error || 'erreur de chargement');
+    } finally {
+      setLoading(false);
+    }
+  }, [formSale])
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -106,7 +130,7 @@ export default function SaleDetail() {
         </div>
         <div className="flex-1 p-4 sm:p-6">
           <BackToHome />
-          
+
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-2xl font-bold text-gray-900">Détail de la vente</h1>
             <button

@@ -22,6 +22,7 @@ import AllProducts from "./pages/AllProduct/AllProduct";
 import MesVentes from "./components/Userventes/MesVentes"
 import PanierCard from "./pages/Panier/Panier"
 import Paiement from "./pages/Paiement/Paiement";
+// import ProductDetail from "./pages/ProductDetails/ProductDetail";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 function App() {
   const router = createBrowserRouter([
@@ -79,7 +80,7 @@ function App() {
       element: <MesVentes />
     },
     {
-      path: '//profile/articles/',
+      path: '/profile/articles/',
       element: <MesArticles/>
     },
     {
@@ -91,7 +92,7 @@ function App() {
       element: <SaleDetail />
     },
     {
-      path: '/produits',        // ← AJOUTER CETTE ROUTE
+      path: '/produits', 
       element: <AllProducts />
     },
     {

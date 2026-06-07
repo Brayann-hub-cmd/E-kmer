@@ -13,6 +13,7 @@ export default function AllProducts() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [categories, setCategories] = useState([]);
+  const [lowCategorie, setLowCategorie] = useState([])
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -33,18 +34,40 @@ export default function AllProducts() {
     fetchData();
   }, []);
 
+  // useEffect(() => {
+  //   const lowcat = async () => {
+  //     categories.map((c, index) => {
+  //       const obj = new FormData({
+  //         nom: "",
+  //         categories: []
+  //       })
+  //       try {
+  //         const response = await api.get(`low_categories/${c.code}/sous_categories/`)
+  //         obj.nom = c.nom
+  //         obj.categories = response.data
+  //         lowCategorie.push(obj)
+  //       } catch (error) {
+  //         toast.error('erreur lors des chargements des sous catégories')
+  //       }
+  //     })
+  //   }
+  //   lowcat()
+  //   console.log(lowCategorie);
+
+  // }, [categories])
+
   // Filtrage
   useEffect(() => {
     let filtered = [...products];
-    
+
     if (searchTerm) {
       filtered = filtered.filter(p => p.titre.toLowerCase().includes(searchTerm.toLowerCase()));
     }
-    
+
     if (selectedCategory) {
-      filtered = filtered.filter(p => p.categorie === selectedCategory);
+      filtered = filtered.filter(p => p.sous_categorie === selectedCategory);
     }
-    
+
     setFilteredProducts(filtered);
   }, [searchTerm, selectedCategory, products]);
 
@@ -60,7 +83,7 @@ export default function AllProducts() {
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 py-8">
         <BackToHome />
-        
+
         <h1 className="text-3xl font-bold text-gray-900 mb-2">Tous les produits</h1>
         <p className="text-gray-500 mb-6">Découvrez tous les produits disponibles sur la plateforme</p>
 
@@ -84,9 +107,12 @@ export default function AllProducts() {
               className="pl-10 pr-8 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 bg-white appearance-none"
             >
               <option value="">Toutes les catégories</option>
-              {categories.map((cat) => (
-                <option key={cat.code} value={cat.code}>{cat.nom}</option>
-              ))}
+              {categories.map((cat) => {
+
+                return (
+                  <option key={cat.code} value={cat.code}>{cat.nom}</option>
+                )
+              })}
             </select>
           </div>
         </div>

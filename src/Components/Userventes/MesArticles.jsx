@@ -6,13 +6,14 @@ import SideBar from "../../components/Userventes/SideBar";
 import BackToHome from "../../components/BackToHome";
 import api from "../../api";
 import toast from "react-hot-toast";
+const LINK = import.meta.env.VITE_API_URL;
 
 const ArticleCard = ({ article, onEdit, onDelete, onView }) => {
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow">
       <div className="flex flex-col sm:flex-row">
         <img
-          src={article.image || "/placeholder.webp"}
+          src={LINK + article.image || "/placeholder.webp"}
           alt={article.titre}
           className="w-full sm:w-32 h-32 object-cover"
         />
@@ -50,16 +51,9 @@ export default function MyArticles() {
         const userRes = await api.get("auth/profile/");
         setUser(userRes.data);
 
-        // TODO: Remplacer par l'endpoint réel
-        // const response = await api.get("vendeur/annonces/");
-        // setArticles(response.data);
-        
-        // Données mock
-        setArticles([
-          { code: "ART_001", titre: "iPhone 14 Pro", prix: 450000, qte: 3, vues: 245, vendus: 2, statut: "actif", image: "/iphone.webp" },
-          { code: "ART_002", titre: "Air Jordan", prix: 120000, qte: 5, vues: 128, vendus: 1, statut: "actif", image: "/jordan.webp" },
-          { code: "ART_003", titre: "Casque Sony", prix: 150000, qte: 0, vues: 89, vendus: 4, statut: "inactif", image: "/casque.webp" },
-        ]);
+        const response = await api.get("annonces-user/");
+        setArticles(response.data);
+    
       } catch (error) {
         toast.error("Erreur de chargement");
       } finally {
