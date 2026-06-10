@@ -20,7 +20,7 @@ const Footer = () => {
         const getCategories = async () => {
             try {
                 const response = await api.get("categories/")
-                setData((data) => response.data)
+                setData(response.data)
             } catch (error) {
                 console.error("footer error, ", error);
             }
