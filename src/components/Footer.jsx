@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react';
+import logo from '../../public/logo.png'
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 // Icônes
@@ -30,7 +31,7 @@ const Footer = () => {
 
     const categories = useMemo(
         ()=>{
-          return data.map((cat)=>({
+          return console.log(data), data.map((cat)=>({
             code: `${cat.code}`,
             name: `${cat.nom}`,
             path: `/categorie/${cat.nom.toLowerCase().replace(/\s+/g, '-').normalize("NFD").replace(/[\u0300-\u036f]/g, '')}?id=${cat.code}`,
@@ -93,7 +94,7 @@ const Footer = () => {
                         data-aos-delay="100"
                     >
                         <div className="relative w-64 right-9">
-                            <a href='/' className='cursor-pointer'><img src="public\logo2 1.png" alt="Logo" /></a>
+                            <a href='/' className='cursor-pointer'><img src={logo} alt="Logo" /></a>
                         </div>
                         <p className="text-gray-300 text-sm">
                             Achetez et vendez vos articles
@@ -230,11 +231,7 @@ const Footer = () => {
                 <div className=" my-20"></div>
 
                 {/* Footer bottom */}
-                <div
-                    className="text-center text-gray-400 text-sm"
-                    data-aos="fade-up"
-                    data-aos-delay="600"
-                >
+                <div className="text-center text-gray-400 text-sm">
                     <p>© 2026 E-kmer. Tous droits réservés.</p>
                 </div>
             </div>

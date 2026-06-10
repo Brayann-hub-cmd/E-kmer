@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import CategorySection from "../../components/Categorie";
+import BackToHome from "../../components/BackToHome";
 import api from "../../api";
 import toast from "react-hot-toast";
+
 const CategoriePage = () => {
   const { categorieSlug } = useParams();
   const [searchParams] = useSearchParams();
@@ -17,6 +19,7 @@ const CategoriePage = () => {
   const [categorieNom, setCategorieNom] = useState("");
   const [loading, setLoading] = useState(true);
   const [activeSousCategorie, setActiveSousCategorie] = useState(null);
+  
   //Recuperation de la catégorie sélectionnée
   useEffect(() => {
     const getCategorie = async (code) => {
@@ -33,10 +36,12 @@ const CategoriePage = () => {
     }
     getCategorie();
   }, [])
+  
   //Initialisation de la variable categorieNom
   useEffect(() => {
     setCategorieNom((categorieNom) => categorie.nom);
   }, [categorie])
+  
   useEffect(() => {
     const getCategories = async () => {
       try {
@@ -59,6 +64,7 @@ const CategoriePage = () => {
       return map;
     }, [categories]
   )
+  
   const allSousCategories = async (id_categorie) =>{
     try {
       const response = await api.get(`low_categories/${id_categorie}/sous_categories/`)
@@ -92,16 +98,6 @@ const CategoriePage = () => {
       }finally{
         setLoading(false)
       }
-      // setTimeout(() => {
-      //   const filtered = mockSousCategories[categorieId] || [];
-      //   setSousCategories(filtered);
-
-      //   if (filtered.length > 0) {
-      //     setActiveSousCategorie(filtered[0].code);
-      //   }
-          // setCategorieNom(slugToNom[categorieSlug] || "Catégorie");
-      //   setLoading(false);
-      // }, 500);
     };
 
     loadSousCategories();
@@ -119,6 +115,9 @@ const CategoriePage = () => {
     <div className="bg-gray-50 min-h-screen">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
+        {/* ← BOUTON RETOUR ACCUEIL */}
+        <BackToHome />
+
         {/* En-tête */}
         <div className="mb-8">
           <h1 className="text-3xl sm:text-4xl font-bold text-gray-800">
@@ -129,7 +128,6 @@ const CategoriePage = () => {
           </p>
           {categorieId && process.env.NODE_ENV === "development" && (
             <p className="text-xs text-gray-400 mt-1">
-              ID: {categorieId}
             </p>
           )}
         </div>
