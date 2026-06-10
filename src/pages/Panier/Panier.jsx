@@ -5,23 +5,21 @@ import { FaTrash } from "react-icons/fa";
 import api from "../../api";
 import BackToHome from "../../Components/BackToHome";
 import toast from "react-hot-toast";
-const LINK = import.meta.env.VITE_API_URL
-// ── Données mock ──────────────────────────────────────────────
-// Supprimé - remplacé par appel API
 
+const LINK = import.meta.env.VITE_API_URL;
 const LIVRAISON = 5000;
 
 // ── Carte produit panier ──────────────────────────────────────
 const PanierCard = ({ item, onQteChange, onSupprimer }) => {
-  const sousTotalItem = item.sous_total;
-
+  const sousTotalItem = item.sous_total || item.prix * item.quantite;
+  
   return (
     <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
       <div className="flex gap-5 items-start">
         {/* Image */}
         <img
-          src={LINK + item.annonce_image || "/placeholder.webp"}
-          alt={item.annonce_titre}
+          src={LINK + (item.annonce_image || item.image) || "/placeholder.webp"}
+          alt={item.annonce_titre || item.titre}
           className="w-40 h-32 object-cover rounded-xl flex-shrink-0"
         />
 
@@ -29,10 +27,12 @@ const PanierCard = ({ item, onQteChange, onSupprimer }) => {
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between gap-2">
             <div>
-              <h3 className="font-bold text-lg text-gray-900">{item.annonce_titre}</h3>
-              <p className="text-gray-400 text-sm mt-0.5 font-medium">Publié par {item.annonce_vendeur}</p>
+              <h3 className="font-bold text-lg text-gray-900">{item.annonce_titre || item.titre}</h3>
+              <p className="text-gray-400 text-sm mt-0.5 font-medium">
+                Publié par {item.annonce_vendeur || item.vendeur}
+              </p>
               <p className="text-orange-500 font-bold text-xl mt-2">
-                {item.annonce_prix?.toLocaleString()} FCFA
+                {(item.annonce_prix || item.prix)?.toLocaleString()} FCFA
               </p>
             </div>
             {/* Bouton supprimer */}
@@ -51,7 +51,7 @@ const PanierCard = ({ item, onQteChange, onSupprimer }) => {
               <button
                 onClick={() => onQteChange(item.id, item.quantite + 1, item.annonce_id)}
                 className="px-3 py-1.5 text-gray-700 hover:bg-gray-100 transition-colors font-bold text-lg"
-                disabled={item.quantite >= item.stock}
+                disabled={item.quantite >= (item.stock || item.annonce_qte || 999)}
               >
                 +
               </button>
@@ -59,14 +59,16 @@ const PanierCard = ({ item, onQteChange, onSupprimer }) => {
                 {item.quantite}
               </span>
               <button
-                onClick={() => onQteChange(item.id, item.quantite - 1)}
+                onClick={() => onQteChange(item.id, item.quantite - 1, item.annonce_id)}
                 className="px-3 py-1.5 text-gray-700 hover:bg-gray-100 transition-colors font-bold text-lg"
                 disabled={item.quantite <= 1}
               >
                 -
               </button>
             </div>
-            <span className="text-gray-500 text-sm">{item.stock} en stock</span>
+            <span className="text-gray-500 text-sm">
+              {(item.stock || item.annonce_qte || 0)} en stock
+            </span>
           </div>
         </div>
       </div>
@@ -82,7 +84,7 @@ const PanierCard = ({ item, onQteChange, onSupprimer }) => {
 
 // ── Page principale ───────────────────────────────────────────
 export default function Panier() {
-  const [items, setItems] = useState(null);
+  const [panierData, setPanierData] = useState({ items: [], total: 0 });
   const [loadingPanier, setLoadingPanier] = useState(true);
   const navigate = useNavigate();
 
@@ -91,11 +93,18 @@ export default function Panier() {
     const getPanier = async () => {
       try {
         const response = await api.get("panier/");
-        setItems(response.data);
+        // Vérifier la structure de la réponse
+        if (response.data && Array.isArray(response.data)) {
+          setPanierData({ items: response.data, total: 0 });
+        } else if (response.data && response.data.items) {
+          setPanierData(response.data);
+        } else {
+          setPanierData({ items: [], total: 0 });
+        }
       } catch (error) {
-        setItems([])
         console.error("Erreur chargement panier:", error);
-        toast.error(error?.response?.data?.error)
+        toast.error(error?.response?.data?.error || "Erreur chargement panier");
+        setPanierData({ items: [], total: 0 });
       } finally {
         setLoadingPanier(false);
       }
@@ -105,34 +114,55 @@ export default function Panier() {
 
   const handleQteChange = async (id, nouvelleQte, annonce_id) => {
     if (nouvelleQte < 1) return;
-    setItems((prev) =>
-      prev.items.map((item) =>
+    
+    // Mise à jour locale
+    setPanierData((prev) => ({
+      ...prev,
+      items: prev.items.map((item) =>
         item.id === id
-          ? { ...item, quantite: Math.min(nouvelleQte, item.stock) }
+          ? { 
+              ...item, 
+              quantite: Math.min(nouvelleQte, item.stock || item.annonce_qte || 999),
+              sous_total: (item.annonce_prix || item.prix) * Math.min(nouvelleQte, item.stock || item.annonce_qte || 999)
+            }
           : item
       )
-    );
+    }));
+    
     // API mise à jour quantité
     try {
       await api.patch(`panier/items/${id}/`, { annonce: annonce_id, quantite: nouvelleQte });
     } catch (error) {
       console.error("Erreur mise à jour quantité:", error);
-      toast.error(error?.response?.data?.error)
+      toast.error(error?.response?.data?.error || "Erreur mise à jour");
+      // Recharger le panier en cas d'erreur
+      const response = await api.get("panier/");
+      setPanierData(response.data);
     }
   };
 
   const handleSupprimer = async (id) => {
-
+    // Mise à jour locale
+    setPanierData((prev) => ({
+      ...prev,
+      items: prev.items.filter((item) => item.id !== id)
+    }));
+    
     // API suppression
     try {
       await api.delete(`panier/items/${id}/`);
+      toast.success("Article supprimé du panier");
     } catch (error) {
       console.error("Erreur suppression:", error);
-      toast.error(error?.response?.data?.error)
+      toast.error(error?.response?.data?.error || "Erreur suppression");
+      // Recharger le panier en cas d'erreur
+      const response = await api.get("panier/");
+      setPanierData(response.data);
     }
   };
 
-  const sousTotal = (items?.items ?? []).reduce((acc, item) => acc + item.sous_total, 0);
+  const items = panierData.items || [];
+  const sousTotal = panierData.total || items.reduce((acc, item) => acc + (item.sous_total || (item.annonce_prix || item.prix) * item.quantite), 0);
   const total = sousTotal + LIVRAISON;
 
   if (loadingPanier) {
@@ -145,18 +175,13 @@ export default function Panier() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* ── NAVBAR ── */}
-      {/* <Navbar /> */}
-
       <div className="max-w-6xl mx-auto px-4 py-8">
-
-        {/* ← BOUTON RETOUR ACCUEIL */}
+        
         <BackToHome />
 
-        {/* Titre */}
         <h1 className="text-3xl font-bold text-gray-900">Mon Panier</h1>
         <p className="text-gray-400 text-sm font-medium mt-1 mb-8">
-          {items.items.length} article{items.items.length > 1 ? "s" : ""} dans votre panier
+          {items.length} article{items.length > 1 ? "s" : ""} dans votre panier
         </p>
 
         {items.length === 0 ? (
@@ -171,10 +196,9 @@ export default function Panier() {
           </div>
         ) : (
           <div className="flex flex-col lg:flex-row gap-8 items-start">
-
-            {/* ── Colonne gauche : liste produits ── */}
+            
             <div className="flex-1 space-y-4 w-full">
-              {(items?.items ?? []).map((item) => (
+              {items.map((item) => (
                 <PanierCard
                   key={item.id}
                   item={item}
@@ -184,7 +208,6 @@ export default function Panier() {
               ))}
             </div>
 
-            {/* ── Colonne droite : résumé ── */}
             <div className="w-full lg:w-80 bg-white rounded-2xl p-6 shadow-sm border border-gray-100 lg:sticky lg:top-6 flex-shrink-0">
               <h2 className="text-lg font-bold text-gray-900 mb-5">Résumé de la commande</h2>
 
@@ -222,9 +245,6 @@ export default function Panier() {
           </div>
         )}
       </div>
-
-      {/* ── FOOTER ── */}
-      {/* <Footer /> */}
     </div>
   );
 }

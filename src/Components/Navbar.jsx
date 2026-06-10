@@ -62,7 +62,6 @@ export default function Navbar({ setTitle, setCategorie }) {
   const getPanier = async () => {
     try {
       const res = await api.get("panier/")
-      // console.log(res.data);
       setPanier(res.data.items)
 
     } catch (error) {

@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FaClock, FaMapMarkerAlt } from "react-icons/fa";
 
 function RecentProducts() {
   const [recentProducts, setRecentProducts] = useState([]);
+  const navigate = useNavigate();
 
   // Charger les produits récemment consultés depuis localStorage
   useEffect(() => {
@@ -35,10 +36,9 @@ function RecentProducts() {
     return date.toLocaleDateString('fr-FR');
   };
 
-  // Rediriger vers la première catégorie
+  // Rediriger vers la page "Tous les produits"
   const handleExploreClick = () => {
-    // Tu peux modifier le chemin selon ta première catégorie
-    window.location.href = "/categorie/electronique?id=Cat_1";
+    navigate("/produits");
   };
 
   return (

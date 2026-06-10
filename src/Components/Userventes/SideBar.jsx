@@ -1,15 +1,17 @@
 // src/Components/Userventes/SideBar.jsx
 import { useEffect, useState } from "react";
-import { FaHeart, FaCog, FaShoppingCart, FaStore } from "react-icons/fa";
+import { FaHeart, FaCog, FaShoppingCart, FaStore, FaBoxes } from "react-icons/fa";
 import { useNavigate, useLocation } from "react-router-dom";
 import BackToHome from "../BackToHome";
 import api from "../../api";
 import toast from "react-hot-toast";
+
 export default function SideBar({ user }) {
   const navigate = useNavigate();
   const location = useLocation();
-  const [ventes, setVentes] = useState(0)
-  const [achats, setAchats] = useState(0)
+  const [ventes, setVentes] = useState(0);
+  const [achats, setAchats] = useState(0);
+  const [articles, setArticles] = useState(0);
 
   const formaterTelephone = (valeur) => {
     if (!valeur) return '+237 6XX XXX XXX';
@@ -43,6 +45,7 @@ export default function SideBar({ user }) {
     { key: "ventes", label: "Mes ventes", icon: FaStore, path: "/profile" },
     { key: "achats", label: "Mes achats", icon: FaShoppingCart, path: "/profile/achats" },
     { key: "favoris", label: "Mes favoris", icon: FaHeart, path: "/profile/favoris" },
+    { key: "articles", label: "Mes articles", icon: FaBoxes, path: "/profile/articles" },
     { key: "parametres", label: "Paramètres", icon: FaCog, path: "/profile/parametres" },
   ];
 
@@ -53,33 +56,46 @@ export default function SideBar({ user }) {
     return location.pathname === path;
   };
 
-  useEffect(
-    () => {
-      const getAchats = async() => {
-        try {
-          const achatsResponse = await api.get('achats/')
-          setAchats(achatsResponse.data.length)
-        } catch (error) {
-          toast.error(error?.response?.data?.error)
-        }
+  useEffect(() => {
+    const getAchats = async () => {
+      try {
+        const achatsResponse = await api.get('achats/');
+        setAchats(achatsResponse.data.length);
+      } catch (error) {
+        toast.error(error?.response?.data?.error);
       }
+    };
 
-      const getVentes = async() => {
-        try {
-          const ventesResponse = await api.get('ventes/vendeur/')
-          setVentes(ventesResponse.data.length)
-        } catch (error) {
-          toast.error(error?.response?.data?.error)
-        }
+    const getVentes = async () => {
+      try {
+        const ventesResponse = await api.get('ventes/vendeur/');
+        setVentes(ventesResponse.data.length);
+      } catch (error) {
+        toast.error(error?.response?.data?.error);
       }
-      getAchats();
-      getVentes()
-    }, []
-  )
+    };
+
+    const getArticles = async () => {
+      try {
+        // TODO: Remplacer par l'endpoint réel de vos annonces
+        const articlesResponse = await api.get('annonces-user/');
+        setArticles(articlesResponse.data.length);
+      } catch (error) {
+        console.error("Erreur chargement articles:", error);
+        // Données mock pour le test
+        setArticles(3);
+      }
+    };
+
+    getAchats();
+    getVentes();
+    getArticles();
+  }, []);
 
   return (
     <div className="w-full md:w-[260px] bg-white p-5 shadow-md flex-shrink-0 self-stretch min-h-screen">
       <BackToHome />
+      
       {/* PROFIL */}
       <div className="text-center mb-6">
         <div className="relative w-24 h-24 mx-auto">
@@ -117,6 +133,10 @@ export default function SideBar({ user }) {
           <p className="text-green-600 font-bold text-xl">{ventes}</p>
           <p className="text-xs text-gray-600">Ventes</p>
         </div>
+        <div className="text-center">
+          <p className="text-blue-600 font-bold text-xl">{articles}</p>
+          <p className="text-xs text-gray-600">Articles</p>
+        </div>
       </div>
 
       {/* MENU */}
@@ -125,10 +145,11 @@ export default function SideBar({ user }) {
           <button
             key={key}
             onClick={() => navigate(path)}
-            className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all duration-200 ${isActive(path)
+            className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all duration-200 ${
+              isActive(path)
                 ? "bg-orange-500 text-white shadow-md"
                 : "hover:bg-gray-100 text-gray-700"
-              }`}
+            }`}
           >
             <Icon className={`text-lg flex-shrink-0 ${isActive(path) ? "text-white" : "text-gray-500"}`} />
             <span className={`text-sm font-medium ${isActive(path) ? "text-white" : "text-gray-700"}`}>

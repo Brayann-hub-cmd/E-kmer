@@ -25,7 +25,6 @@ const StatutBadge = ({ statut }) => {
 // ── Carte achat ───────────────────────────────────────────────
 const AchatCard = ({ achat, onVoirDetails, date }) => (
   <div className="bg-white rounded-xl sm:rounded-2xl p-3 sm:p-5 shadow-sm border border-gray-100">
-    {/* Layout responsive : colonne sur mobile, ligne sur desktop */}
     <div className="flex flex-col sm:flex-row gap-3 sm:gap-5 items-start sm:items-center">
 
       {/* Infos principales */}
@@ -40,9 +39,9 @@ const AchatCard = ({ achat, onVoirDetails, date }) => (
         </p>
       </div>
 
-      {/* Image */}
-      <div className="flex flex-col gap-2 mb-4">
-        {achat.lignes.map((ligne) => (
+      {/* Liste des produits */}
+      <div className="flex flex-col gap-2 mb-4 w-full">
+        {achat.lignes?.map((ligne) => (
           <div key={ligne.id} className="flex flex-row items-center gap-3 bg-gray-50 rounded-lg p-2">
             <div className="flex-1 min-w-0">
               <h3 className="font-bold text-base sm:text-lg text-gray-900">{ligne.annonce_titre}</h3>
@@ -50,39 +49,41 @@ const AchatCard = ({ achat, onVoirDetails, date }) => (
                 Qté commandé: {ligne.quantite}
               </p>
               <p className="text-gray-400 text-xs mt-0.5">
-                Prix U.: {ligne.prix_unitaire}
+                Prix U.: {ligne.prix_unitaire?.toLocaleString()} FCFA
               </p>
             </div>
             <p className="text-orange-500 font-semibold text-sm flex-shrink-0">
               {(ligne.quantite * ligne.prix_unitaire).toLocaleString()} FCFA
             </p>
           </div>
-
         ))}
       </div>
-      <div className="self-start sm:self-auto">
-        <StatutBadge statut={achat.statut} />
-      </div>
 
-      {/* Bouton */}
-      <div className="w-full sm:w-auto">
-        <button
-          onClick={() => onVoirDetails(achat.code)}
-          className="w-full sm:w-auto bg-orange-500 hover:bg-orange-600 text-white px-4 sm:px-5 py-2 rounded-lg text-sm font-semibold transition-colors"
-        >
-          Voir les détails
-        </button>
+      {/* Statut et bouton */}
+      <div className="flex flex-col sm:flex-row items-end sm:items-center gap-3 w-full sm:w-auto">
+        <div className="self-start sm:self-auto">
+          <StatutBadge statut={achat.statut} />
+        </div>
+        <div className="w-full sm:w-auto">
+          <button
+            onClick={() => onVoirDetails(achat.code)}
+            className="w-full sm:w-auto bg-orange-500 hover:bg-orange-600 text-white px-4 sm:px-5 py-2 rounded-lg text-sm font-semibold transition-colors"
+          >
+            Voir les détails
+          </button>
+        </div>
       </div>
     </div>
   </div>
 );
 
-//  Page principale 
+// Page principale Mes achats
 export default function MesAchats() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [achats, setAchats] = useState([]);
   const navigate = useNavigate();
+
   const formatDate = (dateString) => {
     if (!dateString) return "Date inconnue";
     const date = new Date(dateString);
@@ -95,6 +96,7 @@ export default function MesAchats() {
     if (diffDays < 7) return `Il y a ${diffDays} jours`;
     return date.toLocaleDateString('fr-FR');
   };
+
   useEffect(() => {
     const getUser = async () => {
       try {
@@ -108,23 +110,24 @@ export default function MesAchats() {
 
     const getAchats = async () => {
       try {
-        const achatsResponse = await api.get('achats/')
-        setAchats(achatsResponse.data)
+        const achatsResponse = await api.get('achats/');
+        setAchats(achatsResponse.data);
       } catch (error) {
-        toast.error(error?.response?.data?.error)
+        toast.error(error?.response?.data?.error);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
+    
     getUser();
     getAchats();
   }, []);
-  const handleVoirDetails = (id) => navigate(`/produit/${id}`);
-  useEffect(
-    () => {
-      console.log(achats)
-    }, [achats]
-  )
+
+  // Rediriger vers la page détail de l'achat
+  const handleVoirDetails = (code) => {
+    navigate(`/achat/${code}`);
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-100 flex items-center justify-center">
@@ -135,17 +138,19 @@ export default function MesAchats() {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      {/* Layout responsive : colonne sur mobile, ligne sur desktop */}
       <div className="flex flex-col md:flex-row">
-        {/* Sidebar - pleine largeur sur mobile, fixe sur desktop */}
+        
+        {/* Sidebar */}
         <div className="w-full md:w-auto">
           <SideBar user={user} activeTab="achats" />
         </div>
+
         {/* Contenu principal */}
         <div className="flex-1 p-4 sm:p-6">
           <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6">
             Mes achats
           </h1>
+
           {achats.length === 0 ? (
             <div className="bg-white rounded-xl sm:rounded-2xl p-8 sm:p-12 text-center shadow-sm">
               <p className="text-gray-400 text-base sm:text-lg">
@@ -155,7 +160,12 @@ export default function MesAchats() {
           ) : (
             <div className="space-y-3 sm:space-y-4">
               {achats.map((achat) => (
-                <AchatCard key={achat.code} achat={achat} date={formatDate(achat.created_at)} onVoirDetails={handleVoirDetails} />
+                <AchatCard 
+                  key={achat.code} 
+                  achat={achat} 
+                  date={formatDate(achat.created_at)} 
+                  onVoirDetails={handleVoirDetails} 
+                />
               ))}
             </div>
           )}

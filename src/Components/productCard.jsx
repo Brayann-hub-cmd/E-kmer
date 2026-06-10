@@ -27,8 +27,8 @@ const ProductCard = ({ product }) => {
       {/* Image */}
       <Link to={`/produit/${product.code}`} className="block overflow-hidden">
         <img
-          src={product.image ? product.image : "/placeholder-image.jpg"}
-          alt={product.title}
+          src={product?.image ? product.image : "/placeholder-image.jpg"}
+          alt={product?.titre || "Produit"}
           className="w-full h-40 object-cover bg-gray-100 group-hover:scale-105 transition-transform duration-300"
         />
       </Link>
@@ -38,7 +38,7 @@ const ProductCard = ({ product }) => {
         {/* Titre */}
         <Link to={`/produit/${product.code}`} className="block hover:text-orange-500 transition-colors">
           <h3 className="text-sm font-semibold text-gray-800 line-clamp-1 mb-1">
-            {product.title}
+            {product?.titre || "Sans titre"}
           </h3>
         </Link>
 
