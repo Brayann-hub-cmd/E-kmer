@@ -22,14 +22,8 @@ const Footer = () => {
     useEffect(() => {
         const getCategories = async () => {
             try {
-                const response = await api.get("categories/");
-                console.log("API RESPONSE:", response.data);
-
-                //  Gestion DRF pagination OU réponse simple
-                const categoriesData =
-                    response.data?.results || response.data;
-
-                setData(Array.isArray(categoriesData) ? categoriesData : []);
+                const response = await api.get("categories/")
+                setData(response.data)
             } catch (error) {
                 console.error("footer error:", error);
                 setData([]); // sécurité
