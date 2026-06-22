@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
-import CategorySection from "../../components/Categorie";
-import BackToHome from "../../components/BackToHome";
+import CategorySection from "../../Components/Categorie";
+import BackToHome from "../../Components/BackToHome";
 import api from "../../api";
 import toast from "react-hot-toast";
 

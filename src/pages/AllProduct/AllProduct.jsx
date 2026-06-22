@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaSearch, FaFilter } from "react-icons/fa";
-import ProductCard from "../../components/productCard";
+import ProductCard from "../../Components/productCard";
 import api from "../../api";
 import BackToHome from "../../Components/BackToHome";
 

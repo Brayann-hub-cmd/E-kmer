@@ -2,8 +2,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaEdit, FaTrash, FaEye, FaPlus } from "react-icons/fa";
-import SideBar from "../../components/Userventes/SideBar";
-import BackToHome from "../../components/BackToHome";
+import SideBar from "../../Components/Userventes/SideBar";
+import BackToHome from "../../Components/BackToHome";
 import api from "../../api";
 import toast from "react-hot-toast";
 const LINK = import.meta.env.VITE_API_URL;

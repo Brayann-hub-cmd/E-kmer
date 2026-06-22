@@ -3,7 +3,9 @@ import { useState, useEffect } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import ProductCard from "./productCard";
 import api from "../api";
-const CategorySection = ({ sousCategorie, categorieId }) => {
+import { safeArray } from "../utils/safeData";
+
+const CategorySection = ({ sousCategorie }) => {
   const [produits, setProduits] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
@@ -12,16 +14,19 @@ const CategorySection = ({ sousCategorie, categorieId }) => {
 
   const loadProduits = async (page) => {
     setLoading(true);
-    try {
-      const limit = 12; // ← Augmenté à 12 produits par page
-      
-      // ✅ Ajout des paramètres page et limit
-      const response = await api.get(`all_annonces/${sousCategorie.code}/annonces/?page=${page}&limit=${limit}`);
-      
-      const data = response.data;
-      const produitsData = data.results || data; 
 
-      // Transformer les données au format attendu par ProductCard
+    try {
+      const limit = 12;
+
+      const response = await api.get(
+        `all_annonces/${sousCategorie.code}/annonces/?page=${page}&limit=${limit}`
+      );
+
+      // ✅ SAFE DATA (très important)
+      const data = response.data;
+      const produitsData = safeArray(data);
+
+      // ✅ Transformation sécurisée
       const produitsFormates = produitsData.map((annonce) => ({
         code: annonce.code,
         title: annonce.titre,
@@ -37,23 +42,32 @@ const CategorySection = ({ sousCategorie, categorieId }) => {
       }));
 
       setProduits(produitsFormates);
-      
-      // ✅ Calcul correct du nombre total de pages
-      const total = data.count || produitsData.length;
+
+      // ✅ pagination sécurisée
+      const total = data?.count ?? produitsData.length;
+
       setTotalProduits(total);
       setTotalPages(Math.ceil(total / limit));
       setCurrentPage(page);
 
     } catch (error) {
       console.error("Erreur chargement produits:", error);
+
+      // 🔥 sécurité anti-crash
+      setProduits([]);
+      setTotalPages(1);
+      setTotalProduits(0);
+
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    loadProduits(1);
-  }, [sousCategorie.code]);
+    if (sousCategorie?.code) {
+      loadProduits(1);
+    }
+  }, [sousCategorie?.code]);
 
   const goToPage = (page) => {
     if (page >= 1 && page <= totalPages) {
@@ -62,7 +76,6 @@ const CategorySection = ({ sousCategorie, categorieId }) => {
     }
   };
 
-  // Organiser les produits en lignes de 6
   const rows = [];
   for (let i = 0; i < produits.length; i += 6) {
     rows.push(produits.slice(i, i + 6));
@@ -82,7 +95,9 @@ const CategorySection = ({ sousCategorie, categorieId }) => {
         <h2 className="text-2xl font-bold text-gray-800 mb-4 pb-2 border-b-2 border-orange-500 inline-block">
           {sousCategorie.nom}
         </h2>
-        <p className="text-gray-500 text-center py-8">Aucun produit disponible dans cette catégorie.</p>
+        <p className="text-gray-500 text-center py-8">
+          Aucun produit disponible dans cette catégorie.
+        </p>
       </div>
     );
   }
@@ -94,7 +109,10 @@ const CategorySection = ({ sousCategorie, categorieId }) => {
       </h2>
 
       {rows.map((row, rowIndex) => (
-        <div key={rowIndex} className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-6">
+        <div
+          key={rowIndex}
+          className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-6"
+        >
           {row.map((product) => (
             <ProductCard key={product.code} product={product} />
           ))}
@@ -106,10 +124,11 @@ const CategorySection = ({ sousCategorie, categorieId }) => {
           <button
             onClick={() => goToPage(currentPage - 1)}
             disabled={currentPage === 1}
-            className={`p-2 rounded-lg border transition-colors ${currentPage === 1
+            className={`p-2 rounded-lg border transition-colors ${
+              currentPage === 1
                 ? "border-gray-200 text-gray-300 cursor-not-allowed"
                 : "border-gray-300 text-gray-600 hover:bg-orange-500 hover:text-white hover:border-orange-500"
-              }`}
+            }`}
           >
             <FaChevronLeft className="text-sm" />
           </button>
@@ -121,10 +140,11 @@ const CategorySection = ({ sousCategorie, categorieId }) => {
           <button
             onClick={() => goToPage(currentPage + 1)}
             disabled={currentPage === totalPages}
-            className={`p-2 rounded-lg border transition-colors ${currentPage === totalPages
+            className={`p-2 rounded-lg border transition-colors ${
+              currentPage === totalPages
                 ? "border-gray-200 text-gray-300 cursor-not-allowed"
                 : "border-gray-300 text-gray-600 hover:bg-orange-500 hover:text-white hover:border-orange-500"
-              }`}
+            }`}
           >
             <FaChevronRight className="text-sm" />
           </button>

@@ -4,22 +4,22 @@ import Login from "./pages/auth/Login";
 import SignUp from "./pages/SignUp/SignUp"
 import Userventes from "./pages/Userventes"
 import PageCategorie from './pages/CategoriePage/CategoriePage';
-import PublishProduct from "./components/PublishProduct";
+import PublishProduct from "./Components/PublishProduct";
 import ProductDetail from "./pages/ProductDetails/ProductDetail";
-import MesArticles from "./components/Userventes/MesArticles";
-import PurchaseDetail from "./components/Userventes/PurchaseDetail";
+import MesArticles from "./Components/Userventes/MesArticles";
+import PurchaseDetail from "./Components/Userventes/PurchaseDetail";
 import MesAchats from "./Components/Userventes/MesAchats";
-import SaleDetail from "./components/Userventes/SaleDetail";
+import SaleDetail from "./Components/Userventes/SaleDetail";
 import Apropos from "./pages/FooterPages/APropos";
 import CommentCaMarche from "./pages/FooterPages/CommentCaMarche";
 import Securite from "./pages/FooterPages/Securite";
 import CentreAide from "./pages/FooterPages/CentreAide";
 import Conditions from "./pages/FooterPages/Conditions";
 import Confidentialite from "./pages/FooterPages/Confidentialite";
-import MesFavoris from "./components/Userventes/MesFavoris";
-import Parametres from "./components/Userventes/Parametres";
+import MesFavoris from "./Components/Userventes/MesFavoris";
+import Parametres from "./Components/Userventes/Parametres";
 import AllProducts from "./pages/AllProduct/AllProduct";
-import MesVentes from "./components/Userventes/MesVentes"
+import MesVentes from "./Components/Userventes/MesVentes"
 import PanierCard from "./pages/Panier/Panier"
 import Paiement from "./pages/Paiement/Paiement";
 // import ProductDetail from "./pages/ProductDetails/ProductDetail";
@@ -35,8 +35,7 @@ function App() {
       element: <SignUp />
     },
     {
-
-      path: 'auth/login',
+      path: '/auth/login',
       element: <Login />
     },
     {

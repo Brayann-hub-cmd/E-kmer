@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { AiOutlineLock, AiOutlinePhone, AiOutlineMail } from "react-icons/ai";
 import { MdAlternateEmail } from "react-icons/md";
 import { Link, useNavigate } from "react-router-dom";
-import BackToHome from "../../components/BackToHome";
+import BackToHome from "../../Components/BackToHome";
 import api from '../../api'
 import toast from "react-hot-toast";
 
@@ -173,7 +173,6 @@ function Login() {
           <button
             type="submit"
             className="w-full bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-600 transition"
-            onClick={handleSubmit}
           >
             Connexion
           </button>

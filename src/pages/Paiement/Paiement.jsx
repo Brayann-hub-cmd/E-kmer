@@ -2,10 +2,10 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../api";
-import LivraisonChoix from "../../components/LivraisonChoix";
-import RecapCommande from "../../components/RecapCommande";
-import PaiementMobile from "../../components/PaiementMobile";
-import BackToHome from "../../components/BackToHome";
+import LivraisonChoix from "../../Components/LivraisonChoix";
+import RecapCommande from "../../Components/RecapCommande";
+import PaiementMobile from "../../Components/PaiementMobile";
+import BackToHome from "../../Components/BackToHome";
 
 export default function Paiement() {
   const [commande, setCommande] = useState([]);

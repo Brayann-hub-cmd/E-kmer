@@ -11,7 +11,7 @@ import {
   BsCheckCircle
 } from 'react-icons/bs';
 import { Link, useNavigate } from 'react-router-dom';
-import BackToHome from '../../components/BackToHome';
+import BackToHome from '../../Components/BackToHome';
 import api from '../../api';
 
 const SignUp = () => {
