@@ -126,10 +126,6 @@ const CategoriePage = () => {
           <p className="text-gray-500 mt-1">
             Découvrez tous nos produits
           </p>
-          {categorieId && process.env.NODE_ENV === "development" && (
-            <p className="text-xs text-gray-400 mt-1">
-            </p>
-          )}
         </div>
 
         {/* Barre "Rechercher par Catégories" */}

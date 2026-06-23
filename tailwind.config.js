@@ -56,10 +56,6 @@ export default {
       },
 
 
-      fontFamily: {
-        sans: ["InterVariable", ...defaultTheme.fontFamily.sans],
-
-      },
     },
   },
 }
