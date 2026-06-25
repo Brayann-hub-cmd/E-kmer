@@ -77,12 +77,10 @@ export default function SideBar({ user }) {
 
     const getArticles = async () => {
       try {
-        // TODO: Remplacer par l'endpoint réel de vos annonces
         const articlesResponse = await api.get('annonces-user/');
         setArticles(articlesResponse.data.length);
       } catch (error) {
         console.error("Erreur chargement articles:", error);
-        // Données mock pour le test
         setArticles(3);
       }
     };
@@ -93,7 +91,7 @@ export default function SideBar({ user }) {
   }, []);
 
   return (
-    <div className="w-full md:w-[260px] bg-white p-5 shadow-md flex-shrink-0 self-stretch min-h-screen">
+    <div className="w-full md:w-[260px] bg-white dark:bg-gray-800 p-5 shadow-md flex-shrink-0 self-stretch min-h-screen transition-colors duration-300">
       <BackToHome />
       
       {/* PROFIL */}
@@ -109,10 +107,10 @@ export default function SideBar({ user }) {
           )}
         </div>
 
-        <h2 className="mt-4 text-lg font-semibold text-gray-800">
+        <h2 className="mt-4 text-lg font-semibold text-gray-800 dark:text-white">
           {user ? user.username : 'Profil'}
         </h2>
-        <p className="text-gray-500 text-sm">
+        <p className="text-gray-500 dark:text-gray-400 text-sm">
           {user ? formaterTelephone(user.telephone) : '+237 6XX XXX XXX'}
         </p>
 
@@ -124,18 +122,18 @@ export default function SideBar({ user }) {
       </div>
 
       {/* STATS */}
-      <div className="flex justify-around bg-gray-100 p-3 rounded-xl mb-6">
+      <div className="flex justify-around bg-gray-100 dark:bg-gray-700 p-3 rounded-xl mb-6 transition-colors duration-300">
         <div className="text-center">
           <p className="text-orange-500 font-bold text-xl">{achats}</p>
-          <p className="text-xs text-gray-600">Achats</p>
+          <p className="text-xs text-gray-600 dark:text-gray-400">Achats</p>
         </div>
         <div className="text-center">
           <p className="text-green-600 font-bold text-xl">{ventes}</p>
-          <p className="text-xs text-gray-600">Ventes</p>
+          <p className="text-xs text-gray-600 dark:text-gray-400">Ventes</p>
         </div>
         <div className="text-center">
           <p className="text-blue-600 font-bold text-xl">{articles}</p>
-          <p className="text-xs text-gray-600">Articles</p>
+          <p className="text-xs text-gray-600 dark:text-gray-400">Articles</p>
         </div>
       </div>
 
@@ -148,11 +146,11 @@ export default function SideBar({ user }) {
             className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all duration-200 ${
               isActive(path)
                 ? "bg-orange-500 text-white shadow-md"
-                : "hover:bg-gray-100 text-gray-700"
+                : "hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300"
             }`}
           >
-            <Icon className={`text-lg flex-shrink-0 ${isActive(path) ? "text-white" : "text-gray-500"}`} />
-            <span className={`text-sm font-medium ${isActive(path) ? "text-white" : "text-gray-700"}`}>
+            <Icon className={`text-lg flex-shrink-0 ${isActive(path) ? "text-white" : "text-gray-500 dark:text-gray-400"}`} />
+            <span className={`text-sm font-medium ${isActive(path) ? "text-white" : "text-gray-700 dark:text-gray-300"}`}>
               {label}
             </span>
             {isActive(path) && (

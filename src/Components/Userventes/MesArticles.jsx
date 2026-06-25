@@ -10,7 +10,7 @@ const LINK = import.meta.env.VITE_API_URL;
 
 const ArticleCard = ({ article, onEdit, onDelete, onView }) => {
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow">
+    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden hover:shadow-md transition-all duration-300">
       <div className="flex flex-col sm:flex-row">
         <img
           src={LINK + article.image || "/placeholder.webp"}
@@ -18,20 +18,20 @@ const ArticleCard = ({ article, onEdit, onDelete, onView }) => {
           className="w-full sm:w-32 h-32 object-cover"
         />
         <div className="flex-1 p-4">
-          <h3 className="font-semibold text-lg text-gray-800">{article.titre}</h3>
+          <h3 className="font-semibold text-lg text-gray-800 dark:text-white">{article.titre}</h3>
           <p className="text-orange-500 font-bold text-lg">{article.prix.toLocaleString()} FCFA</p>
-          <div className="flex flex-wrap gap-3 mt-2 text-sm text-gray-500">
-            <p>Stock: <strong>{article.qte}</strong></p>
-            <p>Vues: <strong>{article.vues || 0}</strong></p>
-            <p>Vendus: <strong>{article.vendus || 0}</strong></p>
-            <p className={`font-medium ${article.statut === "actif" ? "text-green-600" : "text-red-600"}`}>
+          <div className="flex flex-wrap gap-3 mt-2 text-sm text-gray-500 dark:text-gray-400">
+            <p>Stock: <strong className="dark:text-gray-300">{article.qte}</strong></p>
+            <p>Vues: <strong className="dark:text-gray-300">{article.vues || 0}</strong></p>
+            <p>Vendus: <strong className="dark:text-gray-300">{article.vendus || 0}</strong></p>
+            <p className={`font-medium ${article.statut === "actif" ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"}`}>
               {article.statut === "actif" ? "Actif" : "Inactif"}
             </p>
           </div>
           <div className="flex gap-2 mt-3">
-            <button onClick={() => onEdit(article.code)} className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg text-sm flex items-center gap-1"><FaEdit /> Modifier</button>
-            <button onClick={() => onView(article.code)} className="bg-gray-500 hover:bg-gray-600 text-white px-3 py-1.5 rounded-lg text-sm flex items-center gap-1"><FaEye /> Voir</button>
-            <button onClick={() => onDelete(article.code, article.titre)} className="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded-lg text-sm flex items-center gap-1"><FaTrash /> Supprimer</button>
+            <button onClick={() => onEdit(article.code)} className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg text-sm flex items-center gap-1 transition-colors"><FaEdit /> Modifier</button>
+            <button onClick={() => onView(article.code)} className="bg-gray-500 hover:bg-gray-600 text-white px-3 py-1.5 rounded-lg text-sm flex items-center gap-1 transition-colors"><FaEye /> Voir</button>
+            <button onClick={() => onDelete(article.code, article.titre)} className="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded-lg text-sm flex items-center gap-1 transition-colors"><FaTrash /> Supprimer</button>
           </div>
         </div>
       </div>
@@ -74,14 +74,14 @@ export default function MyArticles() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex items-center justify-center transition-colors duration-300">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors duration-300">
       <div className="flex flex-col md:flex-row">
         <div className="w-full md:w-auto">
           <SideBar user={user} activeTab="ventes" />
@@ -90,16 +90,16 @@ export default function MyArticles() {
           <BackToHome />
           
           <div className="flex justify-between items-center mb-6">
-            <h1 className="text-2xl font-bold text-gray-900">Mes articles</h1>
-            <button onClick={() => navigate("/publier")} className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-2">
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Mes articles</h1>
+            <button onClick={() => navigate("/publier")} className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-2 transition-colors">
               <FaPlus /> Publier
             </button>
           </div>
 
           {articles.length === 0 ? (
-            <div className="bg-white rounded-2xl p-12 text-center shadow-sm">
-              <p className="text-gray-400 text-lg">Vous n'avez encore publié aucun article.</p>
-              <button onClick={() => navigate("/publier")} className="mt-4 bg-orange-500 text-white px-6 py-2 rounded-lg">Publier un article</button>
+            <div className="bg-white dark:bg-gray-800 rounded-2xl p-12 text-center shadow-sm border border-gray-100 dark:border-gray-700 transition-colors duration-300">
+              <p className="text-gray-400 dark:text-gray-400 text-lg">Vous n'avez encore publié aucun article.</p>
+              <button onClick={() => navigate("/publier")} className="mt-4 bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-lg transition-colors">Publier un article</button>
             </div>
           ) : (
             <div className="space-y-4">

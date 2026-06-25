@@ -9,13 +9,13 @@ import { FaUser, FaEnvelope, FaPhone, FaStore, FaSave, FaCamera, FaTimes, FaUplo
 // ── Champ de formulaire ───────────────────────────────────────
 const FormField = ({ label, required, icon: Icon, type = "text", name, value, onChange, placeholder, error, disabled }) => (
   <div className="flex flex-col gap-1.5">
-    <label className="text-sm font-semibold text-gray-700">
+    <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">
       {label} {required && <span className="text-orange-500">*</span>}
     </label>
-    <div className={`flex items-center gap-3 border rounded-xl px-4 py-3 bg-white transition-colors ${
-      error ? "border-red-400" : "border-gray-200 focus-within:border-orange-400"
-    } ${disabled ? "bg-gray-50" : ""}`}>
-      {Icon && <Icon className="text-gray-400 flex-shrink-0" />}
+    <div className={`flex items-center gap-3 border rounded-xl px-4 py-3 bg-white dark:bg-gray-800 transition-colors ${
+      error ? "border-red-400" : "border-gray-200 dark:border-gray-600 focus-within:border-orange-400 dark:focus-within:border-orange-500"
+    } ${disabled ? "bg-gray-50 dark:bg-gray-700" : ""}`}>
+      {Icon && <Icon className="text-gray-400 dark:text-gray-500 flex-shrink-0" />}
       <input
         type={type}
         name={name}
@@ -23,7 +23,7 @@ const FormField = ({ label, required, icon: Icon, type = "text", name, value, on
         onChange={onChange}
         placeholder={placeholder}
         disabled={disabled}
-        className={`flex-1 outline-none text-sm bg-transparent placeholder-gray-400 ${disabled ? "text-gray-500" : "text-gray-800"}`}
+        className={`flex-1 outline-none text-sm bg-transparent placeholder-gray-400 dark:placeholder-gray-500 ${disabled ? "text-gray-500 dark:text-gray-400" : "text-gray-800 dark:text-white"}`}
       />
     </div>
     {error && <p className="text-red-500 text-xs">{error}</p>}
@@ -33,7 +33,7 @@ const FormField = ({ label, required, icon: Icon, type = "text", name, value, on
 // ── Champ textarea ────────────────────────────────────────────
 const FormTextArea = ({ label, required, name, value, onChange, placeholder, error, disabled }) => (
   <div className="flex flex-col gap-1.5">
-    <label className="text-sm font-semibold text-gray-700">
+    <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">
       {label} {required && <span className="text-orange-500">*</span>}
     </label>
     <textarea
@@ -43,9 +43,9 @@ const FormTextArea = ({ label, required, name, value, onChange, placeholder, err
       placeholder={placeholder}
       rows={3}
       disabled={disabled}
-      className={`border rounded-xl px-4 py-3 text-sm bg-white outline-none transition-colors resize-none ${
-        error ? "border-red-400" : "border-gray-200 focus:border-orange-400"
-      } ${disabled ? "bg-gray-50 text-gray-500" : "text-gray-800"}`}
+      className={`border rounded-xl px-4 py-3 text-sm bg-white dark:bg-gray-800 outline-none transition-colors resize-none ${
+        error ? "border-red-400" : "border-gray-200 dark:border-gray-600 focus:border-orange-400 dark:focus:border-orange-500"
+      } ${disabled ? "bg-gray-50 dark:bg-gray-700 text-gray-500 dark:text-gray-400" : "text-gray-800 dark:text-white"}`}
     />
     {error && <p className="text-red-500 text-xs">{error}</p>}
   </div>
@@ -54,10 +54,10 @@ const FormTextArea = ({ label, required, name, value, onChange, placeholder, err
 // ── Mode édition ─────────────────────────────────────────────
 const InfoDisplay = ({ label, value, icon: Icon }) => (
   <div className="flex flex-col gap-1.5">
-    <label className="text-sm font-semibold text-gray-700">{label}</label>
-    <div className="flex items-center gap-3 border rounded-xl px-4 py-3 bg-gray-50">
-      {Icon && <Icon className="text-gray-400 flex-shrink-0" />}
-      <span className="flex-1 text-sm text-gray-800">{value || "Non renseigné"}</span>
+    <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">{label}</label>
+    <div className="flex items-center gap-3 border rounded-xl px-4 py-3 bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600">
+      {Icon && <Icon className="text-gray-400 dark:text-gray-500 flex-shrink-0" />}
+      <span className="flex-1 text-sm text-gray-800 dark:text-white">{value || "Non renseigné"}</span>
     </div>
   </div>
 );
@@ -69,7 +69,7 @@ export default function Parametres() {
   const [uploading, setUploading] = useState(false);
   const [errors, setErrors] = useState({});
   const [avatarPreview, setAvatarPreview] = useState(null);
-  const [isEditing, setIsEditing] = useState(false); // Mode édition
+  const [isEditing, setIsEditing] = useState(false);
   const fileInputRef = useRef(null);
 
   const [formData, setFormData] = useState({
@@ -82,7 +82,6 @@ export default function Parametres() {
 
   const navigate = useNavigate();
 
-  // Charger le profil
   useEffect(() => {
     const getUser = async () => {
       try {
@@ -108,7 +107,6 @@ export default function Parametres() {
     getUser();
   }, []);
 
-  // Gestionnaire de changement de fichier avatar
   const handleAvatarChange = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -147,7 +145,6 @@ export default function Parametres() {
     }
   };
 
-  // Supprimer l'avatar
   const handleRemoveAvatar = async () => {
     if (!window.confirm("Voulez-vous supprimer votre photo de profil ?")) return;
     
@@ -198,7 +195,7 @@ export default function Parametres() {
         nom_boutique: formData.nom_boutique,
         description_boutique: formData.description_boutique,
       }));
-      setIsEditing(false); // Quitter le mode édition après sauvegarde
+      setIsEditing(false);
     } catch (error) {
       toast.error(error.response?.data?.error || "Erreur lors de la mise à jour");
     } finally {
@@ -207,16 +204,15 @@ export default function Parametres() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <div className="flex bg-gray-100 min-h-screen">
+    <div className="flex flex-col min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors duration-300">
+      <div className="flex bg-gray-100 dark:bg-gray-900 min-h-screen transition-colors duration-300">
         {user ? <SideBar user={user} activeTab="parametres" /> : <SideBar activeTab="parametres" />}
 
         <div className="flex-1 p-4 sm:p-6">
 
           <div className="flex justify-between items-center mb-6">
-            <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Paramètres du compte</h1>
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Paramètres du compte</h1>
             
-            {/* Bouton Modifier / Annuler */}
             {!isEditing ? (
               <button
                 onClick={() => setIsEditing(true)}
@@ -228,7 +224,6 @@ export default function Parametres() {
               <button
                 onClick={() => {
                   setIsEditing(false);
-                  // Réinitialiser les données
                   if (user) {
                     setFormData({
                       nom_complet: user.username || "",
@@ -247,18 +242,18 @@ export default function Parametres() {
           </div>
 
           <form onSubmit={handleSubmit}>
-            <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-8 shadow-sm border border-gray-100">
+            <div className="bg-white dark:bg-gray-800 rounded-xl sm:rounded-2xl p-4 sm:p-8 shadow-sm border border-gray-100 dark:border-gray-700 transition-colors duration-300">
 
               {/* ── Photo de profil ── */}
               <div className="mb-8">
-                <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-4">Photo de profil</h2>
+                <h2 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white mb-4">Photo de profil</h2>
                 <div className="flex flex-col sm:flex-row items-center gap-6">
                   <div className="relative">
-                    <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-full bg-orange-100 flex items-center justify-center overflow-hidden">
+                    <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-full bg-orange-100 dark:bg-orange-900 flex items-center justify-center overflow-hidden">
                       {avatarPreview ? (
                         <img src={avatarPreview} alt="Avatar" className="w-full h-full object-cover" />
                       ) : (
-                        <FaUser className="text-4xl sm:text-6xl text-orange-400" />
+                        <FaUser className="text-4xl sm:text-6xl text-orange-400 dark:text-orange-300" />
                       )}
                     </div>
                     <button
@@ -282,16 +277,16 @@ export default function Parametres() {
                     <button
                       type="button"
                       onClick={() => fileInputRef.current.click()}
-                      className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg text-sm hover:bg-gray-50 transition-colors"
+                      className="flex items-center gap-2 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-gray-700 dark:text-gray-300"
                     >
-                      <FaUpload className="text-gray-500" />
+                      <FaUpload className="text-gray-500 dark:text-gray-400" />
                       Changer la photo
                     </button>
                     {avatarPreview && (
                       <button
                         type="button"
                         onClick={handleRemoveAvatar}
-                        className="flex items-center gap-2 px-4 py-2 border border-red-300 text-red-600 rounded-lg text-sm hover:bg-red-50 transition-colors"
+                        className="flex items-center gap-2 px-4 py-2 border border-red-300 dark:border-red-800 text-red-600 dark:text-red-400 rounded-lg text-sm hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
                       >
                         <FaTimes />
                         Supprimer
@@ -300,14 +295,14 @@ export default function Parametres() {
                   </div>
                 </div>
                 {uploading && (
-                  <p className="text-sm text-gray-500 mt-2 text-center sm:text-left">
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-2 text-center sm:text-left">
                     Téléchargement en cours...
                   </p>
                 )}
               </div>
 
               {/* ── Informations personnelles ── */}
-              <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-6">Informations personnelles</h2>
+              <h2 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white mb-6">Informations personnelles</h2>
 
               <div className="flex flex-col gap-5">
                 {isEditing ? (
@@ -355,7 +350,7 @@ export default function Parametres() {
               </div>
 
               {/* ── Mode vendeur ── */}
-              <h2 className="text-lg sm:text-xl font-bold text-gray-900 mt-8 sm:mt-10 mb-6">Mode vendeur</h2>
+              <h2 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white mt-8 sm:mt-10 mb-6">Mode vendeur</h2>
 
               <div className="flex flex-col gap-5">
                 {isEditing ? (
@@ -386,7 +381,6 @@ export default function Parametres() {
                 )}
               </div>
 
-              {/* ── Bouton sauvegarder (visible uniquement en mode édition) ── */}
               {isEditing && (
                 <div className="mt-8 flex justify-end">
                   <button

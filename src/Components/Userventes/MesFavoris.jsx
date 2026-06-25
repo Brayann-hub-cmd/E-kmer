@@ -8,7 +8,7 @@ import { FaShoppingCart, FaHeart } from "react-icons/fa";
 
 // ── Carte favori ──────────────────────────────────────────────
 const FavoriCard = ({ produit, onAcheter }) => (
-  <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col">
+  <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden flex flex-col transition-colors duration-300">
     {/* Image */}
     <div className="relative">
       <img
@@ -22,7 +22,7 @@ const FavoriCard = ({ produit, onAcheter }) => (
     <div className="p-4 flex flex-col gap-3">
       <div>
         <p className="text-orange-500 font-bold text-lg">{produit.prix.toLocaleString()} FCFA</p>
-        <p className="text-gray-700 font-medium text-sm mt-0.5">{produit.titre}</p>
+        <p className="text-gray-700 dark:text-gray-300 font-medium text-sm mt-0.5">{produit.titre}</p>
       </div>
       <button
         onClick={() => onAcheter(produit.id)}
@@ -70,14 +70,14 @@ export default function MesFavoris() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex items-center justify-center transition-colors duration-300">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors duration-300">
       <div className="flex flex-col md:flex-row">
         
         {/* Sidebar */}
@@ -88,13 +88,13 @@ export default function MesFavoris() {
         {/* Contenu principal */}
         <div className="flex-1 p-4 sm:p-6">
 
-          <h1 className="text-2xl font-bold text-gray-900 mb-6">Mes favoris</h1>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Mes favoris</h1>
 
           {favoris.length === 0 ? (
-            <div className="bg-white rounded-2xl p-12 text-center shadow-sm">
-              <FaHeart className="text-gray-300 text-5xl mx-auto mb-4" />
-              <p className="text-gray-400 text-lg">Vous n'avez pas encore de favoris.</p>
-              <p className="text-gray-400 text-sm mt-2">
+            <div className="bg-white dark:bg-gray-800 rounded-2xl p-12 text-center shadow-sm border border-gray-100 dark:border-gray-700 transition-colors duration-300">
+              <FaHeart className="text-gray-300 dark:text-gray-600 text-5xl mx-auto mb-4" />
+              <p className="text-gray-400 dark:text-gray-400 text-lg">Vous n'avez pas encore de favoris.</p>
+              <p className="text-gray-400 dark:text-gray-500 text-sm mt-2">
                 Ajoutez des produits en favoris en cliquant sur le ❤️ sur les produits qui vous intéressent.
               </p>
             </div>

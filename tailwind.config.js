@@ -6,6 +6,7 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
+  darkMode: 'class',  // ← AJOUTE CETTE LIGNE
   theme: {
     extend: {
       fontFamily: {
@@ -42,7 +43,6 @@ export default {
           '100%': { backgroundPosition: '0% 50%' },
         },
       },
-
       animation: {
         'slide-in': 'slideInUp 0.8s ease-out forwards',
         'slide-in-down': 'slideInDown 0.8s ease-out forwards',
@@ -52,13 +52,9 @@ export default {
         'pulse-glow': 'pulseGlow 2s ease-in-out infinite',
         gradient: 'gradient 5s ease infinite',
         'spin-slow': 'spin 3s linear infinite',
-
       },
-
-
       fontFamily: {
         sans: ["InterVariable", ...defaultTheme.fontFamily.sans],
-
       },
     },
   },

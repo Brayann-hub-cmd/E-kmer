@@ -8,10 +8,11 @@ import Navbar from '../../Components/Navbar';
 import Hero2Orange from '../../components/Hero2Orange';
 
 const Home = () => {
-  const [categorie, setCategorie] = useState("CAT_000")
-  const [title, setTitle] = useState("")
+  const [categorie, setCategorie] = useState("CAT_000");
+  const [title, setTitle] = useState("");
+  
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-white dark:bg-gray-900 transition-colors duration-300">
       <Navbar setTitle={setTitle} setCategorie={setCategorie} />
       <Header />
       <PopularOffers title={title} categorie={categorie} />
@@ -22,6 +23,5 @@ const Home = () => {
     </div>
   );
 };
-
 
 export default Home;

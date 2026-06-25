@@ -1,3 +1,4 @@
+/* src/index.css */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -6,7 +7,38 @@
   :root {
     color-scheme: light;
   }
+
   .dark {
     color-scheme: dark;
+  }
+
+  /* Styles généraux pour le mode dark */
+  body {
+    @apply bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300;
+  }
+
+  /* Cards et conteneurs */
+  .card {
+    @apply bg-white border-gray-200 dark:bg-gray-800 dark:border-gray-700;
+  }
+
+  /* Inputs */
+  input, select, textarea {
+    @apply bg-white border-gray-300 text-gray-900 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-100;
+  }
+
+  /* Boutons */
+  .btn-orange {
+    @apply bg-orange-500 hover:bg-orange-600 text-white dark:bg-orange-600 dark:hover:bg-orange-700;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    @apply bg-white dark:bg-gray-800;
+  }
+
+  /* Footer */
+  .footer {
+    @apply bg-black dark:bg-gray-950;
   }
 }
