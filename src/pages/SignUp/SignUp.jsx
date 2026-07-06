@@ -17,7 +17,6 @@ import api from '../../api';
 const SignUp = () => {
   const navigate = useNavigate();
   
-  // État pour gérer les valeurs du formulaire
   const [formData, setFormData] = useState({
     nomComplet: '',
     email: '',
@@ -27,30 +26,22 @@ const SignUp = () => {
     accepteConditions: false
   });
 
-  // État pour gérer les erreurs de validation
   const [erreurs, setErreurs] = useState({});
-
-  // État pour gérer l'affichage des mots de passe
   const [afficherMdp, setAfficherMdp] = useState({
     motDePasse: false,
     confirmer: false
   });
-
-  // État pour le champ touché (validation en temps réel)
   const [touched, setTouched] = useState({});
 
-  // Fonction de validation du formulaire
   const validerFormulaire = (donnees = formData) => {
     const nouvellesErreurs = {};
 
-    // Validation du nom complet
     if (!donnees.nomComplet.trim()) {
       nouvellesErreurs.nomComplet = 'Le nom complet est requis';
     } else if (donnees.nomComplet.trim().length < 2) {
       nouvellesErreurs.nomComplet = 'Le nom doit contenir au moins 2 caractères';
     }
 
-    // Validation de l'email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!donnees.email.trim()) {
       nouvellesErreurs.email = 'L\'email est requis';
@@ -58,7 +49,6 @@ const SignUp = () => {
       nouvellesErreurs.email = 'Format d\'email invalide (ex: nom@domaine.com)';
     }
 
-    // Validation du téléphone (format Cameroun)
     const telephoneRegex = /^\+237[6][0-9]{8}$|^\+237\s[6][0-9]{2}\s[0-9]{3}\s[0-9]{3}$/;
     if (!donnees.telephone.trim()) {
       nouvellesErreurs.telephone = 'Le numéro de téléphone est requis';
@@ -66,21 +56,18 @@ const SignUp = () => {
       nouvellesErreurs.telephone = 'Format invalide (ex: +237 6XX XXX XXX)';
     }
 
-    // Validation du mot de passe
     if (!donnees.motDePasse) {
       nouvellesErreurs.motDePasse = 'Le mot de passe est requis';
     } else if (donnees.motDePasse.length < 6) {
       nouvellesErreurs.motDePasse = 'Le mot de passe doit contenir au moins 6 caractères';
     }
 
-    // Validation de la confirmation
     if (!donnees.confirmerMotDePasse) {
       nouvellesErreurs.confirmerMotDePasse = 'Veuillez confirmer votre mot de passe';
     } else if (donnees.motDePasse !== donnees.confirmerMotDePasse) {
       nouvellesErreurs.confirmerMotDePasse = 'Les mots de passe ne correspondent pas';
     }
 
-    // Validation des conditions
     if (!donnees.accepteConditions) {
       nouvellesErreurs.accepteConditions = 'Vous devez accepter les conditions';
     }
@@ -88,7 +75,6 @@ const SignUp = () => {
     return nouvellesErreurs;
   };
 
-  // Gestionnaire de changement pour les champs
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     const nouvelleValeur = type === 'checkbox' ? checked : value;
@@ -98,7 +84,6 @@ const SignUp = () => {
       [name]: nouvelleValeur
     }));
 
-    // Validation en temps réel pour le champ modifié
     const validationPartielle = validerFormulaire({
       ...formData,
       [name]: nouvelleValeur
@@ -110,7 +95,6 @@ const SignUp = () => {
     }));
   };
 
-  // Gestionnaire de perte de focus
   const handleBlur = (e) => {
     const { name } = e.target;
     setTouched(prev => ({
@@ -119,12 +103,9 @@ const SignUp = () => {
     }));
   };
 
-  // Formatage automatique du téléphone
   const formaterTelephone = (valeur) => {
-    // Supprimer tout sauf les chiffres et le +
     let numeros = valeur.replace(/[^\d+]/g, '');
 
-    // Si ça commence par +237
     if (numeros.startsWith('+237')) {
       const sansPrefix = numeros.slice(4);
       if (sansPrefix.length > 0) {
@@ -143,7 +124,6 @@ const SignUp = () => {
     return valeur;
   };
 
-  // Gestionnaire de soumission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -162,7 +142,6 @@ const SignUp = () => {
           role: role
         });
         
-        // Succès - Afficher la notification
         toast.success(
           <div className="flex items-center gap-2">
             <BsCheckCircle className="text-green-500 text-xl" />
@@ -193,7 +172,6 @@ const SignUp = () => {
         }
       }
 
-      // Réinitialiser le formulaire
       setFormData({
         nomComplet: '',
         email: '',
@@ -204,7 +182,6 @@ const SignUp = () => {
       });
       setTouched({});
     } else {
-      // Erreurs - Afficher les messages
       setErreurs(nouvellesErreurs);
       setTouched({
         nomComplet: true,
@@ -223,8 +200,7 @@ const SignUp = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-      {/* Toast Container */}
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center p-4 transition-colors duration-300">
       <Toaster
         toastOptions={{
           style: {
@@ -234,36 +210,30 @@ const SignUp = () => {
         }}
       />
 
-      {/* Card d'inscription */}
-      <div className="bg-white rounded-xl shadow-lg w-full max-w-[420px] p-8 relative">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg w-full max-w-[420px] p-8 relative transition-colors duration-300">
         
-        {/* ← BOUTON RETOUR ACCUEIL */}
         <div className="absolute top-4 left-4">
           <BackToHome />
         </div>
 
-        {/* Titre */}
-        <h1 className="text-2xl font-bold text-center mb-1 text-gray-900 mt-4">
+        <h1 className="text-2xl font-bold text-center mb-1 text-gray-900 dark:text-white mt-4">
           Inscription à{' '}
           <span className="text-orange-500">E-kmer</span>
         </h1>
 
-        {/* Sous-titre */}
-        <p className="text-center text-gray-500 text-sm mb-6">
+        <p className="text-center text-gray-500 dark:text-gray-400 text-sm mb-6">
           Créez votre compte pour commencer à acheter et vendre
         </p>
 
-        {/* Formulaire */}
         <form onSubmit={handleSubmit} className="space-y-4">
 
-          {/* Champ Nom complet */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Nom complet
             </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <FaUser className="text-gray-400" />
+                <FaUser className="text-gray-400 dark:text-gray-500" />
               </div>
               <input
                 type="text"
@@ -273,23 +243,22 @@ const SignUp = () => {
                 onBlur={handleBlur}
                 placeholder="Votre nom complet"
                 className={`w-full pl-10 pr-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
-                  touched.nomComplet && erreurs.nomComplet ? 'border-red-500' : 'border-gray-300'
-                } bg-white text-gray-900 placeholder-gray-400`}
+                  touched.nomComplet && erreurs.nomComplet ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
+                } bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-colors duration-300`}
               />
             </div>
             {touched.nomComplet && erreurs.nomComplet && (
-              <p className="mt-1 text-xs text-red-500">{erreurs.nomComplet}</p>
+              <p className="mt-1 text-xs text-red-500 dark:text-red-400">{erreurs.nomComplet}</p>
             )}
           </div>
 
-          {/* Champ Email */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Adresse email
             </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <FaEnvelope className="text-gray-400" />
+                <FaEnvelope className="text-gray-400 dark:text-gray-500" />
               </div>
               <input
                 type="email"
@@ -299,18 +268,17 @@ const SignUp = () => {
                 onBlur={handleBlur}
                 placeholder="votre@email.com"
                 className={`w-full pl-10 pr-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
-                  touched.email && erreurs.email ? 'border-red-500' : 'border-gray-300'
-                } bg-white text-gray-900 placeholder-gray-400`}
+                  touched.email && erreurs.email ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
+                } bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-colors duration-300`}
               />
             </div>
             {touched.email && erreurs.email && (
-              <p className="mt-1 text-xs text-red-500">{erreurs.email}</p>
+              <p className="mt-1 text-xs text-red-500 dark:text-red-400">{erreurs.email}</p>
             )}
           </div>
 
-          {/* Champ Téléphone */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Numéro de téléphone
             </label>
             <div className="relative">
@@ -334,27 +302,26 @@ const SignUp = () => {
                 onBlur={handleBlur}
                 placeholder="+237 6XX XXX XXX"
                 className={`w-full pl-24 pr-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
-                  touched.telephone && erreurs.telephone ? 'border-red-500' : 'border-gray-300'
-                } bg-white text-gray-900 placeholder-gray-400`}
+                  touched.telephone && erreurs.telephone ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
+                } bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-colors duration-300`}
               />
             </div>
             {touched.telephone && erreurs.telephone ? (
-              <p className="mt-1 text-xs text-red-500">{erreurs.telephone}</p>
+              <p className="mt-1 text-xs text-red-500 dark:text-red-400">{erreurs.telephone}</p>
             ) : (
-              <p className="mt-1 text-xs text-gray-400">
+              <p className="mt-1 text-xs text-gray-400 dark:text-gray-500">
                 Format: +237 6XX XXX XXX
               </p>
             )}
           </div>
 
-          {/* Champ Mot de passe */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Mot de passe
             </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <FaLock className="text-gray-400" />
+                <FaLock className="text-gray-400 dark:text-gray-500" />
               </div>
               <input
                 type={afficherMdp.motDePasse ? 'text' : 'password'}
@@ -364,8 +331,8 @@ const SignUp = () => {
                 onBlur={handleBlur}
                 placeholder="**********"
                 className={`w-full pl-10 pr-10 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
-                  touched.motDePasse && erreurs.motDePasse ? 'border-red-500' : 'border-gray-300'
-                } bg-white text-gray-900 placeholder-gray-400`}
+                  touched.motDePasse && erreurs.motDePasse ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
+                } bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-colors duration-300`}
               />
               <button
                 type="button"
@@ -376,25 +343,24 @@ const SignUp = () => {
                 }))}
               >
                 {afficherMdp.motDePasse ? (
-                  <FaEyeSlash className="text-gray-400 hover:text-gray-600" />
+                  <FaEyeSlash className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300" />
                 ) : (
-                  <FaEye className="text-gray-400 hover:text-gray-600" />
+                  <FaEye className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300" />
                 )}
               </button>
             </div>
             {touched.motDePasse && erreurs.motDePasse && (
-              <p className="mt-1 text-xs text-red-500">{erreurs.motDePasse}</p>
+              <p className="mt-1 text-xs text-red-500 dark:text-red-400">{erreurs.motDePasse}</p>
             )}
           </div>
 
-          {/* Champ Confirmer mot de passe */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Confirmer le mot de passe
             </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <FaLock className="text-gray-400" />
+                <FaLock className="text-gray-400 dark:text-gray-500" />
               </div>
               <input
                 type={afficherMdp.confirmer ? 'text' : 'password'}
@@ -404,8 +370,8 @@ const SignUp = () => {
                 onBlur={handleBlur}
                 placeholder="**********"
                 className={`w-full pl-10 pr-10 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
-                  touched.confirmerMotDePasse && erreurs.confirmerMotDePasse ? 'border-red-500' : 'border-gray-300'
-                } bg-white text-gray-900 placeholder-gray-400`}
+                  touched.confirmerMotDePasse && erreurs.confirmerMotDePasse ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
+                } bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-colors duration-300`}
               />
               <button
                 type="button"
@@ -416,18 +382,17 @@ const SignUp = () => {
                 }))}
               >
                 {afficherMdp.confirmer ? (
-                  <FaEyeSlash className="text-gray-400 hover:text-gray-600" />
+                  <FaEyeSlash className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300" />
                 ) : (
-                  <FaEye className="text-gray-400 hover:text-gray-600" />
+                  <FaEye className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300" />
                 )}
               </button>
             </div>
             {touched.confirmerMotDePasse && erreurs.confirmerMotDePasse && (
-              <p className="mt-1 text-xs text-red-500">{erreurs.confirmerMotDePasse}</p>
+              <p className="mt-1 text-xs text-red-500 dark:text-red-400">{erreurs.confirmerMotDePasse}</p>
             )}
           </div>
 
-          {/* Checkbox Conditions */}
           <div className="flex items-start mt-2">
             <input
               type="checkbox"
@@ -435,9 +400,9 @@ const SignUp = () => {
               checked={formData.accepteConditions}
               onChange={handleChange}
               onBlur={handleBlur}
-              className="mt-1 h-4 w-4 text-orange-500 border-gray-300 rounded focus:ring-orange-500"
+              className="mt-1 h-4 w-4 text-orange-500 border-gray-300 dark:border-gray-600 rounded focus:ring-orange-500 dark:bg-gray-700"
             />
-            <label className="ml-2 text-sm text-gray-600">
+            <label className="ml-2 text-sm text-gray-600 dark:text-gray-300">
               J'accepte les{' '}
               <a href="#" className="text-orange-500 hover:text-orange-600 font-medium">
                 conditions d'utilisation
@@ -449,32 +414,29 @@ const SignUp = () => {
             </label>
           </div>
           {touched.accepteConditions && erreurs.accepteConditions && (
-            <p className="text-xs mt-1 text-red-500">{erreurs.accepteConditions}</p>
+            <p className="text-xs mt-1 text-red-500 dark:text-red-400">{erreurs.accepteConditions}</p>
           )}
 
-          {/* Bouton principal */}
           <button
             type="submit"
-            className="w-full bg-orange-500 text-white py-3 px-4 rounded-lg hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-white transition-colors font-medium mt-6"
+            className="w-full bg-orange-500 hover:bg-orange-600 text-white py-3 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-800 transition-colors font-medium mt-6"
           >
             Créer mon compte
           </button>
         </form>
 
-        {/* Séparateur */}
         <div className="relative my-6">
           <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-gray-300"></div>
+            <div className="w-full border-t border-gray-300 dark:border-gray-600"></div>
           </div>
           <div className="relative flex justify-center text-sm">
-            <span className="px-2 bg-white text-gray-500">ou</span>
+            <span className="px-2 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400">ou</span>
           </div>
         </div>
 
-        {/* Lien de connexion */}
-        <p className="text-center text-sm text-gray-600">
+        <p className="text-center text-sm text-gray-600 dark:text-gray-400">
           Vous avez déjà un compte ?{' '}
-          <Link to={'/auth/login'} className="text-orange-500 hover:text-orange-600 font-medium">
+          <Link to={'/auth/login'} className="text-orange-500 dark:text-orange-400 hover:text-orange-600 dark:hover:text-orange-300 font-medium transition-colors">
             Se connecter
           </Link>
         </p>

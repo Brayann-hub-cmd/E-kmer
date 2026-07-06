@@ -9,10 +9,10 @@ import { FaCheckCircle, FaClock, FaTruck, FaTimesCircle } from "react-icons/fa";
 // ── Badge statut ──────────────────────────────────────────────
 const StatutBadge = ({ statut }) => {
   const config = {
-    livre: { label: "Livré", icon: <FaCheckCircle />, bg: "bg-green-100", text: "text-green-700", border: "border-green-200" },
-    en_cours: { label: "En cours", icon: <FaTruck />, bg: "bg-blue-100", text: "text-blue-700", border: "border-blue-200" },
-    attente: { label: "En attente", icon: <FaClock />, bg: "bg-yellow-100", text: "text-yellow-700", border: "border-yellow-200" },
-    annule: { label: "Annulé", icon: <FaTimesCircle />, bg: "bg-red-100", text: "text-red-700", border: "border-red-200" },
+    livre: { label: "Livré", icon: <FaCheckCircle />, bg: "bg-green-100 dark:bg-green-900", text: "text-green-700 dark:text-green-300", border: "border-green-200 dark:border-green-800" },
+    en_cours: { label: "En cours", icon: <FaTruck />, bg: "bg-blue-100 dark:bg-blue-900", text: "text-blue-700 dark:text-blue-300", border: "border-blue-200 dark:border-blue-800" },
+    attente: { label: "En attente", icon: <FaClock />, bg: "bg-yellow-100 dark:bg-yellow-900", text: "text-yellow-700 dark:text-yellow-300", border: "border-yellow-200 dark:border-yellow-800" },
+    annule: { label: "Annulé", icon: <FaTimesCircle />, bg: "bg-red-100 dark:bg-red-900", text: "text-red-700 dark:text-red-300", border: "border-red-200 dark:border-red-800" },
   };
   const c = config[statut] || config.en_cours;
   return (
@@ -24,14 +24,14 @@ const StatutBadge = ({ statut }) => {
 
 // ── Carte achat ───────────────────────────────────────────────
 const AchatCard = ({ achat, onVoirDetails, date }) => (
-  <div className="bg-white rounded-xl sm:rounded-2xl p-3 sm:p-5 shadow-sm border border-gray-100">
+  <div className="bg-white dark:bg-gray-800 rounded-xl sm:rounded-2xl p-3 sm:p-5 shadow-sm border border-gray-100 dark:border-gray-700 transition-colors duration-300">
     <div className="flex flex-col sm:flex-row gap-3 sm:gap-5 items-start sm:items-center">
 
       {/* Infos principales */}
       <div className="flex-1 min-w-0 w-full">
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-4">
           <div>
-            <p className="text-gray-400 text-xs sm:text-sm mt-0.5">Commande le {date}</p>
+            <p className="text-gray-400 dark:text-gray-500 text-xs sm:text-sm mt-0.5">Commande le {date}</p>
           </div>
         </div>
         <p className="text-orange-500 font-bold text-xl sm:text-2xl mt-2 sm:mt-3">
@@ -42,13 +42,13 @@ const AchatCard = ({ achat, onVoirDetails, date }) => (
       {/* Liste des produits */}
       <div className="flex flex-col gap-2 mb-4 w-full">
         {achat.lignes?.map((ligne) => (
-          <div key={ligne.id} className="flex flex-row items-center gap-3 bg-gray-50 rounded-lg p-2">
+          <div key={ligne.id} className="flex flex-row items-center gap-3 bg-gray-50 dark:bg-gray-700 rounded-lg p-2 transition-colors duration-300">
             <div className="flex-1 min-w-0">
-              <h3 className="font-bold text-base sm:text-lg text-gray-900">{ligne.annonce_titre}</h3>
-              <p className="text-gray-400 text-xs mt-0.5">
+              <h3 className="font-bold text-base sm:text-lg text-gray-900 dark:text-white">{ligne.annonce_titre}</h3>
+              <p className="text-gray-400 dark:text-gray-400 text-xs mt-0.5">
                 Qté commandé: {ligne.quantite}
               </p>
-              <p className="text-gray-400 text-xs mt-0.5">
+              <p className="text-gray-400 dark:text-gray-400 text-xs mt-0.5">
                 Prix U.: {ligne.prix_unitaire?.toLocaleString()} FCFA
               </p>
             </div>
@@ -123,21 +123,20 @@ export default function MesAchats() {
     getAchats();
   }, []);
 
-  // Rediriger vers la page détail de l'achat
   const handleVoirDetails = (code) => {
     navigate(`/achat/${code}`);
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex items-center justify-center transition-colors duration-300">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors duration-300">
       <div className="flex flex-col md:flex-row">
         
         {/* Sidebar */}
@@ -147,13 +146,13 @@ export default function MesAchats() {
 
         {/* Contenu principal */}
         <div className="flex-1 p-4 sm:p-6">
-          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-4 sm:mb-6">
             Mes achats
           </h1>
 
           {achats.length === 0 ? (
-            <div className="bg-white rounded-xl sm:rounded-2xl p-8 sm:p-12 text-center shadow-sm">
-              <p className="text-gray-400 text-base sm:text-lg">
+            <div className="bg-white dark:bg-gray-800 rounded-xl sm:rounded-2xl p-8 sm:p-12 text-center shadow-sm border border-gray-100 dark:border-gray-700 transition-colors duration-300">
+              <p className="text-gray-400 dark:text-gray-400 text-base sm:text-lg">
                 Vous n'avez pas encore effectué d'achats.
               </p>
             </div>

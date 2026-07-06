@@ -14,66 +14,62 @@ const CategoriePage = () => {
   const [categorie, setCategorie] = useState({
     code: "",
     nom: ""
-  })
-  const [categories, setCategories] = useState([])
+  });
+  const [categories, setCategories] = useState([]);
   const [categorieNom, setCategorieNom] = useState("");
   const [loading, setLoading] = useState(true);
   const [activeSousCategorie, setActiveSousCategorie] = useState(null);
   
-  //Recuperation de la catégorie sélectionnée
   useEffect(() => {
     const getCategorie = async (code) => {
       try {
-        const response = await api.get(`categories/${categorieId}/`)
+        const response = await api.get(`categories/${categorieId}/`);
         setCategorie(prev => ({
           ...prev,
           code: `${response.data.code}`,
           nom: `${response.data.nom}`
-        }))
+        }));
       } catch (error) {
-        toast.error("Une erreur est survenue lors de la collection de la catégorie:" + error, { position: 'top-center' })
+        toast.error("Une erreur est survenue lors de la collection de la catégorie:" + error, { position: 'top-center' });
       }
-    }
+    };
     getCategorie();
-  }, [])
+  }, [categorieId]);
   
-  //Initialisation de la variable categorieNom
   useEffect(() => {
-    setCategorieNom((categorieNom) => categorie.nom);
-  }, [categorie])
+    setCategorieNom(categorie.nom);
+  }, [categorie]);
   
   useEffect(() => {
     const getCategories = async () => {
       try {
-        const response = await api.get("categories/")
-        setCategories((categories) => response.data)
+        const response = await api.get("categories/");
+        setCategories(response.data);
       } catch (error) {
-        toast.error("Erreur survenue lors de la collection des catégories de produits:" + error, { position: 'top-center' })
+        toast.error("Erreur survenue lors de la collection des catégories de produits:" + error, { position: 'top-center' });
       }
-    }
+    };
     getCategories();
-  }, [])
+  }, []);
 
-  const slugToNom = useMemo(
-    () => {
-      const map = {}
-      categories.forEach((cat) => {
-        const slug = cat.nom.toLowerCase().replace(/\s+/g, '-').normalize("NFD").replace(/[\u0300-\u036f]/g, '')
-        map[slug] = cat.nom;
-      });
-      return map;
-    }, [categories]
-  )
+  const slugToNom = useMemo(() => {
+    const map = {};
+    categories.forEach((cat) => {
+      const slug = cat.nom.toLowerCase().replace(/\s+/g, '-').normalize("NFD").replace(/[\u0300-\u036f]/g, '');
+      map[slug] = cat.nom;
+    });
+    return map;
+  }, [categories]);
   
-  const allSousCategories = async (id_categorie) =>{
+  const allSousCategories = async (id_categorie) => {
     try {
-      const response = await api.get(`low_categories/${id_categorie}/sous_categories/`)
-      return response.data
+      const response = await api.get(`low_categories/${id_categorie}/sous_categories/`);
+      return response.data;
     } catch (error) {
-      toast.error("Erreur survenue lors de la collection des sous catégories" + error, { position: 'top-center' })
-      return []
+      toast.error("Erreur survenue lors de la collection des sous catégories" + error, { position: 'top-center' });
+      return [];
     }
-  }
+  };
   
   useEffect(() => {
     const loadSousCategories = async () => {
@@ -84,19 +80,19 @@ const CategoriePage = () => {
       setLoading(true);
 
       try {
-        const response = await api.get(`low_categories/${categorieId}/sous_categories/`)
+        const response = await api.get(`low_categories/${categorieId}/sous_categories/`);
         const data = response.data;
-        setSousCategories(data)
+        setSousCategories(data);
 
-        if(data.length > 0){
-          setActiveSousCategorie(data[0].code)
+        if (data.length > 0) {
+          setActiveSousCategorie(data[0].code);
         }
         setCategorieNom(slugToNom[categorieSlug] || "Catégorie");
       } catch (error) {
-        console.error("Erreur API:",error);
-        setSousCategories([])
-      }finally{
-        setLoading(false)
+        console.error("Erreur API:", error);
+        setSousCategories([]);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -112,22 +108,21 @@ const CategoriePage = () => {
   };
 
   return (
-    <div className="bg-gray-50 min-h-screen">
+    <div className="bg-gray-50 dark:bg-gray-900 min-h-screen transition-colors duration-300">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
-        {/* ← BOUTON RETOUR ACCUEIL */}
         <BackToHome />
 
         {/* En-tête */}
         <div className="mb-8">
-          <h1 className="text-3xl sm:text-4xl font-bold text-gray-800">
+          <h1 className="text-3xl sm:text-4xl font-bold text-gray-800 dark:text-white">
             {categorieNom || "Catégorie"}
           </h1>
-          <p className="text-gray-500 mt-1">
+          <p className="text-gray-500 dark:text-gray-400 mt-1">
             Découvrez tous nos produits
           </p>
           {categorieId && process.env.NODE_ENV === "development" && (
-            <p className="text-xs text-gray-400 mt-1">
+            <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
             </p>
           )}
         </div>
@@ -135,7 +130,7 @@ const CategoriePage = () => {
         {/* Barre "Rechercher par Catégories" */}
         {sousCategories.length > 0 && (
           <div className="mb-10">
-            <h2 className="text-lg font-semibold text-gray-700 mb-3">
+            <h2 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-3">
               Rechercher par Catégories
             </h2>
             <div className="flex flex-wrap gap-2">
@@ -143,10 +138,11 @@ const CategoriePage = () => {
                 <button
                   key={sc.code}
                   onClick={() => scrollToSection(sc.code)}
-                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${activeSousCategorie === sc.code
-                    ? "bg-orange-500 text-white shadow-md"
-                    : "bg-gray-100 text-gray-700 hover:bg-orange-100 hover:text-orange-600"
-                    }`}
+                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                    activeSousCategorie === sc.code
+                      ? "bg-orange-500 text-white shadow-md"
+                      : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-orange-100 dark:hover:bg-orange-900/20 hover:text-orange-600 dark:hover:text-orange-400"
+                  }`}
                 >
                   {sc.nom}
                 </button>
@@ -169,11 +165,11 @@ const CategoriePage = () => {
             ))}
 
             {sousCategories.length === 0 && (
-              <div className="text-center py-20 bg-white rounded-lg shadow-sm">
-                <p className="text-gray-500 text-lg">
+              <div className="text-center py-20 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 transition-colors duration-300">
+                <p className="text-gray-500 dark:text-gray-400 text-lg">
                   Aucune sous-catégorie trouvée.
                 </p>
-                <p className="text-gray-400 text-sm mt-2">
+                <p className="text-gray-400 dark:text-gray-500 text-sm mt-2">
                   Cette catégorie n'a pas encore de sous-catégories.
                 </p>
               </div>

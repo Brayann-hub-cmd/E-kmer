@@ -15,11 +15,10 @@ export default function Userventes() {
         const response = await api.get("auth/profile/");
         setUser(response.data);
         
-        // Redirection selon si boutique existe
         if (response.data.username) {
-          navigate("/profile");  // Mes ventes
+          navigate("/profile");
         } else {
-          navigate("/auth/login"); //login page
+          navigate("/auth/login");
         }
       } catch (error) {
         toast.error("Connectez-vous !");
@@ -34,7 +33,7 @@ export default function Userventes() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex items-center justify-center transition-colors duration-300">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500"></div>
       </div>
     );

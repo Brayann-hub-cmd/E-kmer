@@ -13,28 +13,28 @@ export default function Conditions() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-100 py-8">
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 py-8 transition-colors duration-300">
       <div className="max-w-4xl mx-auto px-4">
         <BackToHome />
-        <h1 className="text-3xl font-bold text-black mb-6">Conditions d'utilisation</h1>
+        <h1 className="text-3xl font-bold text-black dark:text-white mb-6">Conditions d'utilisation</h1>
 
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 transition-colors duration-300">
           <div className="space-y-6">
             {articles.map((article, index) => (
-              <div key={index} className="flex gap-4 pb-6 border-b border-gray-100 last:border-0 last:pb-0">
+              <div key={index} className="flex gap-4 pb-6 border-b border-gray-100 dark:border-gray-700 last:border-0 last:pb-0 transition-colors duration-300">
                 <div className="w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
                   <article.icon className="text-white text-sm" />
                 </div>
                 <div>
-                  <h2 className="text-lg font-bold text-black mb-2">{article.title}</h2>
-                  <p className="text-gray-600 text-sm leading-relaxed">{article.content}</p>
+                  <h2 className="text-lg font-bold text-black dark:text-white mb-2">{article.title}</h2>
+                  <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">{article.content}</p>
                 </div>
               </div>
             ))}
           </div>
 
-          <div className="mt-6 p-3 bg-gray-50 rounded-lg text-center">
-            <p className="text-gray-400 text-xs">Dernière mise à jour : 15 mai 2026</p>
+          <div className="mt-6 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg text-center transition-colors duration-300">
+            <p className="text-gray-400 dark:text-gray-500 text-xs">Dernière mise à jour : 15 mai 2026</p>
           </div>
         </div>
       </div>

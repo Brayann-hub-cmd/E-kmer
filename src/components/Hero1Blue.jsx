@@ -2,7 +2,7 @@ import React from 'react';
 
 const HeroSection = () => {
   return (
-    <section className="bg-[#253E59] w-full">
+    <section className="bg-[#253E59] dark:bg-gray-800 w-full transition-colors duration-300">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
 
         {/* Padding vertical responsive */}
@@ -14,21 +14,21 @@ const HeroSection = () => {
             {/* ========== COLONNE GAUCHE - TEXTE ========== */}
             <div className="w-full lg:w-1/2 text-center lg:text-left px-4 sm:px-0">
               
-              {/* Titre principal - taille progressive */}
-              <h1 className="text-white font-bold text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-5xl leading-tight mb-3 sm:mb-4">
+              {/* Titre principal */}
+              <h1 className="text-white dark:text-white font-bold text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-5xl leading-tight mb-3 sm:mb-4">
                 Découvrez des articles
               </h1>
 
-              {/* Description - taille progressive */}
-              <p className="text-gray-300 text-sm sm:text-base md:text-lg lg:text-xl max-w-md mx-auto lg:mx-0 mb-5 sm:mb-6 md:mb-8">
+              {/* Description */}
+              <p className="text-gray-300 dark:text-gray-300 text-sm sm:text-base md:text-lg lg:text-xl max-w-md mx-auto lg:mx-0 mb-5 sm:mb-6 md:mb-8">
                 Retrouvez de nombreux articles proposés par d'autres utilisateurs de la plateforme
               </p>
 
-              {/* Bouton - padding responsive */}
+              {/* Bouton */}
               <div className="mt-4 sm:mt-6 md:mt-8 lg:mt-10">
                 <a
                   href="/articles"
-                  className="inline-block bg-white text-[#253E59] font-semibold px-6 sm:px-8 md:px-10 lg:px-12 py-2.5 sm:py-3 md:py-3.5 lg:py-4 rounded-full text-sm sm:text-base md:text-lg shadow-md hover:shadow-xl hover:scale-105 transition-all duration-300"
+                  className="inline-block bg-white dark:bg-gray-700 text-[#253E59] dark:text-white font-semibold px-6 sm:px-8 md:px-10 lg:px-12 py-2.5 sm:py-3 md:py-3.5 lg:py-4 rounded-full text-sm sm:text-base md:text-lg shadow-md hover:shadow-xl hover:scale-105 transition-all duration-300"
                 >
                   Retrouvez nos articles
                 </a>
@@ -77,7 +77,7 @@ const HeroSection = () => {
               {/* Desktop : Images en diagonale */}
               <div className="hidden lg:block relative w-full h-[250px] md:h-[280px] lg:h-[300px] xl:h-[320px]">
                 
-                {/* Image 1 - Montre (en haut à gauche) */}
+                {/* Image 1 - Montre */}
                 <div 
                   className="absolute transition-all duration-300 hover:scale-105"
                   style={{ 
@@ -96,7 +96,7 @@ const HeroSection = () => {
                   </div>
                 </div>
                 
-                {/* Image 2 - Produit cosmétique (milieu) */}
+                {/* Image 2 - Produit cosmétique */}
                 <div 
                   className="absolute transition-all duration-300 hover:scale-105"
                   style={{ 
@@ -115,7 +115,7 @@ const HeroSection = () => {
                   </div>
                 </div>
                 
-                {/* Image 3 - Ordinateur portable (en bas à droite) */}
+                {/* Image 3 - Ordinateur portable */}
                 <div 
                   className="absolute transition-all duration-300 hover:scale-105"
                   style={{ 

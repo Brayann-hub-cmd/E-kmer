@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import ProductCard from "./productCard";
 import api from "../api";
+
 const CategorySection = ({ sousCategorie, categorieId }) => {
   const [produits, setProduits] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -13,15 +14,13 @@ const CategorySection = ({ sousCategorie, categorieId }) => {
   const loadProduits = async (page) => {
     setLoading(true);
     try {
-      const limit = 12; // ← Augmenté à 12 produits par page
+      const limit = 12;
       
-      // ✅ Ajout des paramètres page et limit
       const response = await api.get(`all_annonces/${sousCategorie.code}/annonces/?page=${page}&limit=${limit}`);
       
       const data = response.data;
-      const produitsData = data.results || data; 
+      const produitsData = data.results || data;
 
-      // Transformer les données au format attendu par ProductCard
       const produitsFormates = produitsData.map((annonce) => ({
         code: annonce.code,
         title: annonce.titre,
@@ -38,7 +37,6 @@ const CategorySection = ({ sousCategorie, categorieId }) => {
 
       setProduits(produitsFormates);
       
-      // ✅ Calcul correct du nombre total de pages
       const total = data.count || produitsData.length;
       setTotalProduits(total);
       setTotalPages(Math.ceil(total / limit));
@@ -62,7 +60,6 @@ const CategorySection = ({ sousCategorie, categorieId }) => {
     }
   };
 
-  // Organiser les produits en lignes de 6
   const rows = [];
   for (let i = 0; i < produits.length; i += 6) {
     rows.push(produits.slice(i, i + 6));
@@ -70,7 +67,7 @@ const CategorySection = ({ sousCategorie, categorieId }) => {
 
   if (loading && produits.length === 0) {
     return (
-      <div className="flex justify-center py-12">
+      <div className="flex justify-center py-12 dark:bg-gray-900">
         <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-orange-500"></div>
       </div>
     );
@@ -79,17 +76,17 @@ const CategorySection = ({ sousCategorie, categorieId }) => {
   if (!produits.length && !loading) {
     return (
       <div className="mb-12">
-        <h2 className="text-2xl font-bold text-gray-800 mb-4 pb-2 border-b-2 border-orange-500 inline-block">
+        <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-4 pb-2 border-b-2 border-orange-500 inline-block">
           {sousCategorie.nom}
         </h2>
-        <p className="text-gray-500 text-center py-8">Aucun produit disponible dans cette catégorie.</p>
+        <p className="text-gray-500 dark:text-gray-400 text-center py-8">Aucun produit disponible dans cette catégorie.</p>
       </div>
     );
   }
 
   return (
     <div className="mb-12">
-      <h2 className="text-2xl font-bold text-gray-800 mb-4 pb-2 border-b-2 border-orange-500 inline-block">
+      <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-4 pb-2 border-b-2 border-orange-500 inline-block">
         {sousCategorie.nom}
       </h2>
 
@@ -107,14 +104,14 @@ const CategorySection = ({ sousCategorie, categorieId }) => {
             onClick={() => goToPage(currentPage - 1)}
             disabled={currentPage === 1}
             className={`p-2 rounded-lg border transition-colors ${currentPage === 1
-                ? "border-gray-200 text-gray-300 cursor-not-allowed"
-                : "border-gray-300 text-gray-600 hover:bg-orange-500 hover:text-white hover:border-orange-500"
+                ? "border-gray-200 dark:border-gray-700 text-gray-300 dark:text-gray-600 cursor-not-allowed"
+                : "border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:bg-orange-500 hover:text-white hover:border-orange-500 dark:hover:border-orange-500"
               }`}
           >
             <FaChevronLeft className="text-sm" />
           </button>
 
-          <span className="text-gray-700 font-medium">
+          <span className="text-gray-700 dark:text-gray-300 font-medium">
             {currentPage} / {totalPages}
           </span>
 
@@ -122,8 +119,8 @@ const CategorySection = ({ sousCategorie, categorieId }) => {
             onClick={() => goToPage(currentPage + 1)}
             disabled={currentPage === totalPages}
             className={`p-2 rounded-lg border transition-colors ${currentPage === totalPages
-                ? "border-gray-200 text-gray-300 cursor-not-allowed"
-                : "border-gray-300 text-gray-600 hover:bg-orange-500 hover:text-white hover:border-orange-500"
+                ? "border-gray-200 dark:border-gray-700 text-gray-300 dark:text-gray-600 cursor-not-allowed"
+                : "border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:bg-orange-500 hover:text-white hover:border-orange-500 dark:hover:border-orange-500"
               }`}
           >
             <FaChevronRight className="text-sm" />
