@@ -9,7 +9,8 @@ const ProductCard = ({ product }) => {
   const [likesCount, setLikesCount] = useState(product?.likes_count || 0);
   const [viewsCount, setViewsCount] = useState(product?.views_count || 0);
   const [isLoading, setIsLoading] = useState(false);
-
+  const [image, setImage] = useState(product.image+'')
+  const [titre,setTitre] = useState("Sans titre")
   // Vérifier si le produit est déjà dans les favoris au chargement
   useEffect(() => {
     const checkIfLiked = async () => {
@@ -26,6 +27,14 @@ const ProductCard = ({ product }) => {
     };
     checkIfLiked();
   }, [product.code]);
+
+  useEffect(() => {
+    const getImage = () => {
+      image.includes(LINK+'') ? setImage(product.image) : setImage(LINK + product.image)
+      image.includes(LINK+'') ? setTitre(product.titre) : setTitre(product.title)
+    }
+    getImage()
+  }, [product.code])
 
   // Incrémenter les vues quand la carte est affichée
   useEffect(() => {
@@ -115,7 +124,8 @@ const ProductCard = ({ product }) => {
       {/* Image */}
       <Link to={`/produit/${product?.code}`} className="block overflow-hidden">
         <img
-          src={product?.image ? product.image : "/placeholder-image.jpg"}
+          // src={product?.image ? product.image : LINK + product.image}
+          src={image}
           alt={product?.titre || "Produit"}
           className="w-full h-40 object-cover bg-gray-100 group-hover:scale-105 transition-transform duration-300"
         />
@@ -126,7 +136,7 @@ const ProductCard = ({ product }) => {
         {/* Titre */}
         <Link to={`/produit/${product?.code}`} className="block hover:text-orange-500 transition-colors">
           <h3 className="text-sm font-semibold text-gray-800 line-clamp-1 mb-1">
-            {product?.titre || "Sans titre"}
+            {titre || "Sans titre"}
           </h3>
         </Link>
 
