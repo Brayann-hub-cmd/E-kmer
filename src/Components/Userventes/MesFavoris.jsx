@@ -5,15 +5,15 @@ import SideBar from "./SideBar";
 import api from "../../api";
 import toast from "react-hot-toast";
 import { FaShoppingCart, FaHeart } from "react-icons/fa";
-
+const LINK = import.meta.env.VITE_API_URL
 // ── Carte favori ──────────────────────────────────────────────
 const FavoriCard = ({ produit, onAcheter }) => (
   <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden flex flex-col transition-colors duration-300">
     {/* Image */}
     <div className="relative">
       <img
-        src={produit.image || "/placeholder.webp"}
-        alt={produit.titre}
+        src={LINK + produit.annonce_image || "/placeholder.webp"}
+        alt={produit?.annonce_titre || "Sans titre"}
         className="w-full h-44 object-cover"
       />
     </div>
@@ -21,8 +21,8 @@ const FavoriCard = ({ produit, onAcheter }) => (
     {/* Infos */}
     <div className="p-4 flex flex-col gap-3">
       <div>
-        <p className="text-orange-500 font-bold text-lg">{produit.prix.toLocaleString()} FCFA</p>
-        <p className="text-gray-700 dark:text-gray-300 font-medium text-sm mt-0.5">{produit.titre}</p>
+        <p className="text-orange-500 font-bold text-lg">{(produit?.annonce_prix || 0).toLocaleString()} FCFA</p>
+        <p className="text-gray-700 dark:text-gray-300 font-medium text-sm mt-0.5">{produit?.annonce_titre}</p>
       </div>
       <button
         onClick={() => onAcheter(produit.id)}

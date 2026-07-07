@@ -6,14 +6,13 @@ import SideBar from "../../components/Userventes/SideBar";
 import BackToHome from "../../components/BackToHome";
 import api from "../../api";
 import toast from "react-hot-toast";
-const LINK = import.meta.env.VITE_API_URL;
 
 const ArticleCard = ({ article, onEdit, onDelete, onView }) => {
   return (
     <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden hover:shadow-md transition-all duration-300">
       <div className="flex flex-col sm:flex-row">
         <img
-          src={LINK + article.image || "/placeholder.webp"}
+          src={article.image || "/placeholder.webp"}
           alt={article.titre}
           className="w-full sm:w-32 h-32 object-cover"
         />

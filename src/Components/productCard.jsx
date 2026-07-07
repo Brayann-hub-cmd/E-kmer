@@ -5,12 +5,12 @@ import { FaMapMarkerAlt, FaClock, FaHeart, FaRegHeart, FaEye } from "react-icons
 import api from "../api";
 const LINK = import.meta.env.VITE_API_URL
 const ProductCard = ({ product }) => {
-  const [isLiked, setIsLiked] = useState(false);
+  const [isLiked, setIsLiked] = useState(product?.est_favori || false);
   const [likesCount, setLikesCount] = useState(product?.likes_count || 0);
   const [viewsCount, setViewsCount] = useState(product?.views_count || 0);
   const [isLoading, setIsLoading] = useState(false);
-  const [image, setImage] = useState(product.image+'')
-  const [titre,setTitre] = useState("Sans titre")
+  const [image, setImage] = useState(product.image + '')
+  const [titre, setTitre] = useState("Sans titre")
   // Vérifier si le produit est déjà dans les favoris au chargement
   useEffect(() => {
     const checkIfLiked = async () => {
@@ -30,8 +30,8 @@ const ProductCard = ({ product }) => {
 
   useEffect(() => {
     const getImage = () => {
-      image.includes(LINK+'') ? setImage(product.image) : setImage(LINK + product.image)
-      image.includes(LINK+'') ? setTitre(product.titre) : setTitre(product.title)
+      image.includes(LINK + '') ? setImage(product.image) : setImage(LINK + product.image)
+      image.includes(LINK + '') ? setTitre(product.titre) : setTitre(product.title)
     }
     getImage()
   }, [product.code])
@@ -60,10 +60,10 @@ const ProductCard = ({ product }) => {
     try {
       if (isLiked) {
         await api.delete(`favoris/${product.code}/`);
-        setLikesCount(prev => prev - 1);
+        setLikesCount(prev => Math.max(0, prev - 1));
         setIsLiked(false);
       } else {
-        await api.post(`favoris/`, { produit_id: product.code });
+        await api.post(`favoris/`, { annonce: product.code });
         setLikesCount(prev => prev + 1);
         setIsLiked(true);
       }
