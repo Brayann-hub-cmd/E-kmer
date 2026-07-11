@@ -5,14 +5,42 @@ import SideBar from "./SideBar";
 import api from "../../api";
 import toast from "react-hot-toast";
 import { FaCheckCircle, FaClock, FaTruck, FaTimesCircle } from "react-icons/fa";
+import { useAppContext } from "../../context/AppContext"; // ← IMPORT
+import T from "../../components/T"; // ← IMPORT
 
 // ── Badge statut ──────────────────────────────────────────────
 const StatutBadge = ({ statut }) => {
+  const { t } = useAppContext(); // ← Récupère les traductions
+  
   const config = {
-    livre: { label: "Livré", icon: <FaCheckCircle />, bg: "bg-green-100 dark:bg-green-900", text: "text-green-700 dark:text-green-300", border: "border-green-200 dark:border-green-800" },
-    en_cours: { label: "En cours", icon: <FaTruck />, bg: "bg-blue-100 dark:bg-blue-900", text: "text-blue-700 dark:text-blue-300", border: "border-blue-200 dark:border-blue-800" },
-    attente: { label: "En attente", icon: <FaClock />, bg: "bg-yellow-100 dark:bg-yellow-900", text: "text-yellow-700 dark:text-yellow-300", border: "border-yellow-200 dark:border-yellow-800" },
-    annule: { label: "Annulé", icon: <FaTimesCircle />, bg: "bg-red-100 dark:bg-red-900", text: "text-red-700 dark:text-red-300", border: "border-red-200 dark:border-red-800" },
+    livre: { 
+      label: t.livre || "Livré", 
+      icon: <FaCheckCircle />, 
+      bg: "bg-green-100 dark:bg-green-900", 
+      text: "text-green-700 dark:text-green-300", 
+      border: "border-green-200 dark:border-green-800" 
+    },
+    en_cours: { 
+      label: t.enCours || "En cours", 
+      icon: <FaTruck />, 
+      bg: "bg-blue-100 dark:bg-blue-900", 
+      text: "text-blue-700 dark:text-blue-300", 
+      border: "border-blue-200 dark:border-blue-800" 
+    },
+    attente: { 
+      label: t.attente || "En attente", 
+      icon: <FaClock />, 
+      bg: "bg-yellow-100 dark:bg-yellow-900", 
+      text: "text-yellow-700 dark:text-yellow-300", 
+      border: "border-yellow-200 dark:border-yellow-800" 
+    },
+    annule: { 
+      label: t.annule || "Annulé", 
+      icon: <FaTimesCircle />, 
+      bg: "bg-red-100 dark:bg-red-900", 
+      text: "text-red-700 dark:text-red-300", 
+      border: "border-red-200 dark:border-red-800" 
+    },
   };
   const c = config[statut] || config.en_cours;
   return (
@@ -23,77 +51,84 @@ const StatutBadge = ({ statut }) => {
 };
 
 // ── Carte achat ───────────────────────────────────────────────
-const AchatCard = ({ achat, onVoirDetails, date }) => (
-  <div className="bg-white dark:bg-gray-800 rounded-xl sm:rounded-2xl p-3 sm:p-5 shadow-sm border border-gray-100 dark:border-gray-700 transition-colors duration-300">
-    <div className="flex flex-col sm:flex-row gap-3 sm:gap-5 items-start sm:items-center">
+const AchatCard = ({ achat, onVoirDetails, date }) => {
+  const { t } = useAppContext(); // ← Récupère les traductions
+  
+  return (
+    <div className="bg-white dark:bg-gray-800 rounded-xl sm:rounded-2xl p-3 sm:p-5 shadow-sm border border-gray-100 dark:border-gray-700 transition-colors duration-300">
+      <div className="flex flex-col sm:flex-row gap-3 sm:gap-5 items-start sm:items-center">
 
-      {/* Infos principales */}
-      <div className="flex-1 min-w-0 w-full">
-        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-4">
-          <div>
-            <p className="text-gray-400 dark:text-gray-500 text-xs sm:text-sm mt-0.5">Commande le {date}</p>
-          </div>
-        </div>
-        <p className="text-orange-500 font-bold text-xl sm:text-2xl mt-2 sm:mt-3">
-          {(achat.prix_total ?? 0).toLocaleString()} FCFA
-        </p>
-      </div>
-
-      {/* Liste des produits */}
-      <div className="flex flex-col gap-2 mb-4 w-full">
-        {achat.lignes?.map((ligne) => (
-          <div key={ligne.id} className="flex flex-row items-center gap-3 bg-gray-50 dark:bg-gray-700 rounded-lg p-2 transition-colors duration-300">
-            <div className="flex-1 min-w-0">
-              <h3 className="font-bold text-base sm:text-lg text-gray-900 dark:text-white">{ligne.annonce_titre}</h3>
-              <p className="text-gray-400 dark:text-gray-400 text-xs mt-0.5">
-                Qté commandé: {ligne.quantite}
-              </p>
-              <p className="text-gray-400 dark:text-gray-400 text-xs mt-0.5">
-                Prix U.: {ligne.prix_unitaire?.toLocaleString()} FCFA
+        {/* Infos principales */}
+        <div className="flex-1 min-w-0 w-full">
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-4">
+            <div>
+              <p className="text-gray-400 dark:text-gray-500 text-xs sm:text-sm mt-0.5">
+                <T>orderDate</T> {date}
               </p>
             </div>
-            <p className="text-orange-500 font-semibold text-sm flex-shrink-0">
-              {(ligne.quantite * ligne.prix_unitaire).toLocaleString()} FCFA
-            </p>
           </div>
-        ))}
-      </div>
-
-      {/* Statut et bouton */}
-      <div className="flex flex-col sm:flex-row items-end sm:items-center gap-3 w-full sm:w-auto">
-        <div className="self-start sm:self-auto">
-          <StatutBadge statut={achat.statut} />
+          <p className="text-orange-500 font-bold text-xl sm:text-2xl mt-2 sm:mt-3">
+            {(achat.prix_total ?? 0).toLocaleString()} FCFA
+          </p>
         </div>
-        <div className="w-full sm:w-auto">
-          <button
-            onClick={() => onVoirDetails(achat.code)}
-            className="w-full sm:w-auto bg-orange-500 hover:bg-orange-600 text-white px-4 sm:px-5 py-2 rounded-lg text-sm font-semibold transition-colors"
-          >
-            Voir les détails
-          </button>
+
+        {/* Liste des produits */}
+        <div className="flex flex-col gap-2 mb-4 w-full">
+          {achat.lignes?.map((ligne) => (
+            <div key={ligne.id} className="flex flex-row items-center gap-3 bg-gray-50 dark:bg-gray-700 rounded-lg p-2 transition-colors duration-300">
+              <div className="flex-1 min-w-0">
+                <h3 className="font-bold text-base sm:text-lg text-gray-900 dark:text-white">{ligne.annonce_titre}</h3>
+                <p className="text-gray-400 dark:text-gray-400 text-xs mt-0.5">
+                  <T>quantityOrdered</T> {ligne.quantite}
+                </p>
+                <p className="text-gray-400 dark:text-gray-400 text-xs mt-0.5">
+                  <T>unitPrice</T> {ligne.prix_unitaire?.toLocaleString()} FCFA
+                </p>
+              </div>
+              <p className="text-orange-500 font-semibold text-sm flex-shrink-0">
+                {(ligne.quantite * ligne.prix_unitaire).toLocaleString()} FCFA
+              </p>
+            </div>
+          ))}
+        </div>
+
+        {/* Statut et bouton */}
+        <div className="flex flex-col sm:flex-row items-end sm:items-center gap-3 w-full sm:w-auto">
+          <div className="self-start sm:self-auto">
+            <StatutBadge statut={achat.statut} />
+          </div>
+          <div className="w-full sm:w-auto">
+            <button
+              onClick={() => onVoirDetails(achat.code)}
+              className="w-full sm:w-auto bg-orange-500 hover:bg-orange-600 text-white px-4 sm:px-5 py-2 rounded-lg text-sm font-semibold transition-colors"
+            >
+              <T>viewDetails</T>
+            </button>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 // Page principale Mes achats
 export default function MesAchats() {
+  const { t } = useAppContext(); // ← Récupère les traductions
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [achats, setAchats] = useState([]);
   const navigate = useNavigate();
 
   const formatDate = (dateString) => {
-    if (!dateString) return "Date inconnue";
+    if (!dateString) return t.unknownDate || "Date inconnue";
     const date = new Date(dateString);
     const today = new Date();
     const diffTime = Math.abs(today - date);
     const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
     
-    if (diffDays === 0) return "Aujourd'hui";
-    if (diffDays === 1) return "Hier";
-    if (diffDays < 7) return `Il y a ${diffDays} jours`;
+    if (diffDays === 0) return t.today || "Aujourd'hui";
+    if (diffDays === 1) return t.yesterday || "Hier";
+    if (diffDays < 7) return t.daysAgo.replace('{days}', diffDays) || `Il y a ${diffDays} jours`;
     return date.toLocaleDateString('fr-FR');
   };
 
@@ -147,13 +182,13 @@ export default function MesAchats() {
         {/* Contenu principal */}
         <div className="flex-1 p-4 sm:p-6">
           <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-4 sm:mb-6">
-            Mes achats
+            <T>myPurchases</T>
           </h1>
 
           {achats.length === 0 ? (
             <div className="bg-white dark:bg-gray-800 rounded-xl sm:rounded-2xl p-8 sm:p-12 text-center shadow-sm border border-gray-100 dark:border-gray-700 transition-colors duration-300">
               <p className="text-gray-400 dark:text-gray-400 text-base sm:text-lg">
-                Vous n'avez pas encore effectué d'achats.
+                <T>noPurchases</T>
               </p>
             </div>
           ) : (

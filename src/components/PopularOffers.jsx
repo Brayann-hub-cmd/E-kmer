@@ -1,10 +1,13 @@
-import React, { useRef, useEffect, useState } from "react";
+// src/components/PopularOffers.jsx
+import React, { useRef, useEffect, useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { FaMapMarkerAlt, FaCalendarAlt, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import api from "../api";
-import { useMemo } from "react";
+import { useAppContext } from "../context/AppContext"; // ← IMPORT
+import T from "../components/T"; // ← IMPORT
 
 function PopularOffers({ title, categorie }) {
+  const { t } = useAppContext(); // ← Récupère les traductions
   const scrollContainerRef = useRef(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
@@ -75,15 +78,17 @@ function PopularOffers({ title, categorie }) {
     }
   };
 
+  // ✅ Formatage de date avec traduction
   const formatDate = (dateString) => {
+    if (!dateString) return "";
     const date = new Date(dateString);
     const today = new Date();
     const diffTime = Math.abs(today - date);
     const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
 
-    if (diffDays === 0) return "Aujourd'hui";
-    if (diffDays === 1) return "Hier";
-    if (diffDays < 7) return `Il y a ${diffDays} jours`;
+    if (diffDays === 0) return t.today || "Aujourd'hui";
+    if (diffDays === 1) return t.yesterday || "Hier";
+    if (diffDays < 7) return (t.daysAgo || "Il y a {days} jours").replace('{days}', diffDays);
     return date.toLocaleDateString('fr-FR');
   };
 
@@ -122,7 +127,7 @@ function PopularOffers({ title, categorie }) {
       {/* En-tête avec titre */}
       <div className="mb-4 sm:mb-6">
         <h2 className="text-xl sm:text-2xl md:text-xl font-bold text-black dark:text-white">
-          Nos Produits
+          <T>ourProducts</T>
         </h2>
       </div>
 
@@ -139,7 +144,7 @@ function PopularOffers({ title, categorie }) {
                   ? 'opacity-100 hover:scale-110'
                   : 'opacity-30 cursor-not-allowed'
               }`}
-              aria-label="Défiler vers la gauche"
+              aria-label={t.scrollLeft || "Défiler vers la gauche"}
             >
               <FaChevronLeft className="text-base sm:text-lg md:text-xl" />
             </button>
@@ -152,7 +157,7 @@ function PopularOffers({ title, categorie }) {
                   ? 'opacity-100 hover:scale-110'
                   : 'opacity-30 cursor-not-allowed'
               }`}
-              aria-label="Défiler vers la droite"
+              aria-label={t.scrollRight || "Défiler vers la droite"}
             >
               <FaChevronRight className="text-base sm:text-lg md:text-xl" />
             </button>
@@ -193,7 +198,7 @@ function PopularOffers({ title, categorie }) {
                 </Link>
 
                 <p className="text-orange-500 font-bold text-sm xs:text-base sm:text-lg md:text-xl mb-1.5 sm:mb-2">
-                  {product.prix}
+                  {product.prix} FCFA
                 </p>
 
                 {/* Lieu avec icône */}
@@ -212,7 +217,7 @@ function PopularOffers({ title, categorie }) {
                   to={`/produit/${product.slug}`}
                   className="inline-block mt-1 bg-orange-500 hover:bg-orange-600 text-white text-[10px] xs:text-xs sm:text-sm md:text-base px-2 xs:px-3 sm:px-4 py-1 xs:py-1.5 sm:py-2 rounded-lg transition-colors w-full text-center font-medium"
                 >
-                  Voir les détails
+                  <T>viewDetails</T>
                 </Link>
               </div>
             </div>
@@ -223,7 +228,7 @@ function PopularOffers({ title, categorie }) {
       {/* Message de défilement */}
       {!showButtons && scrollContainerRef.current?.scrollWidth > scrollContainerRef.current?.clientWidth && (
         <p className="text-center text-gray-400 dark:text-gray-500 text-xs mt-4 sm:hidden">
-          ← Faites glisser pour voir plus d'articles →
+          ← <T>swipeHint</T> →
         </p>
       )}
 

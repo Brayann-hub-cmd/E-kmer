@@ -3,8 +3,11 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api";
 import toast from "react-hot-toast";
+import { useAppContext } from "../context/AppContext"; // ← IMPORT
+import T from "../components/T"; // ← IMPORT
 
 export default function Userventes() {
+  const { t } = useAppContext(); // ← Récupère les traductions
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -21,7 +24,7 @@ export default function Userventes() {
           navigate("/auth/login");
         }
       } catch (error) {
-        toast.error("Connectez-vous !");
+        toast.error(t.loginRequired || "Connectez-vous !");
         localStorage.removeItem("token");
         navigate("/");
       } finally {
@@ -29,7 +32,7 @@ export default function Userventes() {
       }
     };
     getUser();
-  }, [navigate]);
+  }, [navigate, t]);
 
   if (loading) {
     return (

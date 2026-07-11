@@ -1,25 +1,33 @@
 // src/pages/Footer/CommentCaMarche.jsx
 import { FaSearch, FaShoppingCart, FaCreditCard, FaUserPlus, FaImage, FaChartLine } from "react-icons/fa";
 import BackToHome from "../../Components/BackToHome";
+import { useAppContext } from "../../context/AppContext"; // ← IMPORT
+import T from "../../components/T"; // ← IMPORT
 
 export default function CommentCaMarche() {
+  const { t } = useAppContext(); // ← Récupère les traductions
+
+  // Étapes pour les acheteurs
   const acheteurSteps = [
-    { icon: FaSearch, title: "Parcourez les annonces", desc: "Explorez les milliers d'articles disponibles sur la plateforme" },
-    { icon: FaShoppingCart, title: "Ajoutez au panier", desc: "Sélectionnez vos articles et ajoutez-les à votre panier" },
-    { icon: FaCreditCard, title: "Finalisez votre achat", desc: "Payez en toute sécurité via Orange Money ou MTN Mobile Money" }
+    { icon: FaSearch, titleKey: "browseAds", descKey: "browseAdsDesc" },
+    { icon: FaShoppingCart, titleKey: "addToCart", descKey: "addToCartDesc" },
+    { icon: FaCreditCard, titleKey: "checkout", descKey: "checkoutDesc" }
   ];
 
+  // Étapes pour les vendeurs
   const vendeurSteps = [
-    { icon: FaUserPlus, title: "Créez un compte", desc: "Inscrivez-vous gratuitement sur la plateforme" },
-    { icon: FaImage, title: "Publiez vos articles", desc: "Ajoutez des photos, un prix et une description" },
-    { icon: FaChartLine, title: "Gérez vos ventes", desc: "Suivez vos commandes et gérez votre activité depuis votre tableau de bord" }
+    { icon: FaUserPlus, titleKey: "createAccount", descKey: "createAccountDesc" },
+    { icon: FaImage, titleKey: "publishItems", descKey: "publishItemsDesc" },
+    { icon: FaChartLine, titleKey: "manageSales", descKey: "manageSalesDesc" }
   ];
 
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 py-8 transition-colors duration-300">
       <div className="max-w-4xl mx-auto px-4">
         <BackToHome />
-        <h1 className="text-3xl font-bold text-black dark:text-white mb-6">Comment ça marche ?</h1>
+        <h1 className="text-3xl font-bold text-black dark:text-white mb-6">
+          <T>howItWorks</T>
+        </h1>
 
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden transition-colors duration-300">
           {/* Acheteur */}
@@ -28,7 +36,9 @@ export default function CommentCaMarche() {
               <div className="w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center">
                 <FaSearch className="text-white text-sm" />
               </div>
-              <h2 className="text-xl font-bold text-black dark:text-white">Pour les acheteurs</h2>
+              <h2 className="text-xl font-bold text-black dark:text-white">
+                <T>forBuyers</T>
+              </h2>
             </div>
             <div className="space-y-5">
               {acheteurSteps.map((step, index) => (
@@ -39,9 +49,13 @@ export default function CommentCaMarche() {
                   <div>
                     <div className="flex items-center gap-2 mb-1">
                       <step.icon className="text-orange-500 text-sm" />
-                      <h3 className="font-semibold text-black dark:text-white">{step.title}</h3>
+                      <h3 className="font-semibold text-black dark:text-white">
+                        <T>{step.titleKey}</T>
+                      </h3>
                     </div>
-                    <p className="text-gray-500 dark:text-gray-400 text-sm">{step.desc}</p>
+                    <p className="text-gray-500 dark:text-gray-400 text-sm">
+                      <T>{step.descKey}</T>
+                    </p>
                   </div>
                 </div>
               ))}
@@ -54,7 +68,9 @@ export default function CommentCaMarche() {
               <div className="w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center">
                 <FaUserPlus className="text-white text-sm" />
               </div>
-              <h2 className="text-xl font-bold text-black dark:text-white">Pour les vendeurs</h2>
+              <h2 className="text-xl font-bold text-black dark:text-white">
+                <T>forSellers</T>
+              </h2>
             </div>
             <div className="space-y-5">
               {vendeurSteps.map((step, index) => (
@@ -65,9 +81,13 @@ export default function CommentCaMarche() {
                   <div>
                     <div className="flex items-center gap-2 mb-1">
                       <step.icon className="text-orange-500 text-sm" />
-                      <h3 className="font-semibold text-black dark:text-white">{step.title}</h3>
+                      <h3 className="font-semibold text-black dark:text-white">
+                        <T>{step.titleKey}</T>
+                      </h3>
                     </div>
-                    <p className="text-gray-500 dark:text-gray-400 text-sm">{step.desc}</p>
+                    <p className="text-gray-500 dark:text-gray-400 text-sm">
+                      <T>{step.descKey}</T>
+                    </p>
                   </div>
                 </div>
               ))}

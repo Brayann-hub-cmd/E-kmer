@@ -4,8 +4,11 @@ import { useNavigate } from "react-router-dom";
 import { FaChevronDown, FaTimes, FaPlus } from "react-icons/fa";
 import api from '../api';
 import toast from "react-hot-toast";
+import { useAppContext } from "../context/AppContext"; // ← IMPORT
+import T from "../components/T"; // ← IMPORT
 
 const PublishProduct = () => {
+  const { t } = useAppContext(); // ← Récupère les traductions
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [pageLoading, setPageLoading] = useState(true);
@@ -46,7 +49,7 @@ const PublishProduct = () => {
         setCategories(response.data);
         setApiError(null);
       } catch (error) {
-        setApiError("Impossible de charger les catégories. Vérifiez votre connexion au réseau.");
+        setApiError(t.errorLoadingCategories || "Impossible de charger les catégories. Vérifiez votre connexion au réseau.");
         setCategories([]);
       } finally {
         setPageLoading(false);
@@ -116,7 +119,7 @@ const PublishProduct = () => {
   const handleImageUpload = (e) => {
     const files = Array.from(e.target.files);
     if (formData.images.length + files.length > 3) {
-      setErrors(prev => ({ ...prev, images: "Maximum 3 images autorisées" }));
+      setErrors(prev => ({ ...prev, images: t.maxImagesError || "Maximum 3 images autorisées" }));
       return;
     }
 
@@ -142,16 +145,16 @@ const PublishProduct = () => {
   const validateForm = () => {
     const newErrors = {};
 
-    if (!formData.categorie) newErrors.categorie = "Veuillez sélectionner une catégorie";
-    if (!formData.sousCategorie) newErrors.sousCategorie = "Veuillez sélectionner un type";
-    if (!formData.titre.trim()) newErrors.titre = "Nom du produit requis";
-    if (formData.titre.trim().length < 3) newErrors.titre = "Minimum 3 caractères";
-    if (!formData.prix || formData.prix <= 0) newErrors.prix = "Prix valide requis";
-    if (!formData.description.trim()) newErrors.description = "Description requise";
-    if (formData.description.trim().length < 20) newErrors.description = "Minimum 20 caractères";
-    if (formData.qte === "" || formData.qte < 0) newErrors.qte = "Stock valide requis";
-    if (!formData.localisation) newErrors.localisation = "Veuillez sélectionner une ville";
-    if (formData.images.length === 0) newErrors.images = "Au moins une image requise";
+    if (!formData.categorie) newErrors.categorie = t.required || "Veuillez sélectionner une catégorie";
+    if (!formData.sousCategorie) newErrors.sousCategorie = t.required || "Veuillez sélectionner un type";
+    if (!formData.titre.trim()) newErrors.titre = t.required || "Nom du produit requis";
+    if (formData.titre.trim().length < 3) newErrors.titre = t.minChars || "Minimum 3 caractères";
+    if (!formData.prix || formData.prix <= 0) newErrors.prix = t.validPrice || "Prix valide requis";
+    if (!formData.description.trim()) newErrors.description = t.required || "Description requise";
+    if (formData.description.trim().length < 20) newErrors.description = t.min20Chars || "Minimum 20 caractères";
+    if (formData.qte === "" || formData.qte < 0) newErrors.qte = t.validStock || "Stock valide requis";
+    if (!formData.localisation) newErrors.localisation = t.required || "Veuillez sélectionner une ville";
+    if (formData.images.length === 0) newErrors.images = t.atLeastOneImage || "Au moins une image requise";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -185,7 +188,7 @@ const PublishProduct = () => {
         console.log(key, value);
       }
       await api.post(`annonces/`, submitData);
-      toast.success("Anonce publié avec succès !", { position: "top-right" });
+      toast.success(t.successPublish || "Annonce publiée avec succès !", { position: "top-right" });
       setTimeout(() => {
         navigate("/");
       }, 1500);
@@ -195,11 +198,11 @@ const PublishProduct = () => {
       } else if (error.response?.status === 404) {
         toast.error(error.response.data.error);
       } else if (error.response?.status === 500) {
-        toast.error("Un problème avec le serveur est survenue!");
+        toast.error(t.serverError || "Un problème avec le serveur est survenue!");
       } else {
         toast.error(`Erreur : `, error);
       }
-      setErrors({ submit: "Erreur lors de la publication. Veuillez réessayer." });
+      setErrors({ submit: t.publishError || "Erreur lors de la publication. Veuillez réessayer." });
     } finally {
       setLoading(false);
     }
@@ -214,7 +217,7 @@ const PublishProduct = () => {
       <div className="min-h-screen flex items-center justify-center bg-white dark:bg-gray-900 transition-colors duration-300">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto mb-4"></div>
-          <p className="text-gray-500 dark:text-gray-400">Chargement...</p>
+          <p className="text-gray-500 dark:text-gray-400"><T>loading</T></p>
         </div>
       </div>
     );
@@ -224,7 +227,7 @@ const PublishProduct = () => {
     <div className="relative">
       {label && (
         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-          {label} <span className="text-orange-500">*</span>
+          <T>{label}</T> <span className="text-orange-500">*</span>
         </label>
       )}
       <button
@@ -233,7 +236,7 @@ const PublishProduct = () => {
         className={`w-full px-4 py-3 text-left bg-white dark:bg-gray-800 border ${error ? "border-red-500" : "border-gray-300 dark:border-gray-600"} rounded-xl flex items-center justify-between hover:border-gray-400 dark:hover:border-gray-500 transition-colors`}
       >
         <span className={value ? "text-gray-900 dark:text-white" : "text-gray-400 dark:text-gray-500"}>
-          {value || placeholder}
+          {value || (placeholder ? t[placeholder] || placeholder : "")}
         </span>
         <FaChevronDown className={`text-gray-400 dark:text-gray-500 text-xs transition-transform ${isOpen ? "rotate-180" : ""}`} />
       </button>
@@ -260,10 +263,10 @@ const PublishProduct = () => {
     <div className="min-h-screen bg-white dark:bg-gray-900 py-8 px-4 transition-colors duration-300">
       <div className="max-w-2xl mx-auto">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white text-center mb-2">
-          Publier un produit
+          <T>publishTitle</T>
         </h1>
         <p className="text-sm text-gray-500 dark:text-gray-400 text-center mb-8">
-          Remplissez les informations pour mettre votre produit en vente
+          <T>publishSubtitle</T>
         </p>
 
         {apiError && (
@@ -273,7 +276,7 @@ const PublishProduct = () => {
               onClick={() => window.location.reload()}
               className="ml-3 text-yellow-800 dark:text-yellow-400 underline"
             >
-              Réessayer
+              <T>tryAgain</T>
             </button>
           </div>
         )}
@@ -287,15 +290,16 @@ const PublishProduct = () => {
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <h2 className="text-base font-semibold text-gray-800 dark:text-white mb-2">
-              Etape 1 : Sélectionnez la catégorie principal
+              <T>step1</T>
             </h2>
             <Dropdown
+              label={null}
               value={formData.categorie}
               isOpen={isCategorieOpen}
               setIsOpen={setIsCategorieOpen}
               items={categories}
               onSelect={handleCategorieSelect}
-              placeholder="-- Choisir une catégorie --"
+              placeholder="chooseCategory"
               error={errors.categorie}
             />
           </div>
@@ -303,15 +307,16 @@ const PublishProduct = () => {
           {formData.categorie && (
             <div>
               <h2 className="text-base font-semibold text-gray-800 dark:text-white mb-2">
-                Etape 2 : Précisez le type de produit
+                <T>step2</T>
               </h2>
               <Dropdown
+                label={null}
                 value={formData.sousCategorie}
                 isOpen={isSousCategorieOpen}
                 setIsOpen={setIsSousCategorieOpen}
                 items={sousCategories}
                 onSelect={handleSousCategorieSelect}
-                placeholder="-- Choisir un type --"
+                placeholder="chooseType"
                 error={errors.sousCategorie}
               />
             </div>
@@ -321,14 +326,14 @@ const PublishProduct = () => {
             <>
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-                  Nom du produit <span className="text-orange-500">*</span>
+                  <T>productName</T> <span className="text-orange-500">*</span>
                 </label>
                 <input
                   type="text"
                   name="titre"
                   value={formData.titre}
                   onChange={handleChange}
-                  placeholder="Ex : Casque Sony"
+                  placeholder={t.productNamePlaceholder || "Ex : Casque Sony"}
                   className={`w-full px-4 py-3 border ${errors.titre ? "border-red-500" : "border-gray-300 dark:border-gray-600"} rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500`}
                 />
                 {errors.titre && <p className="text-red-500 text-xs mt-1">{errors.titre}</p>}
@@ -336,7 +341,7 @@ const PublishProduct = () => {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-                  Prix (FCFA) <span className="text-orange-500">*</span>
+                  <T>productPrice</T> <span className="text-orange-500">*</span>
                 </label>
                 <input
                   type="number"
@@ -351,14 +356,14 @@ const PublishProduct = () => {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-                  Description <span className="text-orange-500">*</span>
+                  <T>productDescription</T> <span className="text-orange-500">*</span>
                 </label>
                 <textarea
                   name="description"
                   value={formData.description}
                   onChange={handleChange}
                   rows={4}
-                  placeholder="Décrivez votre produit en détail..."
+                  placeholder={t.productDescriptionPlaceholder || "Décrivez votre produit en détail..."}
                   className={`w-full px-4 py-3 border ${errors.description ? "border-red-500" : "border-gray-300 dark:border-gray-600"} rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all resize-none bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500`}
                 />
                 {errors.description && <p className="text-red-500 text-xs mt-1">{errors.description}</p>}
@@ -366,7 +371,7 @@ const PublishProduct = () => {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-                  Stock <span className="text-orange-500">*</span>
+                  <T>productStock</T> <span className="text-orange-500">*</span>
                 </label>
                 <input
                   type="number"
@@ -381,22 +386,23 @@ const PublishProduct = () => {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-                  Ville <span className="text-orange-500">*</span>
+                  <T>productCity</T> <span className="text-orange-500">*</span>
                 </label>
                 <Dropdown
+                  label={null}
                   value={formData.localisation}
                   isOpen={isVilleOpen}
                   setIsOpen={setIsVilleOpen}
                   items={villes.map(v => ({ nom: v, code: v }))}
                   onSelect={(item) => handleVilleSelect(item.nom)}
-                  placeholder="Sélectionner une ville"
+                  placeholder="selectCity"
                   error={errors.localisation}
                 />
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-                  Image du produit <span className="text-orange-500">*</span>
+                  <T>productImage</T> <span className="text-orange-500">*</span>
                 </label>
                 <div className={`border-2 border-dashed ${errors.images ? "border-red-500" : "border-gray-300 dark:border-gray-600"} rounded-xl p-4 transition-all`}>
                   <div className="flex flex-wrap gap-3 mb-3">
@@ -415,7 +421,7 @@ const PublishProduct = () => {
                     {formData.images.length < 3 && (
                       <label className="w-20 h-20 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600 flex flex-col items-center justify-center cursor-pointer hover:border-orange-500 dark:hover:border-orange-400 transition-colors">
                         <FaPlus className="text-gray-400 dark:text-gray-500 text-xl" />
-                        <span className="text-xs text-gray-400 dark:text-gray-500 mt-1">Ajouter</span>
+                        <span className="text-xs text-gray-400 dark:text-gray-500 mt-1"><T>addImage</T></span>
                         <input
                           type="file"
                           accept="image/jpeg,image/png"
@@ -427,7 +433,7 @@ const PublishProduct = () => {
                     )}
                   </div>
                   <p className="text-xs text-gray-400 dark:text-gray-500 text-center">
-                    Cliquez pour ajouter une image (Maximum 3 images, format jpg/png)
+                    <T>clickToAddImage</T>
                   </p>
                 </div>
                 {errors.images && <p className="text-red-500 text-xs mt-1">{errors.images}</p>}
@@ -441,14 +447,14 @@ const PublishProduct = () => {
               onClick={handleCancel}
               className="flex-1 px-6 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl text-sm font-semibold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
             >
-              Annuler
+              <T>cancelPublish</T>
             </button>
             <button
               type="submit"
               disabled={loading}
               className="flex-1 px-6 py-2.5 bg-orange-500 hover:bg-orange-600 rounded-xl text-sm font-semibold text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? "Publication..." : "Publier le produit"}
+              {loading ? <T>publishing</T> : <T>publish</T>}
             </button>
           </div>
         </form>

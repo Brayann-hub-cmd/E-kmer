@@ -6,13 +6,37 @@ import SideBar from "../../components/Userventes/SideBar";
 import BackToHome from "../../components/BackToHome";
 import api from "../../api";
 import toast from "react-hot-toast";
+import { useAppContext } from "../../context/AppContext"; // ← IMPORT
+import T from "../../components/T"; // ← IMPORT
 
 const StatutBadge = ({ statut }) => {
+  const { t } = useAppContext(); // ← Récupère les traductions
+  
   const config = {
-    livre: { label: "Livré", icon: <FaCheckCircle />, bg: "bg-green-100 dark:bg-green-900", text: "text-green-700 dark:text-green-300" },
-    en_cours: { label: "En cours", icon: <FaTruck />, bg: "bg-blue-100 dark:bg-blue-900", text: "text-blue-700 dark:text-blue-300" },
-    attente: { label: "En attente", icon: <FaClock />, bg: "bg-yellow-100 dark:bg-yellow-900", text: "text-yellow-700 dark:text-yellow-300" },
-    annule: { label: "Annulé", icon: <FaTimesCircle />, bg: "bg-red-100 dark:bg-red-900", text: "text-red-700 dark:text-red-300" },
+    livre: { 
+      label: t.livre || "Livré", 
+      icon: <FaCheckCircle />, 
+      bg: "bg-green-100 dark:bg-green-900", 
+      text: "text-green-700 dark:text-green-300" 
+    },
+    en_cours: { 
+      label: t.enCours || "En cours", 
+      icon: <FaTruck />, 
+      bg: "bg-blue-100 dark:bg-blue-900", 
+      text: "text-blue-700 dark:text-blue-300" 
+    },
+    attente: { 
+      label: t.attente || "En attente", 
+      icon: <FaClock />, 
+      bg: "bg-yellow-100 dark:bg-yellow-900", 
+      text: "text-yellow-700 dark:text-yellow-300" 
+    },
+    annule: { 
+      label: t.annule || "Annulé", 
+      icon: <FaTimesCircle />, 
+      bg: "bg-red-100 dark:bg-red-900", 
+      text: "text-red-700 dark:text-red-300" 
+    },
   };
   const c = config[statut] || config.attente;
   return (
@@ -23,6 +47,7 @@ const StatutBadge = ({ statut }) => {
 };
 
 export default function PurchaseDetail() {
+  const { t } = useAppContext(); // ← Récupère les traductions
   const { id } = useParams();
   const navigate = useNavigate();
   const [purchase, setPurchase] = useState(null);
@@ -61,7 +86,7 @@ export default function PurchaseDetail() {
           }
         });
       } catch (error) {
-        toast.error("Erreur de chargement");
+        toast.error(t.errorLoading || "Erreur de chargement");
       } finally {
         setLoading(false);
       }
@@ -92,8 +117,12 @@ export default function PurchaseDetail() {
     return (
       <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex items-center justify-center transition-colors duration-300">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-800 dark:text-white">Achat non trouvé</h2>
-          <button onClick={() => navigate("/profile/achats")} className="mt-4 text-orange-500">← Retour</button>
+          <h2 className="text-2xl font-bold text-gray-800 dark:text-white">
+            <T>purchaseNotFound</T>
+          </h2>
+          <button onClick={() => navigate("/profile/achats")} className="mt-4 text-orange-500">
+            ← <T>back</T>
+          </button>
         </div>
       </div>
     );
@@ -109,19 +138,21 @@ export default function PurchaseDetail() {
           <BackToHome />
           
           <div className="flex justify-between items-center mb-6">
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Détail de l'achat</h1>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+              <T>purchaseDetail</T>
+            </h1>
             <button
               onClick={() => navigate("/profile/achats")}
               className="text-gray-500 dark:text-gray-400 hover:text-orange-500 transition-colors"
             >
-              ← Retour
+              ← <T>back</T>
             </button>
           </div>
 
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden transition-colors duration-300">
             {/* En-tête */}
             <div className="bg-orange-500 px-6 py-4">
-              <p className="text-white text-sm">Référence commande</p>
+              <p className="text-white text-sm"><T>orderReference</T></p>
               <p className="text-white font-bold text-xl">{purchase.code}</p>
             </div>
 
@@ -132,7 +163,7 @@ export default function PurchaseDetail() {
                 <img src={purchase.produit.image || "/placeholder.webp"} alt={purchase.produit.titre} className="w-20 h-20 object-cover rounded-lg" />
                 <div>
                   <h3 className="font-bold text-lg text-gray-900 dark:text-white">{purchase.produit.titre}</h3>
-                  <p className="text-gray-500 dark:text-gray-400">Qté: {purchase.quantite}</p>
+                  <p className="text-gray-500 dark:text-gray-400"><T>quantity</T>: {purchase.quantite}</p>
                   <p className="text-orange-500 font-bold">{purchase.produit.prix.toLocaleString()} FCFA</p>
                 </div>
               </div>
@@ -140,38 +171,44 @@ export default function PurchaseDetail() {
               {/* Informations vendeur */}
               <div className="border-b border-gray-100 dark:border-gray-700 pb-4">
                 <h3 className="font-semibold text-gray-800 dark:text-white mb-3 flex items-center gap-2">
-                  <FaStore className="text-orange-500" /> Vendeur
+                  <FaStore className="text-orange-500" /> <T>seller</T>
                 </h3>
-                <p className="text-gray-700 dark:text-gray-300"><span className="font-medium">Nom:</span> {purchase.produit.vendeur}</p>
-                <p className="text-gray-700 dark:text-gray-300"><span className="font-medium">Téléphone:</span> {purchase.produit.vendeur_tel}</p>
+                <p className="text-gray-700 dark:text-gray-300"><span className="font-medium"><T>name</T>:</span> {purchase.produit.vendeur}</p>
+                <p className="text-gray-700 dark:text-gray-300"><span className="font-medium"><T>phone</T>:</span> {purchase.produit.vendeur_tel}</p>
               </div>
 
               {/* Détails commande */}
               <div className="border-b border-gray-100 dark:border-gray-700 pb-4">
                 <h3 className="font-semibold text-gray-800 dark:text-white mb-3 flex items-center gap-2">
-                  <FaStore className="text-orange-500" /> Détails de la commande
+                  <FaStore className="text-orange-500" /> <T>orderDetails</T>
                 </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <p className="text-gray-700 dark:text-gray-300"><span className="font-medium">Date:</span> {formatDate(purchase.date)}</p>
-                  <p className="text-gray-700 dark:text-gray-300"><span className="font-medium">Statut:</span> <StatutBadge statut={purchase.statut} /></p>
-                  <p className="text-gray-700 dark:text-gray-300"><span className="font-medium">Montant total:</span> <span className="text-orange-500 font-bold">{purchase.montant_total.toLocaleString()} FCFA</span></p>
-                  <p className="text-gray-700 dark:text-gray-300"><span className="font-medium">Adresse livraison:</span> {purchase.adresse_livraison}</p>
+                  <p className="text-gray-700 dark:text-gray-300"><span className="font-medium"><T>date</T>:</span> {formatDate(purchase.date)}</p>
+                  <p className="text-gray-700 dark:text-gray-300"><span className="font-medium"><T>status</T>:</span> <StatutBadge statut={purchase.statut} /></p>
+                  <p className="text-gray-700 dark:text-gray-300"><span className="font-medium"><T>totalAmount</T>:</span> <span className="text-orange-500 font-bold">{purchase.montant_total.toLocaleString()} FCFA</span></p>
+                  <p className="text-gray-700 dark:text-gray-300"><span className="font-medium"><T>deliveryAddress</T>:</span> {purchase.adresse_livraison}</p>
                 </div>
               </div>
 
               {/* Suivi livraison */}
               {purchase.livraison && (
                 <div className="bg-gray-50 dark:bg-gray-700 rounded-xl p-4 transition-colors duration-300">
-                  <h3 className="font-semibold text-gray-800 dark:text-white mb-2">Suivi de livraison</h3>
-                  <p className="text-gray-700 dark:text-gray-300">Service: {purchase.livraison.service}</p>
-                  <p className="text-gray-700 dark:text-gray-300">Numéro de suivi: <span className="font-mono">{purchase.livraison.tracking}</span></p>
+                  <h3 className="font-semibold text-gray-800 dark:text-white mb-2">
+                    <T>deliveryTracking</T>
+                  </h3>
+                  <p className="text-gray-700 dark:text-gray-300"><T>service</T>: {purchase.livraison.service}</p>
+                  <p className="text-gray-700 dark:text-gray-300"><T>trackingNumber</T>: <span className="font-mono">{purchase.livraison.tracking}</span></p>
                 </div>
               )}
 
               {/* Actions */}
               <div className="flex gap-3 pt-4">
-                <button className="flex-1 bg-orange-500 hover:bg-orange-600 text-white py-2 rounded-lg font-semibold transition-colors">Contacter le vendeur</button>
-                <button className="flex-1 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 py-2 rounded-lg font-semibold transition-colors">Télécharger facture</button>
+                <button className="flex-1 bg-orange-500 hover:bg-orange-600 text-white py-2 rounded-lg font-semibold transition-colors">
+                  <T>contactSeller</T>
+                </button>
+                <button className="flex-1 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 py-2 rounded-lg font-semibold transition-colors">
+                  <T>downloadInvoice</T>
+                </button>
               </div>
             </div>
           </div>

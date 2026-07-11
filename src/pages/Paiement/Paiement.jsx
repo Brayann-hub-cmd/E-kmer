@@ -7,8 +7,11 @@ import RecapCommande from "../../components/RecapCommande";
 import PaiementMobile from "../../components/PaiementMobile";
 import BackToHome from "../../components/BackToHome";
 import toast from "react-hot-toast";
+import { useAppContext } from "../../context/AppContext"; // ← IMPORT
+import T from "../../components/T"; // ← IMPORT
 
 export default function Paiement() {
+  const { t } = useAppContext(); // ← Récupère les traductions
   const [commande, setCommande] = useState([]);
   const [panierTotal, setPanierTotal] = useState(0);
   const [etape, setEtape] = useState(1);
@@ -35,7 +38,7 @@ export default function Paiement() {
         } else {
           // Si la réponse est vide ou mal formée
           items = [];
-          toast.error("Panier vide ou mal formaté");
+          toast.error(t.emptyCartError || "Panier vide ou mal formaté");
         }
         
         setCommande(items);
@@ -46,13 +49,13 @@ export default function Paiement() {
         
       } catch (err) { 
         console.error("Erreur chargement panier:", err);
-        toast.error(err?.response?.data?.error || "Erreur chargement panier");
+        toast.error(err?.response?.data?.error || t.cartLoadError || "Erreur chargement panier");
         setCommande([]);
         setPanierTotal(0);
       }
     };
     fetchPanier();
-  }, []);
+  }, [t]);
 
   const handleLivraisonValidee = (data) => {
     setLivraison(data);
@@ -67,7 +70,7 @@ export default function Paiement() {
       navigate("/confirmation");
     } catch (err) { 
       console.error(err);
-      toast.error(err?.response?.data?.error || "Erreur lors de la confirmation");
+      toast.error(err?.response?.data?.error || t.orderConfirmError || "Erreur lors de la confirmation");
     }
   };
 
@@ -93,14 +96,18 @@ export default function Paiement() {
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4 transition-colors duration-300">
         <div className="max-w-4xl mx-auto">
           <BackToHome />
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Finaliser la commande</h1>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+            <T>finalizeOrder</T>
+          </h1>
           <div className="bg-white dark:bg-gray-800 rounded-2xl p-12 text-center shadow-sm border border-gray-100 dark:border-gray-700">
-            <p className="text-gray-500 dark:text-gray-400 text-lg">Votre panier est vide.</p>
+            <p className="text-gray-500 dark:text-gray-400 text-lg">
+              <T>emptyCart</T>
+            </p>
             <button
               onClick={() => navigate("/")}
               className="mt-4 bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-lg transition-colors"
             >
-              Continuer mes achats
+              <T>continueShopping</T>
             </button>
           </div>
         </div>
@@ -114,8 +121,12 @@ export default function Paiement() {
         
         <BackToHome />
 
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Finaliser la commande</h1>
-        <p className="text-gray-500 dark:text-gray-400 mb-6">Choisissez votre mode de livraison et payez en toute sécurité</p>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+          <T>finalizeOrder</T>
+        </h1>
+        <p className="text-gray-500 dark:text-gray-400 mb-6">
+          <T>paymentSubtitle</T>
+        </p>
 
         <div className="flex gap-1 mb-6">
           {[1, 2, 3].map((step) => (

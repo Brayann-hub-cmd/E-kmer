@@ -1,3 +1,4 @@
+// src/components/Header.jsx
 import { useState, useCallback, useMemo, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { FaBars, FaTimes } from "react-icons/fa";
@@ -5,6 +6,7 @@ import bg from "../assets/images/bg Header.png";
 import products from "../assets/images/products.png";
 import toast from "react-hot-toast";
 import api from "../api";
+import T from '../components/T'; // ← IMPORT DU TRADUCTEUR
 
 export default function Header() {
   const [active, setActive] = useState("Electronique");
@@ -178,12 +180,11 @@ export default function Header() {
             {/* Texte */}
             <div className="text-center lg:text-left">
               <h1 className="text-2xl sm:text-4xl lg:text-5xl xl:text-5xl font-bold leading-tight dark:text-white">
-                Achetez et vendez au Cameroun
+                <T>sellAndBuy</T>
               </h1>
 
               <p className="mt-4 sm:mt-6 text-gray-300 dark:text-gray-400 text-sm sm:text-base max-w-md mx-auto lg:mx-0">
-                Trouvez les meilleurs produits ou vendez facilement les vôtres
-                partout au Cameroun.
+                <T>discoverDesc</T>
               </p>
 
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-6 sm:mt-8 justify-center lg:justify-start">
@@ -191,13 +192,13 @@ export default function Header() {
                   to="/produits"
                   className="bg-orange-500 hover:bg-orange-600 dark:bg-orange-600 dark:hover:bg-orange-700 px-6 py-3 sm:px-8 sm:py-3.5 rounded-lg font-semibold transition-all transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-orange-500/25 dark:hover:shadow-orange-600/25 text-center inline-block"
                 >
-                  Commencez vos achats
+                  <T>explore</T>
                 </Link>
                 <Link
                   to="/vendre"
                   className="bg-white dark:bg-gray-700 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-600 px-6 py-3 sm:px-8 sm:py-3.5 rounded-lg font-semibold transition-all transform hover:scale-105 active:scale-95 shadow-lg text-center inline-block"
                 >
-                  Vendez vos produits
+                  <T>sellYourItems</T>
                 </Link>
               </div>
             </div>
