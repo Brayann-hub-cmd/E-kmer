@@ -95,8 +95,8 @@ export default function Parametres() {
           nom_boutique: u.nom_boutique || "",
           description_boutique: u.description_boutique || "",
         });
-        if (u.avatar) {
-          setAvatarPreview(u.avatar);
+        if (u.photo_profil) {
+          setAvatarPreview(u.photo_profil);
         }
       } catch (error) {
         toast.error(error.response?.data?.error || "Erreur de chargement");
@@ -117,7 +117,7 @@ export default function Parametres() {
     }
 
     if (file.size > 5 * 1024 * 1024) {
-      toast.error("L'image ne doit pas dépasser 5MB");
+      toast.error("L'image ne doit pas dépasser 5Mo");
       return;
     }
 
@@ -131,11 +131,11 @@ export default function Parametres() {
 
     try {
       const formDataAvatar = new FormData();
-      formDataAvatar.append("avatar", file);
-      const response = await api.patch("auth/profile/avatar/", formDataAvatar, {
+      formDataAvatar.append("photo_profil", file);
+      const response = await api.patch("auth/profil/photo/", formDataAvatar, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-      setUser((prev) => ({ ...prev, avatar: response.data.avatar }));
+      setUser((prev) => ({ ...prev, photo_profil: response.data.photo_profil }));
       toast.success("Photo de profil mise à jour");
     } catch (error) {
       console.error("Erreur upload avatar:", error);
@@ -151,7 +151,7 @@ export default function Parametres() {
     try {
       await api.delete("auth/profile/avatar/");
       setAvatarPreview(null);
-      setUser((prev) => ({ ...prev, avatar: null }));
+      setUser((prev) => ({ ...prev, photo_profil: null }));
       toast.success("Photo de profil supprimée");
     } catch (error) {
       console.error("Erreur suppression avatar:", error);
