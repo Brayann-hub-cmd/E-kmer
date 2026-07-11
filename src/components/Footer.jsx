@@ -1,3 +1,4 @@
+// src/components/Footer.jsx
 import React, { useEffect, useState, useMemo } from 'react';
 import logo from '../../public/logo.png'
 import AOS from 'aos';
@@ -14,8 +15,11 @@ import {
 } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import api from '../api';
+import { useAppContext } from '../context/AppContext'; // ← IMPORT
+import T from '../components/T'; // ← IMPORT
 
 const Footer = () => {
+    const { t } = useAppContext(); // ← Récupère les traductions
     const [data, setData] = useState([])
 
     useEffect(() => {
@@ -32,7 +36,7 @@ const Footer = () => {
 
     const categories = useMemo(
         () => {
-            return console.log(data), data.map((cat) => ({
+            return data.map((cat) => ({
                 code: `${cat.code}`,
                 name: `${cat.nom}`,
                 path: `/categorie/${cat.nom.toLowerCase().replace(/\s+/g, '-').normalize("NFD").replace(/[\u0300-\u036f]/g, '')}?id=${cat.code}`,
@@ -48,21 +52,23 @@ const Footer = () => {
         });
     }, []);
 
+    // Liens utiles - maintenant traduits dynamiquement
     const liensUtiles = [
-        { name: 'À propos', path: '/a-propos' },
-        { name: "S'inscrire", path: '/auth/register' },
-        { name: 'Comment ça marche', path: '/comment-ca-marche' },
-        { name: 'Sécurité', path: '/securite' },
-        { name: "Centre d'aide", path: '/aide' },
-        { name: "Conditions d'utilisation", path: '/conditions' },
-        { name: 'Politique de confidentialité', path: '/confidentialite' }
+        { key: 'about', path: '/a-propos' },
+        { key: 'register', path: '/auth/register' },
+        { key: 'howItWorks', path: '/comment-ca-marche' },
+        { key: 'security', path: '/securite' },
+        { key: 'help', path: '/aide' },
+        { key: 'terms', path: '/conditions' },
+        { key: 'privacy', path: '/confidentialite' }
     ];
 
+    // Vendre et acheter - maintenant traduits dynamiquement
     const vendreAcheter = [
-        { name: 'Comment vendre', path: '/comment-vendre' },
-        { name: 'Comment acheter', path: '/comment-acheter' },
-        { name: 'Commencer à vendre', path: '/vendre' },
-        { name: 'Commandes', path: '/commandes' }
+        { key: 'howToSell', path: '/comment-vendre' },
+        { key: 'howToBuy', path: '/comment-acheter' },
+        { key: 'startSelling', path: '/vendre' },
+        { key: 'orders', path: '/commandes' }
     ];
 
     const socialIcons = [
@@ -87,7 +93,7 @@ const Footer = () => {
                             <a href='/' className='cursor-pointer'><img src={logo} alt="Logo" /></a>
                         </div>
                         <p className="text-gray-300 dark:text-gray-400 text-sm">
-                            Achetez et vendez vos articles
+                            <T>sellAndBuyTagline</T>
                         </p>
 
                         <div className="flex gap-5 pt-2">
@@ -113,7 +119,7 @@ const Footer = () => {
                         data-aos-delay="200"
                     >
                         <h3 className="text-lg font-semibold text-[#F25012] dark:text-orange-500 pb-2">
-                            Catégorie
+                            <T>category</T>
                         </h3>
                         <ul className="space-y-2">
                             {categories.map((item, index) => (
@@ -136,7 +142,7 @@ const Footer = () => {
                         data-aos-delay="300"
                     >
                         <h3 className="text-lg font-semibold text-[#F25012] dark:text-orange-500 pb-2">
-                            Liens utiles
+                            <T>usefulLinks</T>
                         </h3>
                         <ul className="space-y-2">
                             {liensUtiles.map((item, index) => (
@@ -145,7 +151,7 @@ const Footer = () => {
                                         href={item.path}
                                         className="text-gray-300 dark:text-gray-400 hover:text-[#F25012] dark:hover:text-orange-400 transition-colors duration-300 text-sm cursor-pointer"
                                     >
-                                        {item.name}
+                                        <T>{item.key}</T>
                                     </a>
                                 </li>
                             ))}
@@ -159,7 +165,7 @@ const Footer = () => {
                         data-aos-delay="400"
                     >
                         <h3 className="text-lg font-semibold text-[#F25012] dark:text-orange-500 pb-2">
-                            Vendre et acheter
+                            <T>sellAndBuy</T>
                         </h3>
                         <ul className="space-y-2">
                             {vendreAcheter.map((item, index) => (
@@ -168,7 +174,7 @@ const Footer = () => {
                                         href={item.path}
                                         className="text-gray-300 dark:text-gray-400 hover:text-[#F25012] dark:hover:text-orange-400 transition-colors duration-300 text-sm cursor-pointer"
                                     >
-                                        {item.name}
+                                        <T>{item.key}</T>
                                     </a>
                                 </li>
                             ))}
@@ -182,7 +188,7 @@ const Footer = () => {
                         data-aos-delay="500"
                     >
                         <h3 className="text-lg font-semibold text-[#F25012] dark:text-orange-500 pb-2">
-                            Contact
+                            <T>contact</T>
                         </h3>
                         <div className="space-y-3 text-gray-300 dark:text-gray-400 text-sm">
                             <div className="flex items-start gap-3">
@@ -216,7 +222,7 @@ const Footer = () => {
                 <div className="my-20"></div>
 
                 <div className="text-center text-gray-400 dark:text-gray-500 text-sm">
-                    <p>© 2026 E-kmer. Tous droits réservés.</p>
+                    <p>© 2026 E-kmer. <T>allRightsReserved</T></p>
                 </div>
             </div>
         </footer>

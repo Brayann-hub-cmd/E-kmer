@@ -1,7 +1,12 @@
+// src/components/HeroSection.jsx (version orange)
 import React from "react";
 import { Link } from "react-router-dom";
+import { useAppContext } from "../context/AppContext"; // ← IMPORT
+import T from "../components/T"; // ← IMPORT
 
 export default function HeroSection() {
+    const { t } = useAppContext(); // ← Récupère les traductions
+    
     return (
         <div className="w-full px-3 sm:px-4 md:px-5 lg:px-6 py-6 sm:py-8 md:py-10 lg:py-12">
             {/* Conteneur principal orange avec coins arrondis */}
@@ -15,12 +20,12 @@ export default function HeroSection() {
                         
                         {/* Titre principal */}
                         <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-5xl xl:text-5xl font-bold text-[#3A2819] dark:text-white mb-2 sm:mb-3 md:mb-4 leading-tight">
-                            Vendez vos articles
+                            <T>sellYourItems</T>
                         </h1>
                         
                         {/* Sous-titre */}
                         <p className="text-[#5C3E24] dark:text-gray-200 text-sm sm:text-base md:text-lg lg:text-xl mb-4 sm:mb-5 md:mb-6 max-w-md mx-auto lg:mx-0">
-                            Des objets qui ne servent plus ? Faites-vous de l'argent.
+                            <T>sellDesc</T>
                         </p>
                         
                         {/* Bouton d'appel à l'action */}
@@ -28,7 +33,7 @@ export default function HeroSection() {
                             to="/auth/register"
                             className="inline-block bg-[#3A2819] dark:bg-gray-800 text-[#F97316] dark:text-orange-400 font-semibold px-6 sm:px-8 md:px-10 lg:px-12 py-2.5 sm:py-3 md:py-3.5 lg:py-4 rounded-full text-sm sm:text-base md:text-lg hover:bg-[#4A3829] dark:hover:bg-gray-700 transition-all duration-300 shadow-md hover:shadow-lg hover:scale-105"
                         >
-                            Vendez maintenant
+                            <T>sellNow</T>
                         </Link>
                     </div>
                     
@@ -42,7 +47,7 @@ export default function HeroSection() {
                             <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-32 lg:h-32 xl:w-40 xl:h-40 rounded-xl sm:rounded-2xl overflow-hidden shadow-md hover:shadow-xl transform hover:scale-105 transition-all duration-300">
                                 <img
                                     src="/Montre.png"
-                                    alt="Montre de luxe"
+                                    alt={t.luxuryWatch || "Montre de luxe"}
                                     className="w-full h-full object-cover"
                                 />
                             </div>
@@ -51,7 +56,7 @@ export default function HeroSection() {
                             <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-32 lg:h-32 xl:w-40 xl:h-40 rounded-xl sm:rounded-2xl overflow-hidden shadow-md hover:shadow-xl transform hover:scale-105 transition-all duration-300">
                                 <img
                                     src="/Cosmetique.png"
-                                    alt="Produit cosmétique"
+                                    alt={t.cosmeticProduct || "Produit cosmétique"}
                                     className="w-full h-full object-cover"
                                 />
                             </div>
@@ -60,7 +65,7 @@ export default function HeroSection() {
                             <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-32 lg:h-32 xl:w-40 xl:h-40 rounded-xl sm:rounded-2xl overflow-hidden shadow-md hover:shadow-xl transform hover:scale-105 transition-all duration-300">
                                 <img
                                     src="/Pc.png"
-                                    alt="Ordinateur portable"
+                                    alt={t.laptop || "Ordinateur portable"}
                                     className="w-full h-full object-cover"
                                 />
                             </div>

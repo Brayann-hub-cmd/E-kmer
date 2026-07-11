@@ -6,8 +6,10 @@ import RecentProduct from '../../components/RecentProducts';
 import Header from '../../Components/Header';
 import Navbar from '../../Components/Navbar';
 import Hero2Orange from '../../components/Hero2Orange';
+import { useAppContext } from '../../context/AppContext';
 
 const Home = () => {
+  const { t } = useAppContext();
   const [categorie, setCategorie] = useState("CAT_000");
   const [title, setTitle] = useState("");
   

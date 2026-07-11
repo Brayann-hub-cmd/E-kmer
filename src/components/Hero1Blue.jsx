@@ -1,6 +1,11 @@
+// src/components/HeroSection.jsx
 import React from 'react';
+import { useAppContext } from '../context/AppContext'; // ← IMPORT
+import T from '../components/T'; // ← IMPORT
 
 const HeroSection = () => {
+  const { t } = useAppContext(); // ← Récupère les traductions
+  
   return (
     <section className="bg-[#253E59] dark:bg-gray-800 w-full transition-colors duration-300">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
@@ -16,12 +21,12 @@ const HeroSection = () => {
               
               {/* Titre principal */}
               <h1 className="text-white dark:text-white font-bold text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-5xl leading-tight mb-3 sm:mb-4">
-                Découvrez des articles
+                <T>discover</T>
               </h1>
 
               {/* Description */}
               <p className="text-gray-300 dark:text-gray-300 text-sm sm:text-base md:text-lg lg:text-xl max-w-md mx-auto lg:mx-0 mb-5 sm:mb-6 md:mb-8">
-                Retrouvez de nombreux articles proposés par d'autres utilisateurs de la plateforme
+                <T>discoverDesc</T>
               </p>
 
               {/* Bouton */}
@@ -30,7 +35,7 @@ const HeroSection = () => {
                   href="/articles"
                   className="inline-block bg-white dark:bg-gray-700 text-[#253E59] dark:text-white font-semibold px-6 sm:px-8 md:px-10 lg:px-12 py-2.5 sm:py-3 md:py-3.5 lg:py-4 rounded-full text-sm sm:text-base md:text-lg shadow-md hover:shadow-xl hover:scale-105 transition-all duration-300"
                 >
-                  Retrouvez nos articles
+                  <T>findArticles</T>
                 </a>
               </div>
             </div>
@@ -45,7 +50,7 @@ const HeroSection = () => {
                   <div className="relative overflow-hidden rounded-xl shadow-lg hover:scale-105 transition-transform duration-300">
                     <img
                       src="/Montre.png"
-                      alt="Montre de luxe"
+                      alt={t.luxuryWatch || "Montre de luxe"}
                       className="w-full h-auto object-cover aspect-square"
                     />
                   </div>
@@ -56,7 +61,7 @@ const HeroSection = () => {
                   <div className="relative overflow-hidden rounded-xl shadow-lg hover:scale-105 transition-transform duration-300">
                     <img
                       src="/Cosmetique.png"
-                      alt="Produit cosmétique"
+                      alt={t.cosmeticProduct || "Produit cosmétique"}
                       className="w-full h-auto object-cover aspect-square"
                     />
                   </div>
@@ -67,7 +72,7 @@ const HeroSection = () => {
                   <div className="relative overflow-hidden rounded-xl shadow-lg hover:scale-105 transition-transform duration-300">
                     <img
                       src="/Pc.png"
-                      alt="Ordinateur portable"
+                      alt={t.laptop || "Ordinateur portable"}
                       className="w-full h-auto object-cover aspect-square"
                     />
                   </div>
@@ -90,7 +95,7 @@ const HeroSection = () => {
                   <div className="relative overflow-hidden rounded-2xl shadow-xl">
                     <img 
                       src="/Montre.png" 
-                      alt="Montre de luxe"
+                      alt={t.luxuryWatch || "Montre de luxe"}
                       className="w-full h-auto object-cover aspect-square"
                     />
                   </div>
@@ -109,7 +114,7 @@ const HeroSection = () => {
                   <div className="relative overflow-hidden rounded-2xl shadow-xl">
                     <img 
                       src="/Cosmetique.png" 
-                      alt="Produit cosmétique"
+                      alt={t.cosmeticProduct || "Produit cosmétique"}
                       className="w-full h-auto object-cover aspect-square"
                     />
                   </div>
@@ -128,7 +133,7 @@ const HeroSection = () => {
                   <div className="relative overflow-hidden rounded-2xl shadow-xl">
                     <img 
                       src="/Pc.png" 
-                      alt="Ordinateur portable"
+                      alt={t.laptop || "Ordinateur portable"}
                       className="w-full h-auto object-cover aspect-square"
                     />
                   </div>

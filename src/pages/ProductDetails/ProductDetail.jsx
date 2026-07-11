@@ -13,8 +13,11 @@ import {
 } from 'react-icons/fa';
 import api from '../../api';
 import BackToHome from '../../Components/BackToHome';
+import { useAppContext } from "../../context/AppContext"; // ← IMPORT
+import T from "../../components/T"; // ← IMPORT
 
 const ProductDetail = () => {
+  const { t } = useAppContext(); // ← Récupère les traductions
   const { id } = useParams();
   const navigate = useNavigate();
   
@@ -41,7 +44,7 @@ const ProductDetail = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       if (!id) {
-        setError("Aucun identifiant de produit fourni");
+        setError(t.noProductId || "Aucun identifiant de produit fourni");
         setLoading(false);
         return;
       }
@@ -56,14 +59,14 @@ const ProductDetail = () => {
         setQuantity(1);
       } catch (error) {
         console.error("Erreur chargement produit:", error);
-        setError("Impossible de charger le produit. Veuillez réessayer plus tard.");
+        setError(t.productLoadError || "Impossible de charger le produit. Veuillez réessayer plus tard.");
       } finally {
         setLoading(false);
       }
     };
     
     fetchProduct();
-  }, [id]);
+  }, [id, t]);
 
   const nextImage = () => {
     if (!product.images || product.images.length === 0) return;
@@ -120,14 +123,15 @@ const ProductDetail = () => {
   const imageUrls = product.images ? product.images.map(img => img.image || img) : [];
 
   const formatMemberSince = (dateString) => {
+    if (!dateString) return "";
     const date = new Date(dateString);
     const today = new Date();
     const diffTime = Math.abs(today - date);
     const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
 
-    if (diffDays === 0) return "Aujourd'hui";
-    if (diffDays === 1) return "Hier";
-    if (diffDays < 7) return `Il y a ${diffDays} jours`;
+    if (diffDays === 0) return t.today || "Aujourd'hui";
+    if (diffDays === 1) return t.yesterday || "Hier";
+    if (diffDays < 7) return (t.daysAgo || "Il y a {days} jours").replace('{days}', diffDays);
     return date.toLocaleDateString('fr-FR');
   };
 
@@ -137,7 +141,7 @@ const ProductDetail = () => {
         <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center transition-colors duration-300">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto mb-4"></div>
-            <p className="text-gray-500 dark:text-gray-400">Chargement du produit...</p>
+            <p className="text-gray-500 dark:text-gray-400"><T>loading</T></p>
           </div>
         </div>
         <Footer />
@@ -150,13 +154,15 @@ const ProductDetail = () => {
       <>
         <main className="max-w-6xl mx-auto px-4 py-8 text-center">
           <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-6 transition-colors duration-300">
-            <h2 className="text-xl font-bold text-red-600 dark:text-red-400 mb-2">Une erreur est survenue</h2>
+            <h2 className="text-xl font-bold text-red-600 dark:text-red-400 mb-2">
+              <T>errorTitle</T>
+            </h2>
             <p className="text-red-500 dark:text-red-300">{error}</p>
             <button
               onClick={() => window.location.reload()}
               className="mt-4 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg transition-colors"
             >
-              Réessayer
+              <T>tryAgain</T>
             </button>
           </div>
         </main>
@@ -169,8 +175,12 @@ const ProductDetail = () => {
     return (
       <>
         <main className="max-w-6xl mx-auto px-4 py-8 text-center">
-          <h2 className="text-2xl font-bold text-gray-800 dark:text-white">Produit non trouvé</h2>
-          <p className="text-gray-500 dark:text-gray-400 mt-2">Ce produit n'existe pas ou a été supprimé.</p>
+          <h2 className="text-2xl font-bold text-gray-800 dark:text-white">
+            <T>productNotFound</T>
+          </h2>
+          <p className="text-gray-500 dark:text-gray-400 mt-2">
+            <T>productNotFoundDesc</T>
+          </p>
         </main>
         <Footer />
       </>
@@ -197,7 +207,7 @@ const ProductDetail = () => {
                   />
                 ) : (
                   <div className="w-full h-[300px] sm:h-[400px] lg:h-[500px] bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
-                    <span className="text-gray-400 dark:text-gray-500">Aucune image</span>
+                    <span className="text-gray-400 dark:text-gray-500"><T>noImage</T></span>
                   </div>
                 )}
                 
@@ -206,14 +216,14 @@ const ProductDetail = () => {
                     <button
                       onClick={prevImage}
                       className="absolute left-3 top-1/2 -translate-y-1/2 bg-white/80 dark:bg-gray-800/80 hover:bg-white dark:hover:bg-gray-700 rounded-full p-2 transition-all duration-200"
-                      aria-label="Image précédente"
+                      aria-label={t.prevImage || "Image précédente"}
                     >
                       <FaChevronLeft className="text-gray-800 dark:text-white text-sm sm:text-base" />
                     </button>
                     <button
                       onClick={nextImage}
                       className="absolute right-3 top-1/2 -translate-y-1/2 bg-white/80 dark:bg-gray-800/80 hover:bg-white dark:hover:bg-gray-700 rounded-full p-2 transition-all duration-200"
-                      aria-label="Image suivante"
+                      aria-label={t.nextImage || "Image suivante"}
                     >
                       <FaChevronRight className="text-gray-800 dark:text-white text-sm sm:text-base" />
                     </button>
@@ -240,7 +250,9 @@ const ProductDetail = () => {
             </div>
 
             <div className="mt-6 border border-gray-200 dark:border-gray-700 rounded-2xl p-6 bg-white dark:bg-gray-800 transition-colors duration-300">
-              <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Description</h2>
+              <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-4">
+                <T>description</T>
+              </h2>
               {descriptionParagraphs.length > 0 ? (
                 descriptionParagraphs.map((paragraph, idx) => (
                   <p key={idx} className="text-gray-700 dark:text-gray-300 text-sm leading-relaxed mb-3">
@@ -248,7 +260,9 @@ const ProductDetail = () => {
                   </p>
                 ))
               ) : (
-                <p className="text-gray-500 dark:text-gray-400 text-sm">Aucune description disponible.</p>
+                <p className="text-gray-500 dark:text-gray-400 text-sm">
+                  <T>noDescription</T>
+                </p>
               )}
             </div>
           </div>
@@ -267,7 +281,7 @@ const ProductDetail = () => {
               
               <div className="flex items-center gap-1 text-gray-500 dark:text-gray-400 text-sm mt-2">
                 <FaMapMarkerAlt className="text-gray-400 dark:text-gray-500" />
-                <span>{product.localisation || "Localisation non spécifiée"}</span>
+                <span>{product.localisation || t.unknownLocation || "Localisation non spécifiée"}</span>
               </div>
               
               <div className="flex flex-col gap-3 mt-4">
@@ -277,7 +291,7 @@ const ProductDetail = () => {
                   className="flex items-center justify-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-xl py-3 px-4 transition-colors w-full"
                 >
                   <FaShoppingCart className="text-base" />
-                  Ajouter au panier
+                  <T>addToCart</T>
                 </Link>
                 
                 <Link
@@ -286,7 +300,7 @@ const ProductDetail = () => {
                   className="flex items-center justify-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-xl py-3 px-4 transition-colors w-full"
                 >
                   <FaPlusCircle className="text-base" />
-                  Acheter maintenant
+                  <T>buyNow</T>
                 </Link>
                 
                 <button
@@ -296,7 +310,7 @@ const ProductDetail = () => {
                   } hover:bg-gray-50 dark:hover:bg-gray-700 font-medium rounded-xl py-3 px-4 transition-colors w-full`}
                 >
                   <FaHeart className={`text-base ${isFavorite ? 'text-red-500' : 'text-gray-400 dark:text-gray-500'}`} />
-                  Favoris
+                  <T>favorites</T>
                 </button>
               </div>
               
@@ -322,7 +336,7 @@ const ProductDetail = () => {
                     </button>
                   </div>
                   <span className="text-sm text-gray-500 dark:text-gray-400">
-                    {(product.qte || 0)} en stock
+                    {(product.qte || 0)} <T>inStock</T>
                   </span>
                 </div>
               </div>
@@ -331,7 +345,7 @@ const ProductDetail = () => {
               
               <div>
                 <h3 className="font-semibold text-gray-900 dark:text-white mb-3">
-                  À propos du vendeur
+                  <T>aboutSeller</T>
                 </h3>
                 <div className="flex items-center gap-3">
                   {product.vendeur?.avatar ? (
@@ -345,10 +359,10 @@ const ProductDetail = () => {
                   )}
                   <div>
                     <div className="font-bold text-gray-900 dark:text-white text-sm">
-                      {product.vendeur?.username || "Vendeur"}
+                      {product.vendeur?.username || t.seller || "Vendeur"}
                     </div>
                     <div className="text-sm text-orange-500">
-                      Membre depuis {formatMemberSince(product.vendeur?.created_at)}
+                      <T>memberSince</T> {formatMemberSince(product.vendeur?.created_at)}
                     </div>
                   </div>
                 </div>

@@ -5,8 +5,11 @@ import { useNavigate, useLocation } from "react-router-dom";
 import BackToHome from "../BackToHome";
 import api from "../../api";
 import toast from "react-hot-toast";
+import { useAppContext } from "../../context/AppContext"; // ← IMPORT
+import T from "../../components/T"; // ← IMPORT
 
 export default function SideBar({ user }) {
+  const { t } = useAppContext(); // ← Récupère les traductions
   const navigate = useNavigate();
   const location = useLocation();
   const [ventes, setVentes] = useState(0);
@@ -14,7 +17,7 @@ export default function SideBar({ user }) {
   const [articles, setArticles] = useState(0);
 
   const formaterTelephone = (valeur) => {
-    if (!valeur) return '+237 6XX XXX XXX';
+    if (!valeur) return t.phonePlaceholder || '+237 6XX XXX XXX';
     let numeros = valeur.replace(/[^\d+]/g, '');
     if (numeros.startsWith('+237')) {
       const sansPrefix = numeros.slice(4);
@@ -42,11 +45,11 @@ export default function SideBar({ user }) {
   };
 
   const menuItems = [
-    { key: "ventes", label: "Mes ventes", icon: FaStore, path: "/profile" },
-    { key: "achats", label: "Mes achats", icon: FaShoppingCart, path: "/profile/achats" },
-    { key: "favoris", label: "Mes favoris", icon: FaHeart, path: "/profile/favoris" },
-    { key: "articles", label: "Mes articles", icon: FaBoxes, path: "/profile/articles" },
-    { key: "parametres", label: "Paramètres", icon: FaCog, path: "/profile/parametres" },
+    { key: "ventes", label: t.mySales || "Mes ventes", icon: FaStore, path: "/profile" },
+    { key: "achats", label: t.myPurchases || "Mes achats", icon: FaShoppingCart, path: "/profile/achats" },
+    { key: "favoris", label: t.myFavorites || "Mes favoris", icon: FaHeart, path: "/profile/favoris" },
+    { key: "articles", label: t.myArticles || "Mes articles", icon: FaBoxes, path: "/profile/articles" },
+    { key: "parametres", label: t.settings || "Paramètres", icon: FaCog, path: "/profile/parametres" },
   ];
 
   const isActive = (path) => {
@@ -90,6 +93,9 @@ export default function SideBar({ user }) {
     getArticles();
   }, []);
 
+  // Le nom d'utilisateur par défaut
+  const defaultUsername = t.user || "Profil";
+
   return (
     <div className="w-full md:w-[260px] bg-white dark:bg-gray-800 p-5 shadow-md flex-shrink-0 self-stretch min-h-screen transition-colors duration-300">
       <BackToHome />
@@ -108,10 +114,10 @@ export default function SideBar({ user }) {
         </div>
 
         <h2 className="mt-4 text-lg font-semibold text-gray-800 dark:text-white">
-          {user ? user.username : 'Profil'}
+          {user ? user.username : defaultUsername}
         </h2>
         <p className="text-gray-500 dark:text-gray-400 text-sm">
-          {user ? formaterTelephone(user.telephone) : '+237 6XX XXX XXX'}
+          {user ? formaterTelephone(user.telephone) : t.phonePlaceholder || '+237 6XX XXX XXX'}
         </p>
 
         {user?.nom_boutique && (
@@ -125,15 +131,21 @@ export default function SideBar({ user }) {
       <div className="flex justify-around bg-gray-100 dark:bg-gray-700 p-3 rounded-xl mb-6 transition-colors duration-300">
         <div className="text-center">
           <p className="text-orange-500 font-bold text-xl">{achats}</p>
-          <p className="text-xs text-gray-600 dark:text-gray-400">Achats</p>
+          <p className="text-xs text-gray-600 dark:text-gray-400">
+            <T>purchases</T>
+          </p>
         </div>
         <div className="text-center">
           <p className="text-green-600 font-bold text-xl">{ventes}</p>
-          <p className="text-xs text-gray-600 dark:text-gray-400">Ventes</p>
+          <p className="text-xs text-gray-600 dark:text-gray-400">
+            <T>sales</T>
+          </p>
         </div>
         <div className="text-center">
           <p className="text-blue-600 font-bold text-xl">{articles}</p>
-          <p className="text-xs text-gray-600 dark:text-gray-400">Articles</p>
+          <p className="text-xs text-gray-600 dark:text-gray-400">
+            <T>items</T>
+          </p>
         </div>
       </div>
 

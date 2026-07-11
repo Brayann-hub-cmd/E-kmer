@@ -1,22 +1,52 @@
 // src/pages/Footer/Conditions.jsx
 import { FaFileContract, FaUserCheck, FaBan, FaMoneyBillWave, FaTruck, FaHandshake } from "react-icons/fa";
 import BackToHome from "../../Components/BackToHome";
+import { useAppContext } from "../../context/AppContext"; // ← IMPORT
+import T from "../../components/T"; // ← IMPORT
 
 export default function Conditions() {
+  const { t } = useAppContext(); // ← Récupère les traductions
+
   const articles = [
-    { icon: FaFileContract, title: "Acceptation des conditions", content: "En utilisant E-kmer, vous acceptez pleinement les présentes conditions d'utilisation." },
-    { icon: FaUserCheck, title: "Compte utilisateur", content: "Vous êtes responsable de la confidentialité de votre compte et de toutes les activités qui s'y déroulent." },
-    { icon: FaBan, title: "Annonces interdites", content: "Les annonces doivent être conformes à la loi et ne doivent pas contenir de contenu illégal ou frauduleux." },
-    { icon: FaMoneyBillWave, title: "Transactions", content: "Toutes les transactions financières sont sécurisées et traitées directement par E-kmer via nos partenaires de paiement (Orange Money, MTN Mobile Money)." },
-    { icon: FaTruck, title: "Livraison", content: "Les livraisons sont assurées par nos services partenaires (Yoomee, Campost, DHL, MotoExpress). Le suivi des commandes est disponible depuis votre espace client." },
-    { icon: FaHandshake, title: "Relation acheteur-vendeur", content: "E-kmer est l'intermédiaire unique entre acheteurs et vendeurs. Toutes les transactions, livraisons et communications passent exclusivement par la plateforme." }
+    { 
+      icon: FaFileContract, 
+      titleKey: "termsAcceptance", 
+      contentKey: "termsAcceptanceDesc" 
+    },
+    { 
+      icon: FaUserCheck, 
+      titleKey: "userAccount", 
+      contentKey: "userAccountDesc" 
+    },
+    { 
+      icon: FaBan, 
+      titleKey: "prohibitedAds", 
+      contentKey: "prohibitedAdsDesc" 
+    },
+    { 
+      icon: FaMoneyBillWave, 
+      titleKey: "transactions", 
+      contentKey: "transactionsDesc" 
+    },
+    { 
+      icon: FaTruck, 
+      titleKey: "delivery", 
+      contentKey: "deliveryDesc" 
+    },
+    { 
+      icon: FaHandshake, 
+      titleKey: "buyerSellerRelation", 
+      contentKey: "buyerSellerRelationDesc" 
+    }
   ];
 
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 py-8 transition-colors duration-300">
       <div className="max-w-4xl mx-auto px-4">
         <BackToHome />
-        <h1 className="text-3xl font-bold text-black dark:text-white mb-6">Conditions d'utilisation</h1>
+        <h1 className="text-3xl font-bold text-black dark:text-white mb-6">
+          <T>termsTitle</T>
+        </h1>
 
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 transition-colors duration-300">
           <div className="space-y-6">
@@ -26,15 +56,21 @@ export default function Conditions() {
                   <article.icon className="text-white text-sm" />
                 </div>
                 <div>
-                  <h2 className="text-lg font-bold text-black dark:text-white mb-2">{article.title}</h2>
-                  <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">{article.content}</p>
+                  <h2 className="text-lg font-bold text-black dark:text-white mb-2">
+                    <T>{article.titleKey}</T>
+                  </h2>
+                  <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
+                    <T>{article.contentKey}</T>
+                  </p>
                 </div>
               </div>
             ))}
           </div>
 
           <div className="mt-6 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg text-center transition-colors duration-300">
-            <p className="text-gray-400 dark:text-gray-500 text-xs">Dernière mise à jour : 15 mai 2026</p>
+            <p className="text-gray-400 dark:text-gray-500 text-xs">
+              <T>lastUpdated</T> {t.lastUpdatedDate || "15 mai 2026"}
+            </p>
           </div>
         </div>
       </div>

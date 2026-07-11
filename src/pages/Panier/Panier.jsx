@@ -5,12 +5,15 @@ import { FaTrash } from "react-icons/fa";
 import api from "../../api";
 import BackToHome from "../../Components/BackToHome";
 import toast from "react-hot-toast";
+import { useAppContext } from "../../context/AppContext"; // ← IMPORT
+import T from "../../components/T"; // ← IMPORT
 
 const LINK = import.meta.env.VITE_API_URL;
 const LIVRAISON = 5000;
 
 // ── Carte produit panier ──────────────────────────────────────
 const PanierCard = ({ item, onQteChange, onSupprimer }) => {
+  const { t } = useAppContext(); // ← Récupère les traductions
   const sousTotalItem = item.sous_total || item.prix * item.quantite;
   
   return (
@@ -29,7 +32,7 @@ const PanierCard = ({ item, onQteChange, onSupprimer }) => {
             <div>
               <h3 className="font-bold text-lg text-gray-900 dark:text-white">{item.annonce_titre || item.titre}</h3>
               <p className="text-gray-400 dark:text-gray-400 text-sm mt-0.5 font-medium">
-                Publié par {item.annonce_vendeur || item.vendeur}
+                <T>publishedBy</T> {item.annonce_vendeur || item.vendeur}
               </p>
               <p className="text-orange-500 font-bold text-xl mt-2">
                 {(item.annonce_prix || item.prix)?.toLocaleString()} FCFA
@@ -39,7 +42,7 @@ const PanierCard = ({ item, onQteChange, onSupprimer }) => {
             <button
               onClick={() => onSupprimer(item.id)}
               className="text-orange-500 hover:text-red-600 transition-colors p-1"
-              title="Supprimer"
+              title={t.remove || "Supprimer"}
             >
               <FaTrash className="text-lg" />
             </button>
@@ -67,7 +70,7 @@ const PanierCard = ({ item, onQteChange, onSupprimer }) => {
               </button>
             </div>
             <span className="text-gray-500 dark:text-gray-400 text-sm">
-              {(item.stock || item.annonce_qte || 0)} en stock
+              {(item.stock || item.annonce_qte || 0)} <T>inStock</T>
             </span>
           </div>
         </div>
@@ -76,7 +79,7 @@ const PanierCard = ({ item, onQteChange, onSupprimer }) => {
       {/* Séparateur + sous-total */}
       <hr className="my-4 border-gray-100 dark:border-gray-700" />
       <p className="text-gray-700 dark:text-gray-300 font-semibold text-sm">
-        Sous-total : {sousTotalItem.toLocaleString()} FCFA
+        <T>subtotal</T> : {sousTotalItem.toLocaleString()} FCFA
       </p>
     </div>
   );
@@ -84,6 +87,7 @@ const PanierCard = ({ item, onQteChange, onSupprimer }) => {
 
 // ── Page principale ───────────────────────────────────────────
 export default function Panier() {
+  const { t } = useAppContext(); // ← Récupère les traductions
   const [panierData, setPanierData] = useState({ items: [], total: 0 });
   const [loadingPanier, setLoadingPanier] = useState(true);
   const navigate = useNavigate();
@@ -102,14 +106,14 @@ export default function Panier() {
         }
       } catch (error) {
         console.error("Erreur chargement panier:", error);
-        toast.error(error?.response?.data?.error || "Erreur chargement panier");
+        toast.error(error?.response?.data?.error || t.cartLoadError || "Erreur chargement panier");
         setPanierData({ items: [], total: 0 });
       } finally {
         setLoadingPanier(false);
       }
     };
     getPanier();
-  }, []);
+  }, [t]);
 
   const handleQteChange = async (id, nouvelleQte, annonce_id) => {
     if (nouvelleQte < 1) return;
@@ -131,7 +135,7 @@ export default function Panier() {
       await api.patch(`panier/items/${id}/`, { annonce: annonce_id, quantite: nouvelleQte });
     } catch (error) {
       console.error("Erreur mise à jour quantité:", error);
-      toast.error(error?.response?.data?.error || "Erreur mise à jour");
+      toast.error(error?.response?.data?.error || t.quantityError || "Erreur mise à jour");
       const response = await api.get("panier/");
       setPanierData(response.data);
     }
@@ -145,10 +149,10 @@ export default function Panier() {
     
     try {
       await api.delete(`panier/items/${id}/`);
-      toast.success("Article supprimé du panier");
+      toast.success(t.successRemove || "Article supprimé du panier");
     } catch (error) {
       console.error("Erreur suppression:", error);
-      toast.error(error?.response?.data?.error || "Erreur suppression");
+      toast.error(error?.response?.data?.error || t.deleteError || "Erreur suppression");
       const response = await api.get("panier/");
       setPanierData(response.data);
     }
@@ -172,19 +176,23 @@ export default function Panier() {
         
         <BackToHome />
 
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Mon Panier</h1>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+          <T>cartTitle</T>
+        </h1>
         <p className="text-gray-400 dark:text-gray-400 text-sm font-medium mt-1 mb-8">
-          {items.length} article{items.length > 1 ? "s" : ""} dans votre panier
+          {items.length} {items.length > 1 ? <T>itemsInCart</T> : <T>itemInCart</T>}
         </p>
 
         {items.length === 0 ? (
           <div className="bg-white dark:bg-gray-800 rounded-2xl p-16 text-center shadow-sm border border-gray-100 dark:border-gray-700 transition-colors duration-300">
-            <p className="text-gray-400 dark:text-gray-400 text-lg mb-4">Votre panier est vide.</p>
+            <p className="text-gray-400 dark:text-gray-400 text-lg mb-4">
+              <T>emptyCart</T>
+            </p>
             <button
               onClick={() => navigate("/")}
               className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 rounded-xl font-semibold transition-colors"
             >
-              Continuer mes achats
+              <T>continueShopping</T>
             </button>
           </div>
         ) : (
@@ -202,20 +210,22 @@ export default function Panier() {
             </div>
 
             <div className="w-full lg:w-80 bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700 lg:sticky lg:top-6 flex-shrink-0 transition-colors duration-300">
-              <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-5">Résumé de la commande</h2>
+              <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-5">
+                <T>orderSummary</T>
+              </h2>
 
               <div className="space-y-3 text-sm">
                 <div className="flex justify-between text-gray-600 dark:text-gray-400">
-                  <span>Sous-total</span>
+                  <span><T>subtotal</T></span>
                   <span className="font-semibold text-gray-900 dark:text-white">{sousTotal.toLocaleString()} FCFA</span>
                 </div>
                 <div className="flex justify-between text-gray-600 dark:text-gray-400">
-                  <span>Livraison</span>
+                  <span><T>delivery</T></span>
                   <span className="font-semibold text-gray-900 dark:text-white">{LIVRAISON.toLocaleString()} FCFA</span>
                 </div>
                 <hr className="border-gray-100 dark:border-gray-700 my-2" />
                 <div className="flex justify-between font-bold text-base">
-                  <span className="text-gray-900 dark:text-white">TOTAL</span>
+                  <span className="text-gray-900 dark:text-white"><T>total</T></span>
                   <span className="text-orange-500">{total.toLocaleString()} FCFA</span>
                 </div>
               </div>
@@ -224,14 +234,14 @@ export default function Panier() {
                 onClick={() => navigate("/paiement")}
                 className="w-full bg-orange-500 hover:bg-orange-600 text-white py-3 rounded-xl font-semibold mt-6 transition-colors"
               >
-                Procéder au paiement
+                <T>checkout</T>
               </button>
 
               <button
                 onClick={() => navigate("/")}
                 className="w-full border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 py-3 rounded-xl font-semibold mt-3 transition-colors"
               >
-                Continuer mes achats
+                <T>continueShopping</T>
               </button>
             </div>
 

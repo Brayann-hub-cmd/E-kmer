@@ -1,3 +1,4 @@
+// src/pages/SignUp.jsx
 import React, { useState } from 'react';
 import { toast, Toaster } from 'react-hot-toast';
 import {
@@ -13,8 +14,11 @@ import {
 import { Link, useNavigate } from 'react-router-dom';
 import BackToHome from '../../components/BackToHome';
 import api from '../../api';
+import { useAppContext } from "../../context/AppContext"; // ← IMPORT
+import T from "../../components/T"; // ← IMPORT
 
 const SignUp = () => {
+  const { t } = useAppContext(); // ← Récupère les traductions
   const navigate = useNavigate();
   
   const [formData, setFormData] = useState({
@@ -37,39 +41,39 @@ const SignUp = () => {
     const nouvellesErreurs = {};
 
     if (!donnees.nomComplet.trim()) {
-      nouvellesErreurs.nomComplet = 'Le nom complet est requis';
+      nouvellesErreurs.nomComplet = t.requiredField || 'Le nom complet est requis';
     } else if (donnees.nomComplet.trim().length < 2) {
-      nouvellesErreurs.nomComplet = 'Le nom doit contenir au moins 2 caractères';
+      nouvellesErreurs.nomComplet = t.nameMinChars || 'Le nom doit contenir au moins 2 caractères';
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!donnees.email.trim()) {
-      nouvellesErreurs.email = 'L\'email est requis';
+      nouvellesErreurs.email = t.requiredField || "L'email est requis";
     } else if (!emailRegex.test(donnees.email)) {
-      nouvellesErreurs.email = 'Format d\'email invalide (ex: nom@domaine.com)';
+      nouvellesErreurs.email = t.invalidEmailFormat || "Format d'email invalide (ex: nom@domaine.com)";
     }
 
     const telephoneRegex = /^\+237[6][0-9]{8}$|^\+237\s[6][0-9]{2}\s[0-9]{3}\s[0-9]{3}$/;
     if (!donnees.telephone.trim()) {
-      nouvellesErreurs.telephone = 'Le numéro de téléphone est requis';
+      nouvellesErreurs.telephone = t.requiredField || 'Le numéro de téléphone est requis';
     } else if (!telephoneRegex.test(donnees.telephone.replace(/\s/g, ''))) {
-      nouvellesErreurs.telephone = 'Format invalide (ex: +237 6XX XXX XXX)';
+      nouvellesErreurs.telephone = t.invalidPhoneFormat || 'Format invalide (ex: +237 6XX XXX XXX)';
     }
 
     if (!donnees.motDePasse) {
-      nouvellesErreurs.motDePasse = 'Le mot de passe est requis';
+      nouvellesErreurs.motDePasse = t.requiredField || 'Le mot de passe est requis';
     } else if (donnees.motDePasse.length < 6) {
-      nouvellesErreurs.motDePasse = 'Le mot de passe doit contenir au moins 6 caractères';
+      nouvellesErreurs.motDePasse = t.passwordMinLength || 'Le mot de passe doit contenir au moins 6 caractères';
     }
 
     if (!donnees.confirmerMotDePasse) {
-      nouvellesErreurs.confirmerMotDePasse = 'Veuillez confirmer votre mot de passe';
+      nouvellesErreurs.confirmerMotDePasse = t.requiredField || 'Veuillez confirmer votre mot de passe';
     } else if (donnees.motDePasse !== donnees.confirmerMotDePasse) {
-      nouvellesErreurs.confirmerMotDePasse = 'Les mots de passe ne correspondent pas';
+      nouvellesErreurs.confirmerMotDePasse = t.passwordsMismatch || 'Les mots de passe ne correspondent pas';
     }
 
     if (!donnees.accepteConditions) {
-      nouvellesErreurs.accepteConditions = 'Vous devez accepter les conditions';
+      nouvellesErreurs.accepteConditions = t.acceptTermsRequired || 'Vous devez accepter les conditions';
     }
 
     return nouvellesErreurs;
@@ -145,7 +149,7 @@ const SignUp = () => {
         toast.success(
           <div className="flex items-center gap-2">
             <BsCheckCircle className="text-green-500 text-xl" />
-            <span>{response.data.message}</span>
+            <span>{response.data.message || t.registrationSuccess}</span>
           </div>,
           {
             duration: 4000,
@@ -164,11 +168,11 @@ const SignUp = () => {
 
       } catch (error) {
         if (error.response?.status === 400) {
-          toast.error(error.response.data.error);
+          toast.error(error.response.data.error || t.registrationError);
         } else if (error.response?.status === 500) {
-          toast.error("Un problème avec le serveur est survenue!");
+          toast.error(t.serverError || "Un problème avec le serveur est survenue!");
         } else {
-          toast.error(`Erreur : `, error);
+          toast.error(`${t.registrationError}: `, error);
         }
       }
 
@@ -192,7 +196,7 @@ const SignUp = () => {
         accepteConditions: true
       });
 
-      toast.error('Veuillez corriger les erreurs dans le formulaire', {
+      toast.error(t.formErrors || 'Veuillez corriger les erreurs dans le formulaire', {
         duration: 3000,
         position: 'top-center',
       });
@@ -217,19 +221,18 @@ const SignUp = () => {
         </div>
 
         <h1 className="text-2xl font-bold text-center mb-1 text-gray-900 dark:text-white mt-4">
-          Inscription à{' '}
-          <span className="text-orange-500">E-kmer</span>
+          <T>registerTitle</T>
         </h1>
 
         <p className="text-center text-gray-500 dark:text-gray-400 text-sm mb-6">
-          Créez votre compte pour commencer à acheter et vendre
+          <T>registerSubtitle</T>
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
 
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Nom complet
+              <T>fullName</T>
             </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -241,7 +244,7 @@ const SignUp = () => {
                 value={formData.nomComplet}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                placeholder="Votre nom complet"
+                placeholder={t.fullNamePlaceholder || "Votre nom complet"}
                 className={`w-full pl-10 pr-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
                   touched.nomComplet && erreurs.nomComplet ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
                 } bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-colors duration-300`}
@@ -254,7 +257,7 @@ const SignUp = () => {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Adresse email
+              <T>email</T>
             </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -266,7 +269,7 @@ const SignUp = () => {
                 value={formData.email}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                placeholder="votre@email.com"
+                placeholder={t.emailPlaceholder || "votre@email.com"}
                 className={`w-full pl-10 pr-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
                   touched.email && erreurs.email ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
                 } bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-colors duration-300`}
@@ -279,11 +282,11 @@ const SignUp = () => {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Numéro de téléphone
+              <T>phone</T>
             </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <img src="https://flagcdn.com/w20/cm.png" alt="Drapeau du Cameroun" className="w-5 h-auto mr-1" />
+                <img src="https://flagcdn.com/w20/cm.png" alt={t.flagAlt || "Drapeau du Cameroun"} className="w-5 h-auto mr-1" />
               </div>
               <input
                 type="tel"
@@ -300,7 +303,7 @@ const SignUp = () => {
                   });
                 }}
                 onBlur={handleBlur}
-                placeholder="+237 6XX XXX XXX"
+                placeholder={t.phonePlaceholder || "+237 6XX XXX XXX"}
                 className={`w-full pl-24 pr-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
                   touched.telephone && erreurs.telephone ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
                 } bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-colors duration-300`}
@@ -310,14 +313,14 @@ const SignUp = () => {
               <p className="mt-1 text-xs text-red-500 dark:text-red-400">{erreurs.telephone}</p>
             ) : (
               <p className="mt-1 text-xs text-gray-400 dark:text-gray-500">
-                Format: +237 6XX XXX XXX
+                <T>phoneFormatHint</T>
               </p>
             )}
           </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Mot de passe
+              <T>password</T>
             </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -329,7 +332,7 @@ const SignUp = () => {
                 value={formData.motDePasse}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                placeholder="**********"
+                placeholder={t.passwordPlaceholder || "**********"}
                 className={`w-full pl-10 pr-10 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
                   touched.motDePasse && erreurs.motDePasse ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
                 } bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-colors duration-300`}
@@ -356,7 +359,7 @@ const SignUp = () => {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Confirmer le mot de passe
+              <T>confirmPassword</T>
             </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -368,7 +371,7 @@ const SignUp = () => {
                 value={formData.confirmerMotDePasse}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                placeholder="**********"
+                placeholder={t.passwordPlaceholder || "**********"}
                 className={`w-full pl-10 pr-10 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
                   touched.confirmerMotDePasse && erreurs.confirmerMotDePasse ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
                 } bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-colors duration-300`}
@@ -403,13 +406,13 @@ const SignUp = () => {
               className="mt-1 h-4 w-4 text-orange-500 border-gray-300 dark:border-gray-600 rounded focus:ring-orange-500 dark:bg-gray-700"
             />
             <label className="ml-2 text-sm text-gray-600 dark:text-gray-300">
-              J'accepte les{' '}
+              <T>acceptConditions</T>{' '}
               <a href="#" className="text-orange-500 hover:text-orange-600 font-medium">
-                conditions d'utilisation
+                <T>terms</T>
               </a>{' '}
-              et la{' '}
+              <T>and</T>{' '}
               <a href="#" className="text-orange-500 hover:text-orange-600 font-medium">
-                politique de confidentialité
+                <T>privacy</T>
               </a>
             </label>
           </div>
@@ -421,7 +424,7 @@ const SignUp = () => {
             type="submit"
             className="w-full bg-orange-500 hover:bg-orange-600 text-white py-3 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-800 transition-colors font-medium mt-6"
           >
-            Créer mon compte
+            <T>signUp</T>
           </button>
         </form>
 
@@ -435,9 +438,9 @@ const SignUp = () => {
         </div>
 
         <p className="text-center text-sm text-gray-600 dark:text-gray-400">
-          Vous avez déjà un compte ?{' '}
+          <T>hasAccount</T>{' '}
           <Link to={'/auth/login'} className="text-orange-500 dark:text-orange-400 hover:text-orange-600 dark:hover:text-orange-300 font-medium transition-colors">
-            Se connecter
+            <T>signIn</T>
           </Link>
         </p>
       </div>
