@@ -33,6 +33,8 @@ import Securite from "./pages/FooterPages/Securite";
 import CentreAide from "./pages/FooterPages/CentreAide";
 import Conditions from "./pages/FooterPages/Conditions";
 import Confidentialite from "./pages/FooterPages/Confidentialite";
+import HowToBuy from "./pages/FooterPages/CommentAcheter";
+import HowToSell from "./pages/FooterPages/CommentVendre";
 
 function App() {
   const router = createBrowserRouter([
@@ -68,7 +70,9 @@ function App() {
     { path: "/aide", element: <CentreAide /> },
     { path: "/conditions", element: <Conditions /> },
     { path: "/confidentialite", element: <Confidentialite /> },
-  ]);
+    { path: "/comment-vendre", element: <HowToSell /> },
+    { path: "/comment-acheter", element: <HowToBuy /> }
+  ])
 
   return (
     <>

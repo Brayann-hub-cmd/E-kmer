@@ -16,7 +16,6 @@ export const AppProvider = ({ children }) => {
     return localStorage.getItem('language') || 'FRA';
   });
 
-  // Appliquer le thème
   useEffect(() => {
     if (isDarkMode) {
       document.documentElement.classList.add('dark');
@@ -26,7 +25,6 @@ export const AppProvider = ({ children }) => {
     localStorage.setItem('darkMode', isDarkMode);
   }, [isDarkMode]);
 
-  // Sauvegarder la langue
   useEffect(() => {
     localStorage.setItem('language', language);
   }, [language]);
@@ -34,10 +32,10 @@ export const AppProvider = ({ children }) => {
   const toggleTheme = () => setIsDarkMode(prev => !prev);
   const changeLanguage = (lang) => setLanguage(lang);
 
-  // ========== TRADUCTIONS COMPLÈTES ==========
+  // ========== TRADUCTIONS ==========
   const translations = {
     FRA: {
-      // Navbar
+      // --- Navbar ---
       search: "Rechercher un produit",
       allCategories: "Toutes les catégories",
       login: "Se connecter",
@@ -46,7 +44,7 @@ export const AppProvider = ({ children }) => {
       cart: "Panier",
       profile: "Mon profil",
 
-      // Home
+      // --- Home ---
       discover: "Découvrez des articles",
       sellYourItems: "Vendez vos articles",
       explore: "Explorer les articles",
@@ -63,7 +61,7 @@ export const AppProvider = ({ children }) => {
       startSelling: "Commencer à vendre",
       orders: "Mes commandes",
 
-      // Product
+      // --- Product ---
       price: "Prix",
       stock: "Stock",
       addToCart: "Ajouter au panier",
@@ -76,7 +74,7 @@ export const AppProvider = ({ children }) => {
       viewDetails: "Voir les détails",
       BackToHome: "Retour à l'accueil",
 
-      // User
+      // --- User ---
       mySales: "Mes ventes",
       myPurchases: "Mes achats",
       myFavorites: "Mes favoris",
@@ -90,7 +88,7 @@ export const AppProvider = ({ children }) => {
       myProductsOnSale: "Mes produits en vente",
       addFavoritesHint: "Ajoutez des produits en favoris en cliquant sur le ❤️",
 
-      // Settings
+      // --- Settings ---
       accountSettings: "Paramètres du compte",
       profilePhoto: "Photo de profil",
       changePhoto: "Changer la photo",
@@ -108,7 +106,7 @@ export const AppProvider = ({ children }) => {
       edit: "Modifier",
       cancel: "Annuler",
 
-      // Cart
+      // --- Cart ---
       cartTitle: "Mon Panier",
       emptyCart: "Votre panier est vide",
       subtotal: "Sous-total",
@@ -123,7 +121,7 @@ export const AppProvider = ({ children }) => {
       itemInCart: "article dans votre panier",
       itemsInCart: "articles dans votre panier",
 
-      // Payment
+      // --- Payment ---
       payment: "Paiement",
       paymentSubtitle: "Choisissez votre mode de paiement",
       finalizeOrder: "Finaliser la commande",
@@ -161,13 +159,13 @@ export const AppProvider = ({ children }) => {
       "MotoExpress": "MotoExpress",
       deliveryTime: "Délai de livraison",
 
-      // Order summary
+      // --- Order summary ---
       orderSummary: "Récapitulatif de votre commande",
       deliveryAddressLabel: "Adresse de livraison",
       pickupStore: "Retrait en magasin",
       pickupLocation: "E-kmer Store, Douala Bonamoussadi",
 
-      // Footer
+      // --- Footer & Pages footer ---
       about: "À propos",
       howItWorks: "Comment ça marche",
       security: "Sécurité",
@@ -182,7 +180,86 @@ export const AppProvider = ({ children }) => {
       allRightsReserved: "Tous droits réservés",
       followUs: "Suivez-nous",
 
-      // Auth
+      // À propos
+      aboutEkmers: "À propos d'E-kmer",
+      ourMission: "Notre mission",
+      missionDescription: "Faciliter l'achat et la vente de biens d'occasion dans un cadre sécurisé, simple et transparent.",
+      ourHistory: "Notre histoire",
+      historyDescription: "E-kmer est né du constat que l'achat et la vente d'occasion est souvent compliquée. Nous avons voulu créer une plateforme de confiance pour tous au Cameroun et au-delà.",
+      ourValues: "Nos valeurs",
+      valueTrust: "La confiance",
+      valueProximity: "La proximité",
+      valueSimplicity: "La simplicité",
+      valuePride: "La fierté du commerce local",
+
+      // Contact
+      Contact: "Contact",
+      doualaCameroon: "Douala, Cameroun",
+
+      // Comment ça marche – acheteurs
+      forBuyers: "Pour les acheteurs",
+      "1": "1. Parcourir les annonces",
+      browseAds: "Parcourir les annonces",
+      browseAdsDesc: "Explorez des milliers d'articles par catégorie, ville ou prix.",
+      "2": "2. Ajouter au panier",
+      addToCartDesc: "Ajoutez les articles à votre panier et préparez votre commande.",
+      "3": "3. Procéder au paiement",
+      checkoutDesc: "Payez en toute sécurité et choisissez la livraison ou le retrait.",
+
+      // Comment ça marche – vendeurs
+      forSellers: "Pour les vendeurs",
+      createAccountDesc: "Créez votre compte et configurez votre boutique.",
+      publishItems: "Publier des articles",
+      publishItemsDesc: "Ajoutez des photos, des descriptions et fixez votre prix.",
+      manageSales: "Gérer les ventes",
+      manageSalesDesc: "Suivez vos ventes et communiquez avec les acheteurs.",
+
+      // Sécurité
+      securityTitle: "Sécurité et confidentialité",
+      dataProtected: "Vos données sont protégées",
+      dataProtectedDesc: "Nous utilisons un chiffrement avancé pour protéger vos informations personnelles.",
+      securityTips: "Conseils de sécurité",
+      securityTip1: "Ne partagez jamais votre mot de passe ou votre code PIN avec qui que ce soit.",
+      securityTip2: "Utilisez un mot de passe fort et unique pour votre compte.",
+      securityTip3: "Méfiez-vous des liens suspects ou des offres trop alléchantes.",
+      securityTip4: "Vérifiez toujours l'identité de l'acheteur ou du vendeur avant de finaliser une transaction.",
+      securityAlert: "Si vous remarquez une activité suspecte, contactez immédiatement notre support.",
+
+      // Centre d'aide
+      helpCenter: "Centre d'aide",
+      helpCenterSubtitle: "Trouvez des réponses à toutes vos questions sur l'achat et la vente sur E-kmer.",
+      faq1Question: "Comment créer un compte ?",
+      faq2Question: "Comment publier une annonce ?",
+      faq3Question: "Comment payer mon achat ?",
+      faq4Question: "Quels sont les moyens de paiement acceptés ?",
+      faq5Question: "Comment contacter le vendeur ?",
+      helpNotFound: "Vous ne trouvez pas ce que vous cherchez ? Contactez-nous directement.",
+
+      // Conditions d'utilisation
+      termsTitle: "Conditions d'utilisation",
+      termsAcceptance: "Acceptation des conditions",
+      termsAcceptanceDesc: "En utilisant E-kmer, vous acceptez l'intégralité des présentes conditions générales.",
+      userAccount: "Compte utilisateur",
+      userAccountDesc: "Vous êtes responsable de la confidentialité de votre compte et de votre mot de passe.",
+      prohibitedAds: "Annonces interdites",
+      prohibitedAdsDesc: "Il est interdit de publier des annonces pour des produits illégaux, contrefaits ou dangereux.",
+      transactions: "Transactions",
+      transactionsDesc: "Toutes les transactions sont définitives après la livraison. Nous ne sommes pas responsables des litiges entre utilisateurs.",
+      Livraison: "Livraison",
+      deliveryDesc: "Les délais et frais de livraison dépendent du service sélectionné et de l'adresse de livraison.",
+      buyerSellerRelation: "Relation acheteur-vendeur",
+      buyerSellerRelationDesc: "E-kmer est une marketplace mettant en relation acheteurs et vendeurs. Nous ne sommes pas partie prenante à la transaction.",
+
+      // Confidentialité
+      privacyTitle: "Politique de confidentialité",
+      dataCollection: "Collecte de données",
+      dataCollectionDesc: "Nous collectons des informations personnelles (nom, téléphone, email) pour créer votre compte et traiter vos commandes.",
+      dataUsage: "Utilisation des données",
+      dataUsageDesc: "Vos données sont utilisées uniquement pour fournir nos services et améliorer votre expérience.",
+      cookies: "Cookies",
+      cookiesDesc: "Nous utilisons des cookies pour optimiser votre navigation. Vous pouvez gérer vos préférences dans les paramètres de votre navigateur.",
+
+      // --- Auth ---
       loginTitle: "Connexion à E-kmer",
       registerTitle: "Inscription à E-kmer",
       loginSubtitle: "Accédez à votre compte pour continuer",
@@ -200,7 +277,7 @@ export const AppProvider = ({ children }) => {
       signIn: "Se connecter",
       signUp: "S'inscrire",
 
-      // Publish Product
+      // --- Publish Product ---
       publishTitle: "Publier un produit",
       publishSubtitle: "Remplissez les informations pour mettre votre produit en vente",
       step1: "Etape 1 : Sélectionnez la catégorie principal",
@@ -229,32 +306,43 @@ export const AppProvider = ({ children }) => {
       atLeastOneImage: "Au moins une image requise",
       max3Images: "Maximum 3 images autorisées",
 
-      // Categorie Page
+      // --- Catégorie Page ---
       searchCategories: "Rechercher par Catégories",
       noSubCategories: "Aucune sous-catégorie trouvée.",
       noSubCategoriesDesc: "Cette catégorie n'a pas encore de sous-catégories.",
       allProducts: "Tous les produits",
       discoverAllProducts: "Découvrez tous les produits disponibles sur la plateforme",
       searchProduct: "Rechercher un produit...",
-      allCategories: "Toutes les catégories",
       noProductsFound: "Aucun produit trouvé",
       resetFilters: "Réinitialiser les filtres",
       productsFound: "produit(s) trouvé(s)",
 
-      // Errors
+      // --- Errors ---
       errorLoading: "Erreur de chargement",
       tryAgain: "Réessayer",
       serverError: "Un problème avec le serveur est survenu",
       connectionError: "Erreur de connexion",
 
-      // Success
+      // --- Success ---
       successPublish: "Annonce publiée avec succès !",
       successAddToCart: "ajouté au panier !",
       successRemove: "Article supprimé du panier",
       successUpdate: "Profil mis à jour avec succès !",
+
+      // --- Divers (avatar, login) ---
+      welcomeMessage: "Bienvenue {username} !",
+      invalidEmailPassword: "Email ou mot de passe incorrect.",
+      invalidPhonePassword: "Téléphone ou mot de passe incorrect.",
+      accountNotFound: "Compte introuvable.",
+      clickToChangeAvatar: "Cliquez sur la photo pour changer",
+      invalidImage: "Veuillez sélectionner une image valide.",
+      imageTooLarge: "L'image ne doit pas dépasser 5 Mo.",
+      avatarUpdated: "Photo de profil mise à jour !",
+      uploadError: "Erreur lors de l'upload.",
     },
+
     ENG: {
-      // Navbar
+      // --- Navbar ---
       search: "Search for a product",
       allCategories: "All categories",
       login: "Log in",
@@ -263,7 +351,7 @@ export const AppProvider = ({ children }) => {
       cart: "Cart",
       profile: "My profile",
 
-      // Home
+      // --- Home ---
       discover: "Discover items",
       sellYourItems: "Sell your items",
       explore: "Explore items",
@@ -280,7 +368,7 @@ export const AppProvider = ({ children }) => {
       startSelling: "Start selling",
       orders: "My orders",
 
-      // Product
+      // --- Product ---
       price: "Price",
       stock: "Stock",
       addToCart: "Add to cart",
@@ -293,7 +381,7 @@ export const AppProvider = ({ children }) => {
       viewDetails: "View details",
       BackToHome: "Back to home",
 
-      // User
+      // --- User ---
       mySales: "My sales",
       myPurchases: "My purchases",
       myFavorites: "My favorites",
@@ -307,7 +395,7 @@ export const AppProvider = ({ children }) => {
       myProductsOnSale: "My products on sale",
       addFavoritesHint: "Add products to favorites by clicking on ❤️",
 
-      // Settings
+      // --- Settings ---
       accountSettings: "Account settings",
       profilePhoto: "Profile photo",
       changePhoto: "Change photo",
@@ -325,7 +413,7 @@ export const AppProvider = ({ children }) => {
       edit: "Edit",
       cancel: "Cancel",
 
-      // Cart
+      // --- Cart ---
       cartTitle: "My Cart",
       emptyCart: "Your cart is empty",
       subtotal: "Subtotal",
@@ -340,7 +428,7 @@ export const AppProvider = ({ children }) => {
       itemInCart: "item in your cart",
       itemsInCart: "items in your cart",
 
-      // Payment
+      // --- Payment ---
       payment: "Payment",
       paymentSubtitle: "Choose your payment method",
       finalizeOrder: "Finalize your order",
@@ -378,13 +466,13 @@ export const AppProvider = ({ children }) => {
       "MotoExpress": "MotoExpress",
       deliveryTime: "Delivery time",
 
-      // Order summary
+      // --- Order summary ---
       orderSummary: "Order summary",
       deliveryAddressLabel: "Delivery address",
       pickupStore: "Store pickup",
       pickupLocation: "E-kmer Store, Douala Bonamoussadi",
 
-      // Footer
+      // --- Footer & Pages footer ---
       about: "About",
       howItWorks: "How it works",
       security: "Security",
@@ -399,7 +487,86 @@ export const AppProvider = ({ children }) => {
       allRightsReserved: "All rights reserved",
       followUs: "Follow us",
 
-      // Auth
+      // À propos
+      aboutEkmers: "About E-kmer",
+      ourMission: "Our Mission",
+      missionDescription: "Facilitate the buying and selling of second-hand goods in a secure, simple, and transparent environment.",
+      ourHistory: "Our History",
+      historyDescription: "E-kmer was born from the observation that buying and selling second-hand items is often complicated. We wanted to create a trusted platform for everyone in Cameroon and beyond.",
+      ourValues: "Our Values",
+      valueTrust: "Trust",
+      valueProximity: "Proximity",
+      valueSimplicity: "Simplicity",
+      valuePride: "Pride in local commerce",
+
+      // Contact
+      Contact: "Contact",
+      doualaCameroon: "Douala, Cameroon",
+
+      // Comment ça marche – pour les acheteurs
+      forBuyers: "For Buyers",
+      "1": "1. Browse ads",
+      browseAds: "Browse ads",
+      browseAdsDesc: "Explore thousands of items by category, city, or price.",
+      "2": "2. Add to cart",
+      addToCartDesc: "Add items to your cart and prepare your order.",
+      "3": "3. Checkout",
+      checkoutDesc: "Pay securely and choose delivery or pickup.",
+
+      // Comment ça marche – pour les vendeurs
+      forSellers: "For Sellers",
+      createAccountDesc: "Create your account and set up your store.",
+      publishItems: "Publish items",
+      publishItemsDesc: "Add photos, descriptions, and set your price.",
+      manageSales: "Manage sales",
+      manageSalesDesc: "Track your sales and communicate with buyers.",
+
+      // Sécurité
+      securityTitle: "Security & Privacy",
+      dataProtected: "Your data is protected",
+      dataProtectedDesc: "We use advanced encryption to protect your personal information.",
+      securityTips: "Security tips",
+      securityTip1: "Never share your password or PIN with anyone.",
+      securityTip2: "Use a strong, unique password for your account.",
+      securityTip3: "Avoid suspicious links or offers that seem too good to be true.",
+      securityTip4: "Always verify the identity of the buyer or seller before completing a transaction.",
+      securityAlert: "If you notice suspicious activity, contact our support immediately.",
+
+      // Centre d'aide
+      helpCenter: "Help Center",
+      helpCenterSubtitle: "Find answers to all your questions about buying and selling on E-kmer.",
+      faq1Question: "How do I create an account?",
+      faq2Question: "How do I publish an ad?",
+      faq3Question: "How do I pay for my purchase?",
+      faq4Question: "What payment methods are accepted?",
+      faq5Question: "How do I contact the seller?",
+      helpNotFound: "Can't find what you're looking for? Contact us directly.",
+
+      // Conditions d'utilisation
+      termsTitle: "Terms of Use",
+      termsAcceptance: "Acceptance of Terms",
+      termsAcceptanceDesc: "By using E-kmer, you agree to these terms and conditions in their entirety.",
+      userAccount: "User Account",
+      userAccountDesc: "You are responsible for maintaining the confidentiality of your account and password.",
+      prohibitedAds: "Prohibited Ads",
+      prohibitedAdsDesc: "It is forbidden to publish ads for illegal, counterfeit, or dangerous products.",
+      transactions: "Transactions",
+      transactionsDesc: "All transactions are final after delivery. We are not responsible for disputes between users.",
+      Livraison: "Delivery",
+      deliveryDesc: "Delivery times and costs depend on the selected service and the delivery address.",
+      buyerSellerRelation: "Buyer-Seller Relationship",
+      buyerSellerRelationDesc: "E-kmer is a marketplace connecting buyers and sellers. We are not a party to the transaction.",
+
+      // Confidentialité
+      privacyTitle: "Privacy Policy",
+      dataCollection: "Data collection",
+      dataCollectionDesc: "We collect personal information (name, phone, email) to create your account and process orders.",
+      dataUsage: "Data usage",
+      dataUsageDesc: "Your data is used only to provide our services and improve your experience.",
+      cookies: "Cookies",
+      cookiesDesc: "We use cookies to optimize your browsing experience. You can manage your preferences in your browser settings.",
+
+      // --- Auth ---
       loginTitle: "Log in to E-kmer",
       registerTitle: "Sign up to E-kmer",
       loginSubtitle: "Access your account to continue",
@@ -417,7 +584,7 @@ export const AppProvider = ({ children }) => {
       signIn: "Log in",
       signUp: "Sign up",
 
-      // Publish Product
+      // --- Publish Product ---
       publishTitle: "List a product",
       publishSubtitle: "Fill in the information to put your product on sale",
       step1: "Step 1: Select the main category",
@@ -446,29 +613,39 @@ export const AppProvider = ({ children }) => {
       atLeastOneImage: "At least one image required",
       max3Images: "Maximum 3 images allowed",
 
-      // Categorie Page
+      // --- Catégorie Page ---
       searchCategories: "Search by Categories",
       noSubCategories: "No sub-category found.",
       noSubCategoriesDesc: "This category does not have sub-categories yet.",
       allProducts: "All products",
       discoverAllProducts: "Discover all products available on the platform",
       searchProduct: "Search for a product...",
-      allCategories: "All categories",
       noProductsFound: "No products found",
       resetFilters: "Reset filters",
       productsFound: "product(s) found",
 
-      // Errors
+      // --- Errors ---
       errorLoading: "Loading error",
       tryAgain: "Try again",
       serverError: "A server problem occurred",
       connectionError: "Connection error",
 
-      // Success
+      // --- Success ---
       successPublish: "Product listed successfully!",
       successAddToCart: "Added to cart!",
       successRemove: "Item removed from cart",
       successUpdate: "Profile updated successfully!",
+
+      // --- Divers ---
+      welcomeMessage: "Welcome {username}!",
+      invalidEmailPassword: "Invalid email or password.",
+      invalidPhonePassword: "Invalid phone or password.",
+      accountNotFound: "Account not found.",
+      clickToChangeAvatar: "Click on the photo to change",
+      invalidImage: "Please select a valid image.",
+      imageTooLarge: "Image must not exceed 5 MB.",
+      avatarUpdated: "Profile picture updated!",
+      uploadError: "Upload error.",
     }
   };
 

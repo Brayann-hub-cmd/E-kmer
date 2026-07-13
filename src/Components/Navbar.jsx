@@ -119,7 +119,6 @@ export default function Navbar({ setTitle, setCategorie }) {
   };
 
   // ── Avatar utilisateur ────────────────────────────────────
-  // ✅ BUG CORRIGÉ : la variable 't' renommée en 'parts' pour éviter le conflit avec le traducteur
   const formateProfil = (valeur) => {
     if (!valeur) return "P";
     const parts = String(valeur).split(" ");
@@ -151,7 +150,6 @@ export default function Navbar({ setTitle, setCategorie }) {
   };
 
   // ── Modale déconnexion ────────────────────────────────────
-  // ✅ BUG CORRIGÉ : message de confirmation plus propre
   const LogoutModal = () => (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm">
       <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl max-w-sm w-full mx-4 overflow-hidden">
@@ -224,7 +222,9 @@ export default function Navbar({ setTitle, setCategorie }) {
               <div className="relative h-full" ref={categoryDesktopRef}>
                 <button type="button" onClick={() => setIsCategoryOpen(!isCategoryOpen)}
                   className="flex items-center gap-1 px-4 text-gray-700 dark:text-gray-300 bg-gray-200 dark:bg-gray-700 h-full whitespace-nowrap hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors rounded-l-2xl min-w-[160px]">
-                  <span className="text-sm font-medium truncate">{category.nom}</span>
+                  <span className="text-sm font-medium truncate">
+                    {category.code === "CAT_000" ? t.allCategories : category.nom}
+                  </span>
                   <FaChevronDown className={`text-xs transition-transform ${isCategoryOpen ? "rotate-180" : ""}`} />
                 </button>
                 {isCategoryOpen && (
@@ -307,7 +307,9 @@ export default function Navbar({ setTitle, setCategorie }) {
               <div className="relative h-full" ref={categoryTabletRef}>
                 <button type="button" onClick={() => setIsCategoryOpen(!isCategoryOpen)}
                   className="flex items-center gap-1 px-2 text-gray-700 dark:text-gray-300 bg-gray-200 dark:bg-gray-700 h-full text-xs whitespace-nowrap rounded-l-lg">
-                  <span className="truncate max-w-[70px]">{category.nom}</span>
+                  <span className="truncate max-w-[70px]">
+                    {category.code === "CAT_000" ? t.allCategories : category.nom}
+                  </span>
                   <FaChevronDown className="text-[10px]" />
                 </button>
                 {isCategoryOpen && (
@@ -430,7 +432,9 @@ export default function Navbar({ setTitle, setCategorie }) {
               <div className="relative h-full" ref={categoryMobileRef}>
                 <button type="button" onClick={() => setIsCategoryOpen(!isCategoryOpen)}
                   className="flex items-center gap-1 px-2 text-gray-700 dark:text-gray-300 bg-gray-200 dark:bg-gray-700 h-full text-xs whitespace-nowrap rounded-l-lg">
-                  <span className="truncate max-w-[60px]">{category.nom}</span>
+                  <span className="truncate max-w-[60px]">
+                    {category.code === "CAT_000" ? t.allCategories : category.nom}
+                  </span>
                   <FaChevronDown className="text-[10px]" />
                 </button>
                 {isCategoryOpen && (
