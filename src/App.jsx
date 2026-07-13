@@ -12,15 +12,15 @@ import ProductDetail from "./pages/ProductDetails/ProductDetail";
 import AllProducts from "./pages/AllProduct/AllProduct";
 
 // ========== PAGES PROFIL UTILISATEUR ==========
-import MesVentes from "./components/Userventes/MesVentes";
+import MesVentes from "./Components/Userventes/MesVentes";
 import MesAchats from "./Components/Userventes/MesAchats";
-import MesFavoris from "./components/Userventes/MesFavoris";
-import MesArticles from "./components/Userventes/MesArticles";
-import Parametres from "./components/Userventes/Parametres";
+import MesFavoris from "./Components/Userventes/MesFavoris";
+import MesArticles from "./Components/Userventes/MesArticles";
+import Parametres from "./Components/Userventes/Parametres";
 
 // ========== PAGES DÉTAILS COMMANDES ==========
-import PurchaseDetail from "./components/Userventes/PurchaseDetail";
-import SaleDetail from "./components/Userventes/SaleDetail";
+import PurchaseDetail from "./Components/Userventes/PurchaseDetail";
+import SaleDetail from "./Components/Userventes/SaleDetail";
 
 // ========== PAGES PANIER & PAIEMENT ==========
 import PanierCard from "./pages/Panier/Panier";
