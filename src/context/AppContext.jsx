@@ -236,7 +236,6 @@ export const AppProvider = ({ children }) => {
       allProducts: "Tous les produits",
       discoverAllProducts: "Découvrez tous les produits disponibles sur la plateforme",
       searchProduct: "Rechercher un produit...",
-      allCategories: "Toutes les catégories",
       noProductsFound: "Aucun produit trouvé",
       resetFilters: "Réinitialiser les filtres",
       productsFound: "produit(s) trouvé(s)",
@@ -256,7 +255,6 @@ export const AppProvider = ({ children }) => {
     ENG: {
       // Navbar
       search: "Search for a product",
-      allCategories: "All categories",
       login: "Log in",
       register: "Sign up",
       logout: "Log out",
@@ -453,7 +451,6 @@ export const AppProvider = ({ children }) => {
       allProducts: "All products",
       discoverAllProducts: "Discover all products available on the platform",
       searchProduct: "Search for a product...",
-      allCategories: "All categories",
       noProductsFound: "No products found",
       resetFilters: "Reset filters",
       productsFound: "product(s) found",
