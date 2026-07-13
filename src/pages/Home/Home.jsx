@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import Footer from '../../Components/Footer';
+import Footer from '../../components/Footer';
 import Hero1Blue from '../../Components/Hero1Blue';
 import PopularOffers from '../../components/PopularOffers';
 import RecentProduct from '../../components/RecentProducts';
