@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaTrash } from "react-icons/fa";
 import api from "../../api";
-import BackToHome from "../../Components/BackToHome";
+import BackToHome from "../../components/BackToHome";
 import toast from "react-hot-toast";
 import { useAppContext } from "../../context/AppContext"; // ← IMPORT
 import T from "../../components/T"; // ← IMPORT

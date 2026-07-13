@@ -1,4 +1,4 @@
-// src/components/ProductCard.jsx
+﻿// src/components/ProductCard.jsx
 import React from "react";
 import { Link } from "react-router-dom";
 import { FaMapMarkerAlt, FaClock } from "react-icons/fa";
@@ -64,7 +64,7 @@ const ProductCard = ({ product }) => {
           to={`/produit/${product.code}`}
           className="block w-full text-center bg-orange-500 hover:bg-orange-600 text-white text-xs font-medium py-2 rounded-lg transition-colors"
         >
-          Voir les détails
+          Voir les d├®tails
         </Link>
       </div>
     </div>

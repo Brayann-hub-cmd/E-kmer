@@ -7,20 +7,20 @@ import Login from "./pages/auth/Login";
 import SignUp from "./pages/SignUp/SignUp";
 import Userventes from "./pages/Userventes";
 import PageCategorie from "./pages/CategoriePage/CategoriePage";
-import PublishProduct from "./Components/PublishProduct";
+import PublishProduct from "./components/PublishProduct";
 import ProductDetail from "./pages/ProductDetails/ProductDetail";
 import AllProducts from "./pages/AllProduct/AllProduct";
 
 // ========== PAGES PROFIL UTILISATEUR ==========
-import MesVentes from "./Components/Userventes/MesVentes";
-import MesAchats from "./Components/Userventes/MesAchats";
-import MesFavoris from "./Components/Userventes/MesFavoris";
-import MesArticles from "./Components/Userventes/MesArticles";
-import Parametres from "./Components/Userventes/Parametres";
+import MesVentes from "./components/Userventes/MesVentes";
+import MesAchats from "./components/Userventes/MesAchats";
+import MesFavoris from "./components/Userventes/MesFavoris";
+import MesArticles from "./components/Userventes/MesArticles";
+import Parametres from "./components/Userventes/Parametres";
 
 // ========== PAGES DÉTAILS COMMANDES ==========
-import PurchaseDetail from "./Components/Userventes/PurchaseDetail";
-import SaleDetail from "./Components/Userventes/SaleDetail";
+import PurchaseDetail from "./components/Userventes/PurchaseDetail";
+import SaleDetail from "./components/Userventes/SaleDetail";
 
 // ========== PAGES PANIER & PAIEMENT ==========
 import PanierCard from "./pages/Panier/Panier";

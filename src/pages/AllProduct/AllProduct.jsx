@@ -2,9 +2,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaSearch, FaFilter } from "react-icons/fa";
-import ProductCard from "../../components/productCard";
+import ProductCard from "../../components/ProductCard";
 import api from "../../api";
-import BackToHome from "../../Components/BackToHome";
+import BackToHome from "../../components/BackToHome";
 import { useAppContext } from "../../context/AppContext"; // ← IMPORT
 import T from "../../components/T"; // ← IMPORT
 

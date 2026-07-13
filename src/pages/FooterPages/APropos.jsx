@@ -1,6 +1,6 @@
 // src/pages/Footer/Apropos.jsx
 import { FaBullseye, FaHistory, FaHandshake, FaMapMarkerAlt, FaPhone, FaEnvelope } from "react-icons/fa";
-import BackToHome from "../../Components/BackToHome";
+import BackToHome from "../../components/BackToHome";
 import { useAppContext } from "../../context/AppContext"; // ← IMPORT
 import T from "../../components/T"; // ← IMPORT
 

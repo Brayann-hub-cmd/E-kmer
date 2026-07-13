@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import Footer from '../../components/Footer';
-import Hero1Blue from '../../Components/Hero1Blue';
+import Hero1Blue from '../../components/Hero1Blue';
 import PopularOffers from '../../components/PopularOffers';
 import RecentProduct from '../../components/RecentProducts';
-import Header from '../../Components/Header';
-import Navbar from '../../Components/Navbar';
+import Header from '../../components/Header';
+import Navbar from '../../components/Navbar';
 import Hero2Orange from '../../components/Hero2Orange';
 import { useAppContext } from '../../context/AppContext';
 

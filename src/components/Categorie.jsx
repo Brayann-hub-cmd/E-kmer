@@ -1,7 +1,7 @@
 // src/components/CategorySection.jsx
 import { useState, useEffect } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
-import ProductCard from "./productCard";
+import ProductCard from "./ProductCard";
 import api from "../api";
 import { useAppContext } from "../context/AppContext"; // ← IMPORT
 import T from "../components/T"; // ← IMPORT
