@@ -7,7 +7,7 @@ import Login from "./pages/auth/Login";
 import SignUp from "./pages/SignUp/SignUp";
 import Userventes from "./pages/Userventes";
 import PageCategorie from "./pages/CategoriePage/CategoriePage";
-import PublishProduct from "./components/PublishProduct";
+import PublishProduct from "./Components/PublishProduct";
 import ProductDetail from "./pages/ProductDetails/ProductDetail";
 import AllProducts from "./pages/AllProduct/AllProduct";
 
