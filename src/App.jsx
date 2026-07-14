@@ -33,6 +33,8 @@ import Securite from "./pages/FooterPages/Securite";
 import CentreAide from "./pages/FooterPages/CentreAide";
 import Conditions from "./pages/FooterPages/Conditions";
 import Confidentialite from "./pages/FooterPages/Confidentialite";
+import DevenirLivreur from "./pages/FooterPages/DevenirLivreur";
+import LivreurDashboard from "./pages/Livreur/LivreurDashboard";
 
 function App() {
   const router = createBrowserRouter([
@@ -68,6 +70,8 @@ function App() {
     { path: "/aide", element: <CentreAide /> },
     { path: "/conditions", element: <Conditions /> },
     { path: "/confidentialite", element: <Confidentialite /> },
+    { path: "/devenir-livreur", element: <DevenirLivreur /> },
+    { path: "/livreur/dashboard", element: <LivreurDashboard /> },
   ]);
 
   return (

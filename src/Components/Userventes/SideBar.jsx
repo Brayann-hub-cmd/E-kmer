@@ -1,6 +1,6 @@
 // src/Components/Userventes/SideBar.jsx
 import { useEffect, useState } from "react";
-import { FaHeart, FaCog, FaShoppingCart, FaStore, FaBoxes } from "react-icons/fa";
+import { FaHeart, FaCog, FaShoppingCart, FaStore, FaBoxes, FaMotorcycle } from "react-icons/fa";
 import { useNavigate, useLocation } from "react-router-dom";
 import BackToHome from "../BackToHome";
 import api from "../../api";
@@ -46,6 +46,7 @@ export default function SideBar({ user }) {
     { key: "achats", label: "Mes achats", icon: FaShoppingCart, path: "/profile/achats" },
     { key: "favoris", label: "Mes favoris", icon: FaHeart, path: "/profile/favoris" },
     { key: "articles", label: "Mes articles", icon: FaBoxes, path: "/profile/articles" },
+    { key: "livreur", label: "Espace Livreur", icon: FaMotorcycle, path: "/livreur/dashboard" },
     { key: "parametres", label: "Paramètres", icon: FaCog, path: "/profile/parametres" },
   ];
 

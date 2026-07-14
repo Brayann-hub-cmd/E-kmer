@@ -55,7 +55,8 @@ const Footer = () => {
         { name: 'Sécurité', path: '/securite' },
         { name: "Centre d'aide", path: '/aide' },
         { name: "Conditions d'utilisation", path: '/conditions' },
-        { name: 'Politique de confidentialité', path: '/confidentialite' }
+        { name: 'Politique de confidentialité', path: '/confidentialite' },
+        { name: 'Devenir livreur', path: '/devenir-livreur' }
     ];
 
     const vendreAcheter = [
@@ -141,12 +142,12 @@ const Footer = () => {
                         <ul className="space-y-2">
                             {liensUtiles.map((item, index) => (
                                 <li key={index}>
-                                    <a
-                                        href={item.path}
+                                    <Link
+                                        to={item.path}
                                         className="text-gray-300 dark:text-gray-400 hover:text-[#F25012] dark:hover:text-orange-400 transition-colors duration-300 text-sm cursor-pointer"
                                     >
                                         {item.name}
-                                    </a>
+                                    </Link>
                                 </li>
                             ))}
                         </ul>
