@@ -33,7 +33,7 @@ export default function Apropos() {
             <div>
               <h2 className="text-lg font-bold text-black mb-2">Notre histoire</h2>
               <p className="text-gray-600 leading-relaxed">
-                Fondée en 2024, E-kmer est née de la volonté de créer un espace de confiance 
+                Fondée en 2026, E-kmer est née de la volonté de créer un espace de confiance 
                 où les Camerounais peuvent acheter et vendre leurs articles en toute simplicité.
               </p>
             </div>

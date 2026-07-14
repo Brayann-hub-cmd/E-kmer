@@ -14,6 +14,28 @@ function Login() {
   const [rememberMe, setRememberMe] = useState(false);
   const navigate = useNavigate()
 
+  const normalizePhone = (value) => {
+    const cleaned = value.replace(/[^\d+]/g, '').trim();
+    if (cleaned.startsWith('+237')) {
+      return cleaned;
+    }
+
+    const digits = cleaned.replace(/\D/g, '');
+    if (digits.startsWith('0') && digits.length === 10) {
+      return `+237${digits.slice(1)}`;
+    }
+
+    if (digits.startsWith('237')) {
+      return `+${digits}`;
+    }
+
+    if (digits.length === 9 && digits.startsWith('6')) {
+      return `+237${digits}`;
+    }
+
+    return cleaned;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     // Handle login logic here
@@ -27,16 +49,18 @@ function Login() {
           navigate('/')
         }, 1500)
       } catch (error) {
+        console.error('Login error', error)
         if (error.response?.status === 401) {
           toast.error('Email ou mot de passe incorrect.')
         } else {
-          console.log(`Erreur! ${error}.`);
+          toast.error(error.response?.data?.error || error.message || 'Échec de la connexion. Vérifiez votre réseau.')
         }
       }
     }
     if (loginMethod === "phone") {
       try {
-        const response = await api.post('auth/login/tel', { telephone: phone, password: password })
+        const formattedPhone = normalizePhone(phone);
+        const response = await api.post('auth/login/tel', { telephone: formattedPhone, password: password })
         localStorage.setItem('token', response.data.token)
         const userData = response.data.user
         toast.success(`Bienvenu M./Mme ${userData.username} !`)
@@ -44,10 +68,11 @@ function Login() {
           navigate('/', { state: { user: userData } })
         }, 1500)
       } catch (error) {
+        console.error('Login error', error)
         if (error.response?.status === 401) {
           toast.error('Téléphone ou mot de passe incorrect.')
         } else {
-          console.log(`Erreur! ${error.message}.`);
+          toast.error(error.response?.data?.error || error.message || 'Échec de la connexion. Vérifiez votre réseau.')
         }
       }
     }
