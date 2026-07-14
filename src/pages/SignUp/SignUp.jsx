@@ -14,11 +14,11 @@ import {
 import { Link, useNavigate } from 'react-router-dom';
 import BackToHome from '../../components/BackToHome';
 import api from '../../api';
-import { useAppContext } from "../../context/AppContext"; // ← IMPORT
-import T from "../../components/T"; // ← IMPORT
+import { useAppContext } from "../../context/AppContext";
+import T from "../../components/T";
 
 const SignUp = () => {
-  const { t } = useAppContext(); // ← Récupère les traductions
+  const { t } = useAppContext();
   const navigate = useNavigate();
   
   const [formData, setFormData] = useState({
@@ -36,6 +36,7 @@ const SignUp = () => {
     confirmer: false
   });
   const [touched, setTouched] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
 
   const validerFormulaire = (donnees = formData) => {
     const nouvellesErreurs = {};
@@ -53,10 +54,11 @@ const SignUp = () => {
       nouvellesErreurs.email = t.invalidEmailFormat || "Format d'email invalide (ex: nom@domaine.com)";
     }
 
-    const telephoneRegex = /^\+237[6][0-9]{8}$|^\+237\s[6][0-9]{2}\s[0-9]{3}\s[0-9]{3}$/;
+    const telephoneBrut = donnees.telephone.replace(/\s/g, '');
+    const telephoneRegex = /^\+237[6][0-9]{8}$/;
     if (!donnees.telephone.trim()) {
       nouvellesErreurs.telephone = t.requiredField || 'Le numéro de téléphone est requis';
-    } else if (!telephoneRegex.test(donnees.telephone.replace(/\s/g, ''))) {
+    } else if (!telephoneRegex.test(telephoneBrut)) {
       nouvellesErreurs.telephone = t.invalidPhoneFormat || 'Format invalide (ex: +237 6XX XXX XXX)';
     }
 
@@ -107,85 +109,33 @@ const SignUp = () => {
     }));
   };
 
+  // Formate le téléphone pour l'affichage (ajoute des espaces)
   const formaterTelephone = (valeur) => {
     let numeros = valeur.replace(/[^\d+]/g, '');
-
     if (numeros.startsWith('+237')) {
       const sansPrefix = numeros.slice(4);
       if (sansPrefix.length > 0) {
         const partie1 = sansPrefix.slice(0, 3);
         const partie2 = sansPrefix.slice(3, 6);
         const partie3 = sansPrefix.slice(6, 9);
-
         let formate = '+237';
         if (partie1) formate += ' ' + partie1;
         if (partie2) formate += ' ' + partie2;
         if (partie3) formate += ' ' + partie3;
-
         return formate;
       }
     }
     return valeur;
   };
 
+  // Normalise le téléphone pour l'envoi (supprime tous les espaces)
+  const normaliserTelephone = (tel) => tel.replace(/\s/g, '');
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const nouvellesErreurs = validerFormulaire();
-    const telephoneInput = formData.telephone.split(' ');
-    const telephone = telephoneInput[0] + telephoneInput[1] + telephoneInput[2] + telephoneInput[3];
-    
-    if (Object.keys(nouvellesErreurs).length === 0) {
-      try {
-        const role = "user";
-        const response = await api.post('auth/register/', {
-          username: formData.nomComplet,
-          telephone: telephone,
-          email: formData.email,
-          password: formData.motDePasse,
-          role: role
-        });
-        
-        toast.success(
-          <div className="flex items-center gap-2">
-            <BsCheckCircle className="text-green-500 text-xl" />
-            <span>{response.data.message || t.registrationSuccess}</span>
-          </div>,
-          {
-            duration: 4000,
-            position: 'top-center',
-            style: {
-              background: '#10b981',
-              color: '#fff',
-              padding: '16px',
-            },
-          }
-        );
-
-        setTimeout(() => {
-          navigate('/auth/login');
-        }, 1500);
-
-      } catch (error) {
-        if (error.response?.status === 400) {
-          toast.error(error.response.data.error || t.registrationError);
-        } else if (error.response?.status === 500) {
-          toast.error(t.serverError || "Un problème avec le serveur est survenue!");
-        } else {
-          toast.error(`${t.registrationError}: `, error);
-        }
-      }
-
-      setFormData({
-        nomComplet: '',
-        email: '',
-        telephone: '',
-        motDePasse: '',
-        confirmerMotDePasse: '',
-        accepteConditions: false
-      });
-      setTouched({});
-    } else {
+    if (Object.keys(nouvellesErreurs).length > 0) {
       setErreurs(nouvellesErreurs);
       setTouched({
         nomComplet: true,
@@ -195,11 +145,84 @@ const SignUp = () => {
         confirmerMotDePasse: true,
         accepteConditions: true
       });
-
       toast.error(t.formErrors || 'Veuillez corriger les erreurs dans le formulaire', {
         duration: 3000,
         position: 'top-center',
       });
+      return;
+    }
+
+    setIsLoading(true);
+    const telephoneBrut = normaliserTelephone(formData.telephone);
+
+    try {
+      const response = await api.post('auth/register/', {
+        username: formData.nomComplet,
+        telephone: telephoneBrut,
+        email: formData.email,
+        password: formData.motDePasse,
+        role: "user"
+      });
+
+      toast.success(
+        <div className="flex items-center gap-2">
+          <BsCheckCircle className="text-green-500 text-xl" />
+          <span>{response.data.message || t.registrationSuccess || 'Inscription réussie !'}</span>
+        </div>,
+        {
+          duration: 4000,
+          position: 'top-center',
+          style: {
+            background: '#10b981',
+            color: '#fff',
+            padding: '16px',
+          },
+        }
+      );
+
+      // Réinitialiser le formulaire seulement si succès
+      setFormData({
+        nomComplet: '',
+        email: '',
+        telephone: '',
+        motDePasse: '',
+        confirmerMotDePasse: '',
+        accepteConditions: false
+      });
+      setTouched({});
+
+      setTimeout(() => {
+        navigate('/auth/login');
+      }, 1500);
+
+    } catch (error) {
+      console.error("Erreur inscription:", error);
+      let errorMessage = t.registrationError || "Erreur lors de l'inscription. Veuillez réessayer.";
+
+      if (error.code === 'ECONNABORTED') {
+        errorMessage = t.timeoutError || "Le serveur met trop de temps à répondre. Vérifiez votre connexion.";
+      } else if (error.response) {
+        // Le serveur a répondu avec un statut d'erreur
+        const status = error.response.status;
+        const data = error.response.data;
+        if (status === 400) {
+          errorMessage = data.error || data.message || t.registrationError;
+        } else if (status === 500) {
+          errorMessage = t.serverError || "Un problème avec le serveur est survenu !";
+        } else {
+          errorMessage = data.error || data.message || errorMessage;
+        }
+      } else if (error.request) {
+        // Pas de réponse du serveur
+        errorMessage = t.connectionError || "Erreur de connexion au serveur.";
+      }
+
+      toast.error(errorMessage, {
+        duration: 4000,
+        position: 'top-center',
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -422,9 +445,24 @@ const SignUp = () => {
 
           <button
             type="submit"
-            className="w-full bg-orange-500 hover:bg-orange-600 text-white py-3 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-800 transition-colors font-medium mt-6"
+            disabled={isLoading}
+            className={`w-full py-3 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-800 transition-colors font-medium mt-6 ${
+              isLoading
+                ? 'bg-orange-300 cursor-not-allowed'
+                : 'bg-orange-500 hover:bg-orange-600 text-white'
+            }`}
           >
-            <T>signUp</T>
+            {isLoading ? (
+              <span className="flex items-center justify-center gap-2">
+                <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <T>loading</T>
+              </span>
+            ) : (
+              <T>signUp</T>
+            )}
           </button>
         </form>
 
