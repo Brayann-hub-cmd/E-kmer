@@ -110,7 +110,7 @@ export default function Navbar({ setTitle, setCategorie }) {
     setTitle(searchTerm);
     setCategorie(categorySelected);
     try {
-      const res = await api.get(`annonce/search/?q=${encodeURIComponent(searchTerm)}`);
+      const res = await api.get(`annonce/search/?titre=${encodeURIComponent(searchTerm)}`);
       setSearchResults(res.data);
     } catch (error) {
       console.error("Erreur recherche:", error);
