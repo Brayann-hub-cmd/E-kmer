@@ -3,19 +3,22 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { FaMapMarkerAlt, FaClock } from "react-icons/fa";
 
+const LINK = import.meta.env.VITE_API_URL;
+
 const ProductCard = ({ product }) => {
   // Formatage du prix avec espaces
   const formatPrice = (price) => {
-    return new Intl.NumberFormat('fr-FR').format(price) + " FCFA";
+    return new Intl.NumberFormat('fr-FR').format(Number(price) || 0) + " FCFA";
   };
 
   // Formatage de la date
   const formatDate = (dateString) => {
+    if (!dateString) return "Date inconnue";
     const date = new Date(dateString);
     const today = new Date();
     const diffTime = Math.abs(today - date);
     const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-    
+
     if (diffDays === 0) return "Aujourd'hui";
     if (diffDays === 1) return "Hier";
     if (diffDays < 7) return `Il y a ${diffDays} jours`;
@@ -27,8 +30,8 @@ const ProductCard = ({ product }) => {
       {/* Image */}
       <Link to={`/produit/${product.code}`} className="block overflow-hidden">
         <img
-          src={product.image ? product.image : "/placeholder-image.jpg"}
-          alt={product.title}
+          src={product.image ? `${LINK}${product.image}` : "/placeholder-image.jpg"}
+          alt={product.titre}
           className="w-full h-40 object-cover bg-gray-100 group-hover:scale-105 transition-transform duration-300"
         />
       </Link>
@@ -38,7 +41,7 @@ const ProductCard = ({ product }) => {
         {/* Titre */}
         <Link to={`/produit/${product.code}`} className="block hover:text-orange-500 transition-colors">
           <h3 className="text-sm font-semibold text-gray-800 line-clamp-1 mb-1">
-            {product.title}
+            {product.titre}
           </h3>
         </Link>
 
@@ -64,7 +67,7 @@ const ProductCard = ({ product }) => {
           to={`/produit/${product.code}`}
           className="block w-full text-center bg-orange-500 hover:bg-orange-600 text-white text-xs font-medium py-2 rounded-lg transition-colors"
         >
-          Voir les d├®tails
+          Voir les détails
         </Link>
       </div>
     </div>
