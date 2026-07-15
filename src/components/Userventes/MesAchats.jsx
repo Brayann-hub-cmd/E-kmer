@@ -128,7 +128,7 @@ export default function MesAchats() {
     
     if (diffDays === 0) return t.today || "Aujourd'hui";
     if (diffDays === 1) return t.yesterday || "Hier";
-    if (diffDays < 7) return t.daysAgo.replace('{days}', diffDays) || `Il y a ${diffDays} jours`;
+    if (diffDays < 7) return (t.daysAgo || "Il y a {days} jours").replace('{days}', diffDays);
     return date.toLocaleDateString('fr-FR');
   };
 
