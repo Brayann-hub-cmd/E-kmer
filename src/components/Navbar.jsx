@@ -84,10 +84,24 @@ export default function Navbar({ setTitle, setCategorie }) {
   useEffect(() => {
     api.get("categories/")
       .then((res) => setCategories(res.data))
-      .catch(() => {});
+      .catch(() => { });
   }, []);
 
   // ── Recherche ─────────────────────────────────────────────
+  // const handleSearch = async (e) => {
+  //   e.preventDefault();
+  //   if (!searchTerm.trim()) return;
+  //   setIsSearching(true);
+  //   setShowResults(true);
+  //   setTitle(searchTerm);
+  //   setCategorie(categorySelected);
+  //   try {
+  //   } catch {
+  //     setSearchResults([]);
+  //   } finally {
+  //     setIsSearching(false);
+  //   }
+  // };
   const handleSearch = async (e) => {
     e.preventDefault();
     if (!searchTerm.trim()) return;
@@ -96,7 +110,10 @@ export default function Navbar({ setTitle, setCategorie }) {
     setTitle(searchTerm);
     setCategorie(categorySelected);
     try {
-    } catch {
+      const res = await api.get(`annonce/search/?q=${encodeURIComponent(searchTerm)}`);
+      setSearchResults(res.data);
+    } catch (error) {
+      console.error("Erreur recherche:", error);
       setSearchResults([]);
     } finally {
       setIsSearching(false);
@@ -112,12 +129,16 @@ export default function Navbar({ setTitle, setCategorie }) {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // const handleCategoryChange = (cat) => {
+  //   setCategorySelected(cat);
+  //   setCategory(cat);
+  //   setIsCategoryOpen(false);
+  // };
   const handleCategoryChange = (cat) => {
-    setCategorySelected(cat);
+    setCategorySelected(cat.code);   // <- reste cohérent : toujours une string
     setCategory(cat);
     setIsCategoryOpen(false);
   };
-
   // ── Avatar utilisateur ────────────────────────────────────
   // ✅ BUG CORRIGÉ : la variable 't' renommée en 'parts' pour éviter le conflit avec le traducteur
   const formateProfil = (valeur) => {
@@ -273,12 +294,12 @@ export default function Navbar({ setTitle, setCategorie }) {
               </div>
             ) : (
               <div className="flex items-center gap-2">
-                <Link to="auth/login"
+                <Link to="/auth/login"
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-700 hover:bg-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 border border-gray-600 text-sm whitespace-nowrap transition-colors">
                   <FaUser className="text-xs" />
                   <span>{t.login}</span>
                 </Link>
-                <Link to="auth/register"
+                <Link to="/auth/register"
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-orange-500 hover:bg-orange-600 text-sm font-semibold whitespace-nowrap transition-colors">
                   {t.register}
                 </Link>

@@ -1,12 +1,13 @@
 // src/components/RecapCommande.jsx
-import { useAppContext } from "../context/AppContext"; // ← IMPORT
-import T from "../components/T"; // ← IMPORT
+import { useAppContext } from "../context/AppContext";
+import T from "../components/T";
 
-export default function RecapCommande({ commande, livraison, onConfirm, onBack }) {
-  const { t } = useAppContext(); // ← Récupère les traductions
-  
-  const sousTotal = commande.reduce((acc, p) => acc + p.prix * p.quantite, 0);
-  const total = sousTotal + livraison.fraisTotal;
+const LINK = import.meta.env.VITE_API_URL;
+
+export default function RecapCommande({ commande, livraison, total, onConfirm, onBack, loading }) {
+  const { t } = useAppContext();
+
+  const sousTotal = commande.reduce((acc, p) => acc + Number(p.sous_total || p.annonce_prix * p.quantite), 0);
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700 transition-colors duration-300">
@@ -16,11 +17,15 @@ export default function RecapCommande({ commande, livraison, onConfirm, onBack }
       <div className="space-y-4">
         {commande.map(p => (
           <div key={p.id} className="flex gap-3 items-center border-b border-gray-100 dark:border-gray-700 pb-3">
-            <img src={p.image || "/placeholder.webp"} className="w-16 h-16 object-cover rounded-lg" />
+            <img
+              src={p.annonce_image ? `${LINK}${p.annonce_image}` : "/placeholder.webp"}
+              className="w-16 h-16 object-cover rounded-lg"
+              alt={p.annonce_titre}
+            />
             <div className="flex-1">
-              <p className="font-semibold text-gray-900 dark:text-white">{p.titre}</p>
+              <p className="font-semibold text-gray-900 dark:text-white">{p.annonce_titre}</p>
               <p className="text-xs text-gray-500 dark:text-gray-400"><T>quantity</T>: {p.quantite}</p>
-              <p className="text-orange-500 font-bold">{(p.prix * p.quantite).toLocaleString()} FCFA</p>
+              <p className="text-orange-500 font-bold">{Number(p.sous_total).toLocaleString()} FCFA</p>
             </div>
           </div>
         ))}
@@ -45,7 +50,7 @@ export default function RecapCommande({ commande, livraison, onConfirm, onBack }
               {livraison.adresse.nomComplet}, {livraison.adresse.telephone}
               <br/>{livraison.adresse.quartier}, {livraison.adresse.ville}
               <br/>{livraison.adresse.adresseComplete}
-              <br/><T>service</T>: {livraison.service.nom}
+              <br/><T>service</T>: {livraison.livreur?.nom || livraison.livreur?.username}
             </p>
           </div>
         )}
@@ -57,17 +62,19 @@ export default function RecapCommande({ commande, livraison, onConfirm, onBack }
         )}
       </div>
       <div className="flex gap-3 mt-6">
-        <button 
-          onClick={onBack} 
-          className="flex-1 border border-gray-300 dark:border-gray-600 py-3 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+        <button
+          onClick={onBack}
+          disabled={loading}
+          className="flex-1 border border-gray-300 dark:border-gray-600 py-3 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50"
         >
           <T>back</T>
         </button>
-        <button 
-          onClick={onConfirm} 
-          className="flex-1 bg-orange-500 hover:bg-orange-600 text-white py-3 rounded-xl transition-colors"
+        <button
+          onClick={onConfirm}
+          disabled={loading}
+          className="flex-1 bg-orange-500 hover:bg-orange-600 text-white py-3 rounded-xl transition-colors disabled:opacity-50"
         >
-          <T>validateAndPay</T>
+          {loading ? <T>processing</T> : <T>validateAndPay</T>}
         </button>
       </div>
     </div>

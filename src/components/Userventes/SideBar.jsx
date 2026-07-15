@@ -7,6 +7,7 @@ import api from "../../api";
 import toast from "react-hot-toast";
 import { useAppContext } from "../../context/AppContext"; // ← IMPORT
 import T from "../../components/T"; // ← IMPORT
+const LINK = import.meta.env.VITE_API_URL;
 
 export default function SideBar({ user }) {
   const { t } = useAppContext(); // ← Récupère les traductions
@@ -84,7 +85,7 @@ export default function SideBar({ user }) {
         setArticles(articlesResponse.data.length);
       } catch (error) {
         console.error("Erreur chargement articles:", error);
-        setArticles(3);
+        setArticles(0);
       }
     };
 
@@ -99,13 +100,16 @@ export default function SideBar({ user }) {
   return (
     <div className="w-full md:w-[260px] bg-white dark:bg-gray-800 p-5 shadow-md flex-shrink-0 self-stretch min-h-screen transition-colors duration-300">
       <BackToHome />
-      
+
       {/* PROFIL */}
       <div className="text-center mb-6">
         <div className="relative w-24 h-24 mx-auto">
-          {user?.avatar ? (
-            <img src={user.avatar} alt="Avatar"
-              className="w-full h-full object-cover rounded-full" />
+          {user?.photo_profil ? (
+            <img
+              src={`${LINK}${user.photo_profil}`}
+              alt="Avatar"
+              className="w-full h-full object-cover rounded-full"
+            />
           ) : (
             <div className="w-24 h-24 bg-orange-500 text-white flex items-center justify-center rounded-full text-2xl font-bold mx-auto">
               {user ? formateProfil(user.username) : 'P'}
@@ -155,11 +159,10 @@ export default function SideBar({ user }) {
           <button
             key={key}
             onClick={() => navigate(path)}
-            className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all duration-200 ${
-              isActive(path)
+            className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all duration-200 ${isActive(path)
                 ? "bg-orange-500 text-white shadow-md"
                 : "hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300"
-            }`}
+              }`}
           >
             <Icon className={`text-lg flex-shrink-0 ${isActive(path) ? "text-white" : "text-gray-500 dark:text-gray-400"}`} />
             <span className={`text-sm font-medium ${isActive(path) ? "text-white" : "text-gray-700 dark:text-gray-300"}`}>

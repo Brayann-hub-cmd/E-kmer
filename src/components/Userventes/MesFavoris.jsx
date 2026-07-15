@@ -12,7 +12,7 @@ const FavoriCard = ({ produit, onAcheter }) => (
     {/* Image */}
     <div className="relative">
       <img
-        src={LINK + produit.annonce_image || "/placeholder.webp"}
+        src={produit.annonce_image ? `${LINK}${produit.annonce_image}` : "/placeholder.webp"}
         alt={produit?.annonce_titre || "Sans titre"}
         className="w-full h-44 object-cover"
       />
@@ -25,7 +25,7 @@ const FavoriCard = ({ produit, onAcheter }) => (
         <p className="text-gray-700 dark:text-gray-300 font-medium text-sm mt-0.5">{produit?.annonce_titre}</p>
       </div>
       <button
-        onClick={() => onAcheter(produit.id)}
+        onClick={() => onAcheter(produit.annonce)}
         className="w-full bg-orange-500 hover:bg-orange-600 text-white py-2 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 transition-colors"
       >
         <FaShoppingCart /> Acheter
@@ -54,11 +54,8 @@ export default function MesFavoris() {
       } catch (error) {
         console.error("Erreur chargement favoris:", error);
         toast.error("Erreur de chargement des favoris");
-        // Données mock en attendant l'API
-        setFavoris([
-          { id: 1, titre: "Casque Sony", image: "/casque.webp", prix: 15000 },
-          { id: 2, titre: "Jacket en cuir", image: "/jacket.webp", prix: 35000 },
-        ]);
+
+        setFavoris([]);
       } finally {
         setLoading(false);
       }
@@ -66,7 +63,7 @@ export default function MesFavoris() {
     fetchFavoris();
   }, []);
 
-  const handleAcheter = (id) => navigate(`/produit/${id}`);
+  const handleAcheter = (code) => navigate(`/produit/${code}`);
 
   if (loading) {
     return (
@@ -79,7 +76,7 @@ export default function MesFavoris() {
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors duration-300">
       <div className="flex flex-col md:flex-row">
-        
+
         {/* Sidebar */}
         <div className="w-full md:w-auto">
           <SideBar user={user} activeTab="favoris" />

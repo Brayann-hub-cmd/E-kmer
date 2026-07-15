@@ -5,18 +5,17 @@ import { FaSearch, FaFilter } from "react-icons/fa";
 import ProductCard from "../../components/ProductCard";
 import api from "../../api";
 import BackToHome from "../../components/BackToHome";
-import { useAppContext } from "../../context/AppContext"; // ← IMPORT
-import T from "../../components/T"; // ← IMPORT
+import { useAppContext } from "../../context/AppContext";
+import T from "../../components/T";
 
 export default function AllProducts() {
-  const { t } = useAppContext(); // ← Récupère les traductions
+  const { t } = useAppContext();
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [categories, setCategories] = useState([]);
-  const [lowCategorie, setLowCategorie] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -45,7 +44,7 @@ export default function AllProducts() {
     }
 
     if (selectedCategory) {
-      filtered = filtered.filter(p => p.sous_categorie === selectedCategory);
+      filtered = filtered.filter(p => p.categorie_code === selectedCategory);
     }
 
     setFilteredProducts(filtered);
@@ -91,11 +90,9 @@ export default function AllProducts() {
               className="pl-10 pr-8 py-3 border border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white appearance-none transition-colors duration-300"
             >
               <option value=""><T>allCategoriesFilter</T></option>
-              {categories.map((cat) => {
-                return (
-                  <option key={cat.code} value={cat.code}>{cat.nom}</option>
-                );
-              })}
+              {categories.map((cat) => (
+                <option key={cat.code} value={cat.code}>{cat.nom}</option>
+              ))}
             </select>
           </div>
         </div>

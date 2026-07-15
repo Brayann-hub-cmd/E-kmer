@@ -20,7 +20,7 @@ import T from "../../components/T"; // ← IMPORT
 const SignUp = () => {
   const { t } = useAppContext(); // ← Récupère les traductions
   const navigate = useNavigate();
-  
+
   const [formData, setFormData] = useState({
     nomComplet: '',
     email: '',
@@ -134,7 +134,7 @@ const SignUp = () => {
     const nouvellesErreurs = validerFormulaire();
     const telephoneInput = formData.telephone.split(' ');
     const telephone = telephoneInput[0] + telephoneInput[1] + telephoneInput[2] + telephoneInput[3];
-    
+
     if (Object.keys(nouvellesErreurs).length === 0) {
       try {
         const role = "user";
@@ -145,7 +145,7 @@ const SignUp = () => {
           password: formData.motDePasse,
           role: role
         });
-        
+
         toast.success(
           <div className="flex items-center gap-2">
             <BsCheckCircle className="text-green-500 text-xl" />
@@ -172,7 +172,8 @@ const SignUp = () => {
         } else if (error.response?.status === 500) {
           toast.error(t.serverError || "Un problème avec le serveur est survenue!");
         } else {
-          toast.error(`${t.registrationError}: `, error);
+          toast.error(`${t.registrationError || "Erreur d'inscription"}`);
+          console.error(error);
         }
       }
 
@@ -215,7 +216,7 @@ const SignUp = () => {
       />
 
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg w-full max-w-[420px] p-8 relative transition-colors duration-300">
-        
+
         <div className="absolute top-4 left-4">
           <BackToHome />
         </div>
@@ -245,9 +246,8 @@ const SignUp = () => {
                 onChange={handleChange}
                 onBlur={handleBlur}
                 placeholder={t.fullNamePlaceholder || "Votre nom complet"}
-                className={`w-full pl-10 pr-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
-                  touched.nomComplet && erreurs.nomComplet ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
-                } bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-colors duration-300`}
+                className={`w-full pl-10 pr-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent ${touched.nomComplet && erreurs.nomComplet ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
+                  } bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-colors duration-300`}
               />
             </div>
             {touched.nomComplet && erreurs.nomComplet && (
@@ -270,9 +270,8 @@ const SignUp = () => {
                 onChange={handleChange}
                 onBlur={handleBlur}
                 placeholder={t.emailPlaceholder || "votre@email.com"}
-                className={`w-full pl-10 pr-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
-                  touched.email && erreurs.email ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
-                } bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-colors duration-300`}
+                className={`w-full pl-10 pr-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent ${touched.email && erreurs.email ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
+                  } bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-colors duration-300`}
               />
             </div>
             {touched.email && erreurs.email && (
@@ -304,9 +303,8 @@ const SignUp = () => {
                 }}
                 onBlur={handleBlur}
                 placeholder={t.phonePlaceholder || "+237 6XX XXX XXX"}
-                className={`w-full pl-24 pr-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
-                  touched.telephone && erreurs.telephone ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
-                } bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-colors duration-300`}
+                className={`w-full pl-24 pr-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent ${touched.telephone && erreurs.telephone ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
+                  } bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-colors duration-300`}
               />
             </div>
             {touched.telephone && erreurs.telephone ? (
@@ -333,9 +331,8 @@ const SignUp = () => {
                 onChange={handleChange}
                 onBlur={handleBlur}
                 placeholder={t.passwordPlaceholder || "**********"}
-                className={`w-full pl-10 pr-10 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
-                  touched.motDePasse && erreurs.motDePasse ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
-                } bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-colors duration-300`}
+                className={`w-full pl-10 pr-10 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent ${touched.motDePasse && erreurs.motDePasse ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
+                  } bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-colors duration-300`}
               />
               <button
                 type="button"
@@ -372,9 +369,8 @@ const SignUp = () => {
                 onChange={handleChange}
                 onBlur={handleBlur}
                 placeholder={t.passwordPlaceholder || "**********"}
-                className={`w-full pl-10 pr-10 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
-                  touched.confirmerMotDePasse && erreurs.confirmerMotDePasse ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
-                } bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-colors duration-300`}
+                className={`w-full pl-10 pr-10 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent ${touched.confirmerMotDePasse && erreurs.confirmerMotDePasse ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
+                  } bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-colors duration-300`}
               />
               <button
                 type="button"

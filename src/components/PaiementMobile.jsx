@@ -1,31 +1,33 @@
 // src/components/PaiementMobile.jsx
 import React, { useState } from 'react';
-import { useAppContext } from '../context/AppContext'; // ← IMPORT
-import T from '../components/T'; // ← IMPORT
+import api from '../api';
+import { useAppContext } from '../context/AppContext';
+import T from '../components/T';
 
-export default function PaiementMobile({ total, onSuccess }) {
-  const { t } = useAppContext(); // ← Récupère les traductions
-  const [operateur, setOperateur] = useState("");
+export default function PaiementMobile({ order, total }) {
+  const { t } = useAppContext();
   const [numero, setNumero] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   const handlePaiement = async () => {
-    if (!operateur || !numero) { 
-      setError(t.requiredFields || "Veuillez remplir tous les champs"); 
-      return; 
+    if (!numero.trim()) {
+      setError(t.requiredFields || "Veuillez remplir tous les champs");
+      return;
     }
     setLoading(true);
+    setError("");
     try {
-      // Appel API vers /api/paiement/
-      // await api.post("paiement/", { operateur, numero, montant: total });
-      setTimeout(() => { 
-        setLoading(false); 
-        onSuccess(); 
-      }, 1500);
-    } catch (err) { 
-      setError(t.paymentError || "Erreur de paiement"); 
-      setLoading(false); 
+      const res = await api.post("paiements/initier/", {
+        order_id: order.id,
+        telephone: numero,
+      });
+      // Redirection vers la page de paiement CinetPay
+      window.location.href = res.data.payment_url;
+    } catch (err) {
+      console.error("Erreur initiation paiement:", err);
+      setError(err?.response?.data?.error || t.paymentError || "Erreur de paiement");
+      setLoading(false);
     }
   };
 
@@ -37,28 +39,14 @@ export default function PaiementMobile({ total, onSuccess }) {
       <div className="space-y-4">
         <div>
           <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-            <T>operator</T>
-          </label>
-          <select 
-            className="w-full p-3 border rounded-xl bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-white" 
-            value={operateur} 
-            onChange={e => setOperateur(e.target.value)}
-          >
-            <option value=""><T>select</T></option>
-            <option value="orange"><T>orangeMoney</T></option>
-            <option value="mtn"><T>mtnMoney</T></option>
-          </select>
-        </div>
-        <div>
-          <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
             <T>phoneNumber</T>
           </label>
-          <input 
-            type="tel" 
-            className="w-full p-3 border rounded-xl bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" 
-            placeholder={t.phonePlaceholder || "+237 6XX XXX XXX"} 
-            value={numero} 
-            onChange={e => setNumero(e.target.value)} 
+          <input
+            type="tel"
+            className="w-full p-3 border rounded-xl bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400"
+            placeholder={t.phonePlaceholder || "+237 6XX XXX XXX"}
+            value={numero}
+            onChange={e => setNumero(e.target.value)}
           />
         </div>
         <div className="bg-gray-100 dark:bg-gray-700 p-4 rounded-xl text-center transition-colors duration-300">
@@ -68,9 +56,9 @@ export default function PaiementMobile({ total, onSuccess }) {
           <p className="text-2xl font-bold text-orange-500">{total.toLocaleString()} FCFA</p>
         </div>
         {error && <p className="text-red-500 dark:text-red-400 text-sm">{error}</p>}
-        <button 
-          onClick={handlePaiement} 
-          disabled={loading} 
+        <button
+          onClick={handlePaiement}
+          disabled={loading}
           className="w-full bg-orange-500 hover:bg-orange-600 text-white py-3 rounded-xl font-semibold transition-colors disabled:opacity-50"
         >
           {loading ? <T>processing</T> : <T>payNow</T>}

@@ -7,19 +7,18 @@ import toast from "react-hot-toast";
 import { FaUser, FaEnvelope, FaPhone, FaStore, FaSave, FaCamera, FaTimes, FaUpload, FaEdit } from "react-icons/fa";
 import { useAppContext } from "../../context/AppContext"; // ← IMPORT
 import T from "../../components/T"; // ← IMPORT
-
+const LINK = import.meta.env.VITE_API_URL;
 // ── Champ de formulaire ───────────────────────────────────────
 const FormField = ({ label, required, icon: Icon, type = "text", name, value, onChange, placeholder, error, disabled }) => {
   const { t } = useAppContext();
-  
+
   return (
     <div className="flex flex-col gap-1.5">
       <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">
         <T>{label}</T> {required && <span className="text-orange-500">*</span>}
       </label>
-      <div className={`flex items-center gap-3 border rounded-xl px-4 py-3 bg-white dark:bg-gray-800 transition-colors ${
-        error ? "border-red-400" : "border-gray-200 dark:border-gray-600 focus-within:border-orange-400 dark:focus-within:border-orange-500"
-      } ${disabled ? "bg-gray-50 dark:bg-gray-700" : ""}`}>
+      <div className={`flex items-center gap-3 border rounded-xl px-4 py-3 bg-white dark:bg-gray-800 transition-colors ${error ? "border-red-400" : "border-gray-200 dark:border-gray-600 focus-within:border-orange-400 dark:focus-within:border-orange-500"
+        } ${disabled ? "bg-gray-50 dark:bg-gray-700" : ""}`}>
         {Icon && <Icon className="text-gray-400 dark:text-gray-500 flex-shrink-0" />}
         <input
           type={type}
@@ -39,7 +38,7 @@ const FormField = ({ label, required, icon: Icon, type = "text", name, value, on
 // ── Champ textarea ────────────────────────────────────────────
 const FormTextArea = ({ label, required, name, value, onChange, placeholder, error, disabled }) => {
   const { t } = useAppContext();
-  
+
   return (
     <div className="flex flex-col gap-1.5">
       <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">
@@ -52,9 +51,8 @@ const FormTextArea = ({ label, required, name, value, onChange, placeholder, err
         placeholder={placeholder ? t[placeholder] || placeholder : ""}
         rows={3}
         disabled={disabled}
-        className={`border rounded-xl px-4 py-3 text-sm bg-white dark:bg-gray-800 outline-none transition-colors resize-none ${
-          error ? "border-red-400" : "border-gray-200 dark:border-gray-600 focus:border-orange-400 dark:focus:border-orange-500"
-        } ${disabled ? "bg-gray-50 dark:bg-gray-700 text-gray-500 dark:text-gray-400" : "text-gray-800 dark:text-white"}`}
+        className={`border rounded-xl px-4 py-3 text-sm bg-white dark:bg-gray-800 outline-none transition-colors resize-none ${error ? "border-red-400" : "border-gray-200 dark:border-gray-600 focus:border-orange-400 dark:focus:border-orange-500"
+          } ${disabled ? "bg-gray-50 dark:bg-gray-700 text-gray-500 dark:text-gray-400" : "text-gray-800 dark:text-white"}`}
       />
       {error && <p className="text-red-500 text-xs"><T>{error}</T></p>}
     </div>
@@ -64,7 +62,7 @@ const FormTextArea = ({ label, required, name, value, onChange, placeholder, err
 // ── Mode édition ─────────────────────────────────────────────
 const InfoDisplay = ({ label, value, icon: Icon }) => {
   const { t } = useAppContext();
-  
+
   return (
     <div className="flex flex-col gap-1.5">
       <label className="text-sm font-semibold text-gray-700 dark:text-gray-300"><T>{label}</T></label>
@@ -111,7 +109,7 @@ export default function Parametres() {
           description_boutique: u.description_boutique || "",
         });
         if (u.photo_profil) {
-          setAvatarPreview(u.photo_profil);
+          setAvatarPreview(`${LINK}${u.photo_profil}`);
         }
       } catch (error) {
         toast.error(error.response?.data?.error || t.errorLoading || "Erreur de chargement");
@@ -137,7 +135,7 @@ export default function Parametres() {
     }
 
     setUploading(true);
-    
+
     const reader = new FileReader();
     reader.onloadend = () => {
       setAvatarPreview(reader.result);
@@ -162,11 +160,11 @@ export default function Parametres() {
 
   const handleRemoveAvatar = async () => {
     if (!window.confirm(t.confirmDeleteAvatar || "Voulez-vous supprimer votre photo de profil ?")) return;
-    
+
     try {
       await api.delete("auth/profile/avatar/");
       setAvatarPreview(null);
-      setUser((prev) => ({ ...prev, avatar: null }));
+      setUser((prev) => ({ ...prev, photo_profil: response.data.photo_profil }));
       toast.success(t.avatarDeleted || "Photo de profil supprimée");
     } catch (error) {
       console.error("Erreur suppression avatar:", error);
@@ -203,9 +201,9 @@ export default function Parametres() {
         description_boutique: formData.description_boutique,
       });
       toast.success(t.successUpdate || "Profil mis à jour avec succès !");
-      setUser((prev) => ({ 
-        ...prev, 
-        username: formData.nom_complet, 
+      setUser((prev) => ({
+        ...prev,
+        username: formData.nom_complet,
         telephone: formData.telephone,
         nom_boutique: formData.nom_boutique,
         description_boutique: formData.description_boutique,
@@ -229,7 +227,7 @@ export default function Parametres() {
             <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
               <T>accountSettings</T>
             </h1>
-            
+
             {!isEditing ? (
               <button
                 onClick={() => setIsEditing(true)}
@@ -291,7 +289,7 @@ export default function Parametres() {
                       className="hidden"
                     />
                   </div>
-                  
+
                   <div className="flex gap-3">
                     <button
                       type="button"

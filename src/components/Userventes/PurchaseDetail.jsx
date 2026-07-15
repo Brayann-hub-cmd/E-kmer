@@ -11,31 +11,31 @@ import T from "../../components/T"; // ← IMPORT
 
 const StatutBadge = ({ statut }) => {
   const { t } = useAppContext(); // ← Récupère les traductions
-  
+
   const config = {
-    livre: { 
-      label: t.livre || "Livré", 
-      icon: <FaCheckCircle />, 
-      bg: "bg-green-100 dark:bg-green-900", 
-      text: "text-green-700 dark:text-green-300" 
+    livre: {
+      label: t.livre || "Livré",
+      icon: <FaCheckCircle />,
+      bg: "bg-green-100 dark:bg-green-900",
+      text: "text-green-700 dark:text-green-300"
     },
-    en_cours: { 
-      label: t.enCours || "En cours", 
-      icon: <FaTruck />, 
-      bg: "bg-blue-100 dark:bg-blue-900", 
-      text: "text-blue-700 dark:text-blue-300" 
+    en_cours: {
+      label: t.enCours || "En cours",
+      icon: <FaTruck />,
+      bg: "bg-blue-100 dark:bg-blue-900",
+      text: "text-blue-700 dark:text-blue-300"
     },
-    attente: { 
-      label: t.attente || "En attente", 
-      icon: <FaClock />, 
-      bg: "bg-yellow-100 dark:bg-yellow-900", 
-      text: "text-yellow-700 dark:text-yellow-300" 
+    attente: {
+      label: t.attente || "En attente",
+      icon: <FaClock />,
+      bg: "bg-yellow-100 dark:bg-yellow-900",
+      text: "text-yellow-700 dark:text-yellow-300"
     },
-    annule: { 
-      label: t.annule || "Annulé", 
-      icon: <FaTimesCircle />, 
-      bg: "bg-red-100 dark:bg-red-900", 
-      text: "text-red-700 dark:text-red-300" 
+    annule: {
+      label: t.annule || "Annulé",
+      icon: <FaTimesCircle />,
+      bg: "bg-red-100 dark:bg-red-900",
+      text: "text-red-700 dark:text-red-300"
     },
   };
   const c = config[statut] || config.attente;
@@ -60,31 +60,9 @@ export default function PurchaseDetail() {
         const userRes = await api.get("auth/profile/");
         setUser(userRes.data);
 
-        // TODO: Remplacer par l'endpoint réel
-        // const response = await api.get(`achats/${id}/`);
-        // setPurchase(response.data);
-        
-        // Données mock
-        setPurchase({
-          id: id,
-          code: "CMD_001",
-          produit: {
-            titre: "iPhone 14 Pro",
-            prix: 450000,
-            image: "/iphone.webp",
-            vendeur: "Tech Store CM",
-            vendeur_tel: "+237 6XX XXX XXX"
-          },
-          quantite: 1,
-          montant_total: 450000,
-          date: "2026-05-20T10:30:00Z",
-          statut: "livre",
-          adresse_livraison: "Douala, Bonamoussadi",
-          livraison: {
-            service: "Yoomee Delivery",
-            tracking: "YOO-123456789"
-          }
-        });
+        const response = await api.get("achats/");
+        const achatTrouve = response.data.find(a => a.code === id);
+        setPurchase(achatTrouve || null);
       } catch (error) {
         toast.error(t.errorLoading || "Erreur de chargement");
       } finally {
@@ -136,7 +114,7 @@ export default function PurchaseDetail() {
         </div>
         <div className="flex-1 p-4 sm:p-6">
           <BackToHome />
-          
+
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
               <T>purchaseDetail</T>
@@ -159,13 +137,29 @@ export default function PurchaseDetail() {
             {/* Contenu */}
             <div className="p-6 space-y-6">
               {/* Produit */}
-              <div className="flex gap-4 items-center border-b border-gray-100 dark:border-gray-700 pb-4">
-                <img src={purchase.produit.image || "/placeholder.webp"} alt={purchase.produit.titre} className="w-20 h-20 object-cover rounded-lg" />
-                <div>
-                  <h3 className="font-bold text-lg text-gray-900 dark:text-white">{purchase.produit.titre}</h3>
-                  <p className="text-gray-500 dark:text-gray-400"><T>quantity</T>: {purchase.quantite}</p>
-                  <p className="text-orange-500 font-bold">{purchase.produit.prix.toLocaleString()} FCFA</p>
-                </div>
+              {/* Produits (plusieurs lignes possibles) */}
+              <div className="border-b border-gray-100 dark:border-gray-700 pb-4 space-y-3">
+                {purchase.lignes?.map((ligne) => (
+                  <div key={ligne.id} className="flex gap-4 items-center">
+                    <img
+                      src={ligne.annonce_image ? `${import.meta.env.VITE_API_URL}${ligne.annonce_image}` : "/placeholder.webp"}
+                      alt={ligne.annonce_titre}
+                      className="w-20 h-20 object-cover rounded-lg"
+                    />
+                    <div>
+                      <h3 className="font-bold text-lg text-gray-900 dark:text-white">{ligne.annonce_titre}</h3>
+                      <p className="text-gray-500 dark:text-gray-400"><T>quantity</T>: {ligne.quantite}</p>
+                      <p className="text-orange-500 font-bold">{ligne.prix_unitaire?.toLocaleString()} FCFA</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Détails commande */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <p><span className="font-medium"><T>date</T>:</span> {formatDate(purchase.created_at)}</p>
+                <p><span className="font-medium"><T>status</T>:</span> <StatutBadge statut={purchase.statut} /></p>
+                <p><span className="font-medium"><T>totalAmount</T>:</span> <span className="text-orange-500 font-bold">{purchase.prix_total?.toLocaleString()} FCFA</span></p>
               </div>
 
               {/* Informations vendeur */}
