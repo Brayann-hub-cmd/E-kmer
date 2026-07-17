@@ -34,7 +34,7 @@ import CentreAide from "./pages/FooterPages/CentreAide";
 import Conditions from "./pages/FooterPages/Conditions";
 import Confidentialite from "./pages/FooterPages/Confidentialite";
 import DevenirLivreur from "./pages/FooterPages/DevenirLivreur";
-import LivreurDashboard from "./pages/Livreur/LivreurDashboard";
+// import LivreurDashboard from "./pages/Livreur/LivreurDashboard";
 import HowToBuy from "./pages/FooterPages/CommentAcheter";
 import HowToSell from "./pages/FooterPages/CommentVendre";
 
@@ -73,7 +73,7 @@ function App() {
     { path: "/conditions", element: <Conditions /> },
     { path: "/confidentialite", element: <Confidentialite /> },
     { path: "/devenir-livreur", element: <DevenirLivreur /> },
-    { path: "/livreur/dashboard", element: <LivreurDashboard /> },
+    // { path: "/livreur/dashboard", element: <LivreurDashboard /> },
     { path: "/comment-vendre", element: <HowToSell /> },
     { path: "/comment-acheter", element: <HowToBuy /> }
   ]);

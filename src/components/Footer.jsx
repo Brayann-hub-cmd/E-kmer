@@ -132,12 +132,12 @@ const Footer = () => {
                         <ul className="space-y-2">
                             {categories.map((item, index) => (
                                 <li key={item.code}>
-                                    <Link
-                                        to={item.path}
+                                    <a
+                                        href={item.path}
                                         className="text-gray-300 dark:text-gray-400 hover:text-[#F25012] dark:hover:text-orange-400 transition-colors duration-300 text-sm cursor-pointer"
                                     >
                                         {item.name}
-                                    </Link>
+                                    </a>
                                 </li>
                             ))}
                         </ul>
