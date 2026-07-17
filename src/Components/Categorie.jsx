@@ -3,8 +3,11 @@ import { useState, useEffect } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import ProductCard from "./productCard";
 import api from "../api";
+import { useAppContext } from "../context/AppContext"; // ← IMPORT
+import T from "../components/T"; // ← IMPORT
 
 const CategorySection = ({ sousCategorie, categorieId }) => {
+  const { t } = useAppContext(); // ← Récupère les traductions
   const [produits, setProduits] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
@@ -79,7 +82,9 @@ const CategorySection = ({ sousCategorie, categorieId }) => {
         <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-4 pb-2 border-b-2 border-orange-500 inline-block">
           {sousCategorie.nom}
         </h2>
-        <p className="text-gray-500 dark:text-gray-400 text-center py-8">Aucun produit disponible dans cette catégorie.</p>
+        <p className="text-gray-500 dark:text-gray-400 text-center py-8">
+          <T>noProductsInCategory</T>
+        </p>
       </div>
     );
   }

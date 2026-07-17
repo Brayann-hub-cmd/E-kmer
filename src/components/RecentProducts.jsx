@@ -1,8 +1,12 @@
+// src/components/RecentProducts.jsx
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaClock, FaMapMarkerAlt } from "react-icons/fa";
+import { useAppContext } from "../context/AppContext"; // ← IMPORT
+import T from "../components/T"; // ← IMPORT
 
 function RecentProducts() {
+  const { t } = useAppContext(); // ← Récupère les traductions
   const [recentProducts, setRecentProducts] = useState([]);
   const navigate = useNavigate();
 
@@ -23,16 +27,16 @@ function RecentProducts() {
     return new Intl.NumberFormat('fr-FR').format(price) + " FCFA";
   };
 
-  // Formater la date
+  // ✅ Formatage de la date avec traduction
   const formatDate = (dateString) => {
     if (!dateString) return "";
     const date = new Date(dateString);
     const now = new Date();
     const diffDays = Math.floor((now - date) / (1000 * 60 * 60 * 24));
     
-    if (diffDays === 0) return "Aujourd'hui";
-    if (diffDays === 1) return "Hier";
-    if (diffDays < 7) return `Il y a ${diffDays} jours`;
+    if (diffDays === 0) return t.today || "Aujourd'hui";
+    if (diffDays === 1) return t.yesterday || "Hier";
+    if (diffDays < 7) return (t.daysAgo || "Il y a {days} jours").replace('{days}', diffDays);
     return date.toLocaleDateString('fr-FR');
   };
 
@@ -45,20 +49,20 @@ function RecentProducts() {
     <section className="bg-white dark:bg-gray-800 rounded-xl p-6 sm:p-8 md:p-10 my-8 sm:my-10 text-center shadow-sm border border-gray-100 dark:border-gray-700 transition-colors duration-300">
       
       <h2 className="text-xl sm:text-2xl font-bold text-gray-800 dark:text-white mb-4">
-        Consultations récentes
+        <T>recentConsultations</T>
       </h2>
 
       {recentProducts.length === 0 ? (
         <>
           <p className="mb-4 text-gray-500 dark:text-gray-400 text-sm sm:text-base">
-            Vous n'avez pas encore consulté d'articles.
+            <T>noRecentArticles</T>
           </p>
 
           <button
             onClick={handleExploreClick}
             className="inline-block bg-orange-500 hover:bg-orange-600 text-white px-5 sm:px-6 py-2 rounded-lg transition-colors text-sm sm:text-base font-medium"
           >
-            Explorer les articles
+            <T>exploreArticles</T>
           </button>
         </>
       ) : (
@@ -88,11 +92,13 @@ function RecentProducts() {
                 </p>
                 <div className="flex items-center gap-2 mt-2 text-xs text-gray-500 dark:text-gray-400">
                   <FaMapMarkerAlt className="text-orange-400 text-[10px]" />
-                  <span>{product.localisation || "Cameroun"}</span>
+                  <span>{product.localisation || t.cameroon || "Cameroun"}</span>
                 </div>
                 <div className="flex items-center gap-2 mt-1 text-xs text-gray-400 dark:text-gray-500">
                   <FaClock className="text-orange-400 text-[10px]" />
-                  <span>Consulté {formatDate(product.consultedAt)}</span>
+                  <span>
+                    <T>consulted</T> {formatDate(product.consultedAt)}
+                  </span>
                 </div>
               </div>
             </Link>

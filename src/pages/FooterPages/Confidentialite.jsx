@@ -1,13 +1,19 @@
 // src/pages/Footer/Confidentialite.jsx
 import { FaDatabase, FaCookie, FaUserSecret, FaRegClock } from "react-icons/fa";
 import BackToHome from "../../Components/BackToHome";
+import { useAppContext } from "../../context/AppContext"; // ← IMPORT
+import T from "../../components/T"; // ← IMPORT
 
 export default function Confidentialite() {
+  const { t } = useAppContext(); // ← Récupère les traductions
+
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 py-8 transition-colors duration-300">
       <div className="max-w-4xl mx-auto px-4">
         <BackToHome />
-        <h1 className="text-3xl font-bold text-black dark:text-white mb-6">Politique de confidentialité</h1>
+        <h1 className="text-3xl font-bold text-black dark:text-white mb-6">
+          <T>privacyTitle</T>
+        </h1>
 
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 transition-colors duration-300">
           <div className="space-y-6">
@@ -17,9 +23,11 @@ export default function Confidentialite() {
                 <FaDatabase className="text-white text-sm" />
               </div>
               <div>
-                <h2 className="text-lg font-bold text-black dark:text-white mb-2">Collecte des informations</h2>
+                <h2 className="text-lg font-bold text-black dark:text-white mb-2">
+                  <T>dataCollection</T>
+                </h2>
                 <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
-                  Nous collectons les informations que vous nous fournissez lors de votre inscription et de vos transactions sur la plateforme.
+                  <T>dataCollectionDesc</T>
                 </p>
               </div>
             </div>
@@ -30,9 +38,11 @@ export default function Confidentialite() {
                 <FaUserSecret className="text-white text-sm" />
               </div>
               <div>
-                <h2 className="text-lg font-bold text-black dark:text-white mb-2">Utilisation des données</h2>
+                <h2 className="text-lg font-bold text-black dark:text-white mb-2">
+                  <T>dataUsage</T>
+                </h2>
                 <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
-                  Vos données sont utilisées uniquement pour améliorer votre expérience sur la plateforme et faciliter vos transactions.
+                  <T>dataUsageDesc</T>
                 </p>
               </div>
             </div>
@@ -43,9 +53,11 @@ export default function Confidentialite() {
                 <FaCookie className="text-white text-sm" />
               </div>
               <div>
-                <h2 className="text-lg font-bold text-black dark:text-white mb-2">Cookies</h2>
+                <h2 className="text-lg font-bold text-black dark:text-white mb-2">
+                  <T>cookies</T>
+                </h2>
                 <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
-                  Nous utilisons des cookies pour personnaliser votre navigation et vous offrir une meilleure expérience.
+                  <T>cookiesDesc</T>
                 </p>
               </div>
             </div>
@@ -53,7 +65,9 @@ export default function Confidentialite() {
 
           <div className="mt-6 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg flex items-center justify-center gap-2 transition-colors duration-300">
             <FaRegClock className="text-gray-400 dark:text-gray-500 text-xs" />
-            <p className="text-gray-400 dark:text-gray-500 text-xs">Dernière mise à jour : 15 mai 2026</p>
+            <p className="text-gray-400 dark:text-gray-500 text-xs">
+              <T>lastUpdated</T> {t.lastUpdatedDate || "15 mai 2026"}
+            </p>
           </div>
         </div>
       </div>

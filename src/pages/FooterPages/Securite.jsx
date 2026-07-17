@@ -1,20 +1,26 @@
 // src/pages/Footer/Securite.jsx
 import { FaShieldAlt, FaLock, FaUserSecret, FaExclamationTriangle } from "react-icons/fa";
 import BackToHome from "../../Components/BackToHome";
+import { useAppContext } from "../../context/AppContext"; // ← IMPORT
+import T from "../../components/T"; // ← IMPORT
 
 export default function Securite() {
+  const { t } = useAppContext(); // ← Récupère les traductions
+
   const conseils = [
-    "Ne partagez jamais votre mot de passe",
-    "Vérifiez toujours le profil du vendeur avant d'acheter",
-    "Utilisez notre système de paiement sécurisé",
-    "Signalez tout comportement suspect"
+    { key: "securityTip1" },
+    { key: "securityTip2" },
+    { key: "securityTip3" },
+    { key: "securityTip4" }
   ];
 
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 py-8 transition-colors duration-300">
       <div className="max-w-4xl mx-auto px-4">
         <BackToHome />
-        <h1 className="text-3xl font-bold text-black dark:text-white mb-6">Sécurité</h1>
+        <h1 className="text-3xl font-bold text-black dark:text-white mb-6">
+          <T>securityTitle</T>
+        </h1>
 
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 space-y-6 transition-colors duration-300">
           {/* Protection des données */}
@@ -23,10 +29,11 @@ export default function Securite() {
               <FaShieldAlt className="text-white text-sm" />
             </div>
             <div>
-              <h2 className="text-lg font-bold text-black dark:text-white mb-1">Vos données sont protégées</h2>
+              <h2 className="text-lg font-bold text-black dark:text-white mb-1">
+                <T>dataProtected</T>
+              </h2>
               <p className="text-gray-600 dark:text-gray-300 text-sm">
-                Chez E-kmer, la sécurité de vos données personnelles est notre priorité. 
-                Toutes vos informations sont cryptées et ne sont jamais partagées avec des tiers.
+                <T>dataProtectedDesc</T>
               </p>
             </div>
           </div>
@@ -37,12 +44,14 @@ export default function Securite() {
               <FaLock className="text-white text-sm" />
             </div>
             <div className="flex-1">
-              <h2 className="text-lg font-bold text-black dark:text-white mb-3">Conseils de sécurité</h2>
+              <h2 className="text-lg font-bold text-black dark:text-white mb-3">
+                <T>securityTips</T>
+              </h2>
               <ul className="space-y-2">
                 {conseils.map((conseil, index) => (
                   <li key={index} className="flex items-center gap-2 text-gray-600 dark:text-gray-300 text-sm">
                     <div className="w-1.5 h-1.5 bg-orange-500 rounded-full"></div>
-                    {conseil}
+                    <T>{conseil.key}</T>
                   </li>
                 ))}
               </ul>
@@ -55,9 +64,11 @@ export default function Securite() {
               <FaExclamationTriangle className="text-white text-sm" />
             </div>
             <div>
-              <h2 className="text-lg font-bold text-red-700 dark:text-red-400 mb-1">En cas de problème</h2>
+              <h2 className="text-lg font-bold text-red-700 dark:text-red-400 mb-1">
+                <T>securityAlert</T>
+              </h2>
               <p className="text-red-600 dark:text-red-300 text-sm">
-                Contactez-nous immédiatement à <span className="font-mono">securite@e-kmer.com</span>
+                <T>securityAlertDesc</T> <span className="font-mono">securite@e-kmer.com</span>
               </p>
             </div>
           </div>

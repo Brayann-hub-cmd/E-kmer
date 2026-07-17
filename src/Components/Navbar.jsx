@@ -9,14 +9,13 @@ import api from "../api";
 import { useAppContext } from "../context/AppContext";
 
 export default function Navbar({ setTitle, setCategorie }) {
-  const { isDarkMode, toggleTheme } = useAppContext();
+  const { isDarkMode, toggleTheme, language, changeLanguage, t } = useAppContext();
 
   // ── États existants 
   const [category, setCategory] = useState({
     code: "CAT_000", nom: "Toutes les categories", path: "/toutes-categories"
   });
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
-  const [language, setLanguage] = useState("FRA");
   const [isLanguageOpen, setIsLanguageOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
@@ -119,18 +118,13 @@ export default function Navbar({ setTitle, setCategorie }) {
     setIsCategoryOpen(false);
   };
 
-  const handleLanguageChange = (lang) => {
-    setLanguage(lang);
-    setIsLanguageOpen(false);
-  };
-
   // ── Avatar utilisateur ────────────────────────────────────
   const formateProfil = (valeur) => {
     if (!valeur) return "P";
-    const t = String(valeur).split(" ");
-    return t.length > 1
-      ? t[0][0].toUpperCase() + t[1][0].toUpperCase()
-      : t[0][0]?.toUpperCase() || "P";
+    const parts = String(valeur).split(" ");
+    return parts.length > 1
+      ? parts[0][0].toUpperCase() + parts[1][0].toUpperCase()
+      : parts[0][0]?.toUpperCase() || "P";
   };
 
   const AvatarBtn = ({ size = "sm" }) => {
@@ -160,22 +154,24 @@ export default function Navbar({ setTitle, setCategorie }) {
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm">
       <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl max-w-sm w-full mx-4 overflow-hidden">
         <div className="flex justify-between items-center p-4 border-b border-gray-200 dark:border-gray-700">
-          <h3 className="text-base font-semibold text-gray-900 dark:text-white">Déconnexion</h3>
+          <h3 className="text-base font-semibold text-gray-900 dark:text-white">{t.logout}</h3>
           <button onClick={() => setShowLogoutModal(false)} className="text-gray-400 hover:text-gray-600 transition-colors">
             <FaTimes />
           </button>
         </div>
         <div className="p-6">
-          <p className="text-gray-600 dark:text-gray-300 text-sm">Êtes-vous sûr de vouloir vous déconnecter ?</p>
+          <p className="text-gray-600 dark:text-gray-300 text-sm">
+            {t.confirmLogout || "Êtes-vous sûr de vouloir vous déconnecter ?"}
+          </p>
         </div>
         <div className="flex gap-3 p-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
           <button onClick={() => setShowLogoutModal(false)}
             className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-sm">
-            Annuler
+            {t.cancel}
           </button>
           <button onClick={handleLogout}
             className="flex-1 px-4 py-2 bg-orange-500 hover:bg-red-600 text-white rounded-lg transition-colors text-sm font-semibold">
-            Se déconnecter
+            {t.logout}
           </button>
         </div>
       </div>
@@ -226,7 +222,9 @@ export default function Navbar({ setTitle, setCategorie }) {
               <div className="relative h-full" ref={categoryDesktopRef}>
                 <button type="button" onClick={() => setIsCategoryOpen(!isCategoryOpen)}
                   className="flex items-center gap-1 px-4 text-gray-700 dark:text-gray-300 bg-gray-200 dark:bg-gray-700 h-full whitespace-nowrap hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors rounded-l-2xl min-w-[160px]">
-                  <span className="text-sm font-medium truncate">{category.nom}</span>
+                  <span className="text-sm font-medium truncate">
+                    {category.code === "CAT_000" ? t.allCategories : category.nom}
+                  </span>
                   <FaChevronDown className={`text-xs transition-transform ${isCategoryOpen ? "rotate-180" : ""}`} />
                 </button>
                 {isCategoryOpen && (
@@ -240,7 +238,7 @@ export default function Navbar({ setTitle, setCategorie }) {
                   </div>
                 )}
               </div>
-              <input type="text" placeholder="Recherchez un produit..."
+              <input type="text" placeholder={t.search}
                 value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
                 className="flex-1 px-4 text-gray-900 dark:text-gray-100 outline-none text-sm bg-transparent" />
               <button type="submit"
@@ -258,8 +256,8 @@ export default function Navbar({ setTitle, setCategorie }) {
               <LangBtn onClick={() => setIsLanguageOpen(!isLanguageOpen)} />
               {isLanguageOpen && (
                 <div className="absolute top-full right-0 mt-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg shadow-xl w-32 overflow-hidden z-50 border border-gray-100 dark:border-gray-700">
-                  <button onClick={() => handleLanguageChange("FRA")} className="w-full flex items-center gap-2 px-4 py-3 text-sm hover:bg-orange-500 hover:text-white transition-colors">🇫🇷 Français</button>
-                  <button onClick={() => handleLanguageChange("ENG")} className="w-full flex items-center gap-2 px-4 py-3 text-sm hover:bg-orange-500 hover:text-white transition-colors">🇬🇧 English</button>
+                  <button onClick={() => changeLanguage("FRA")} className="w-full flex items-center gap-2 px-4 py-3 text-sm hover:bg-orange-500 hover:text-white transition-colors">🇫🇷 Français</button>
+                  <button onClick={() => changeLanguage("ENG")} className="w-full flex items-center gap-2 px-4 py-3 text-sm hover:bg-orange-500 hover:text-white transition-colors">🇬🇧 English</button>
                 </div>
               )}
             </div>
@@ -270,7 +268,7 @@ export default function Navbar({ setTitle, setCategorie }) {
                 <button onClick={() => setShowLogoutModal(true)}
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-700 hover:bg-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 border border-gray-600 transition-colors text-sm">
                   <FaSignOutAlt className="text-xs" />
-                  <span>Déconnexion</span>
+                  <span>{t.logout}</span>
                 </button>
               </div>
             ) : (
@@ -278,11 +276,11 @@ export default function Navbar({ setTitle, setCategorie }) {
                 <Link to="auth/login"
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-700 hover:bg-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 border border-gray-600 text-sm whitespace-nowrap transition-colors">
                   <FaUser className="text-xs" />
-                  <span>Se connecter</span>
+                  <span>{t.login}</span>
                 </Link>
                 <Link to="auth/register"
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-orange-500 hover:bg-orange-600 text-sm font-semibold whitespace-nowrap transition-colors">
-                  S'inscrire
+                  {t.register}
                 </Link>
               </div>
             )}
@@ -309,7 +307,9 @@ export default function Navbar({ setTitle, setCategorie }) {
               <div className="relative h-full" ref={categoryTabletRef}>
                 <button type="button" onClick={() => setIsCategoryOpen(!isCategoryOpen)}
                   className="flex items-center gap-1 px-2 text-gray-700 dark:text-gray-300 bg-gray-200 dark:bg-gray-700 h-full text-xs whitespace-nowrap rounded-l-lg">
-                  <span className="truncate max-w-[70px]">{category.nom}</span>
+                  <span className="truncate max-w-[70px]">
+                    {category.code === "CAT_000" ? t.allCategories : category.nom}
+                  </span>
                   <FaChevronDown className="text-[10px]" />
                 </button>
                 {isCategoryOpen && (
@@ -321,7 +321,7 @@ export default function Navbar({ setTitle, setCategorie }) {
                   </div>
                 )}
               </div>
-              <input type="text" placeholder="Rechercher..." value={searchTerm}
+              <input type="text" placeholder={t.search} value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="flex-1 px-2 text-gray-900 dark:text-gray-100 outline-none text-xs bg-transparent" />
               <button type="submit" className="bg-orange-500 hover:bg-orange-600 px-3 h-full rounded-r-lg transition-colors">
@@ -337,8 +337,8 @@ export default function Navbar({ setTitle, setCategorie }) {
               <LangBtn onClick={() => setIsLanguageOpen(!isLanguageOpen)} />
               {isLanguageOpen && (
                 <div className="absolute top-full right-0 mt-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg shadow-xl w-28 z-50 border border-gray-100 dark:border-gray-700">
-                  <button onClick={() => handleLanguageChange("FRA")} className="w-full px-3 py-2 text-xs hover:bg-orange-500 hover:text-white flex items-center gap-2 transition-colors">🇫🇷 Français</button>
-                  <button onClick={() => handleLanguageChange("ENG")} className="w-full px-3 py-2 text-xs hover:bg-orange-500 hover:text-white flex items-center gap-2 transition-colors">🇬🇧 English</button>
+                  <button onClick={() => changeLanguage("FRA")} className="w-full px-3 py-2 text-xs hover:bg-orange-500 hover:text-white flex items-center gap-2 transition-colors">🇫🇷 Français</button>
+                  <button onClick={() => changeLanguage("ENG")} className="w-full px-3 py-2 text-xs hover:bg-orange-500 hover:text-white flex items-center gap-2 transition-colors">🇬🇧 English</button>
                 </div>
               )}
             </div>
@@ -359,7 +359,7 @@ export default function Navbar({ setTitle, setCategorie }) {
                 </Link>
                 <Link to="/auth/register"
                   className="px-2 py-1 rounded-lg bg-orange-500 hover:bg-orange-600 text-xs font-semibold whitespace-nowrap transition-colors">
-                  S'inscrire
+                  {t.register}
                 </Link>
               </>
             )}
@@ -389,8 +389,8 @@ export default function Navbar({ setTitle, setCategorie }) {
                 <LangBtn onClick={() => setIsLanguageOpen(!isLanguageOpen)} />
                 {isLanguageOpen && (
                   <div className="absolute top-full right-0 mt-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg shadow-xl w-24 z-50 border border-gray-100 dark:border-gray-700">
-                    <button onClick={() => handleLanguageChange("FRA")} className="w-full px-2 py-2 text-xs hover:bg-orange-500 hover:text-white flex items-center gap-1 transition-colors">🇫🇷 FRA</button>
-                    <button onClick={() => handleLanguageChange("ENG")} className="w-full px-2 py-2 text-xs hover:bg-orange-500 hover:text-white flex items-center gap-1 transition-colors">🇬🇧 ENG</button>
+                    <button onClick={() => changeLanguage("FRA")} className="w-full px-2 py-2 text-xs hover:bg-orange-500 hover:text-white flex items-center gap-1 transition-colors">🇫🇷 FRA</button>
+                    <button onClick={() => changeLanguage("ENG")} className="w-full px-2 py-2 text-xs hover:bg-orange-500 hover:text-white flex items-center gap-1 transition-colors">🇬🇧 ENG</button>
                   </div>
                 )}
               </div>
@@ -411,7 +411,7 @@ export default function Navbar({ setTitle, setCategorie }) {
                   </Link>
                   <Link to="/auth/register"
                     className="px-2 py-1 rounded-lg bg-orange-500 hover:bg-orange-600 text-xs font-semibold transition-colors">
-                    S'inscrire
+                    {t.register}
                   </Link>
                 </>
               )}
@@ -432,7 +432,9 @@ export default function Navbar({ setTitle, setCategorie }) {
               <div className="relative h-full" ref={categoryMobileRef}>
                 <button type="button" onClick={() => setIsCategoryOpen(!isCategoryOpen)}
                   className="flex items-center gap-1 px-2 text-gray-700 dark:text-gray-300 bg-gray-200 dark:bg-gray-700 h-full text-xs whitespace-nowrap rounded-l-lg">
-                  <span className="truncate max-w-[60px]">{category.nom}</span>
+                  <span className="truncate max-w-[60px]">
+                    {category.code === "CAT_000" ? t.allCategories : category.nom}
+                  </span>
                   <FaChevronDown className="text-[10px]" />
                 </button>
                 {isCategoryOpen && (
@@ -444,7 +446,7 @@ export default function Navbar({ setTitle, setCategorie }) {
                   </div>
                 )}
               </div>
-              <input type="text" placeholder="Rechercher un produit"
+              <input type="text" placeholder={t.search}
                 value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
                 className="flex-1 px-2 text-gray-900 dark:text-gray-100 outline-none text-xs bg-transparent" />
               <button type="submit" className="bg-orange-500 hover:bg-orange-600 px-3 h-full rounded-r-lg transition-colors">

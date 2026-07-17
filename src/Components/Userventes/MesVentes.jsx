@@ -6,11 +6,15 @@ import SideBar from "./SideBar";
 import BackToHome from "../BackToHome";
 import api from "../../api";
 import toast from "react-hot-toast";
+import { useAppContext } from "../../context/AppContext"; // ← IMPORT
+import T from "../../components/T"; // ← IMPORT
 
 const LINK = import.meta.env.VITE_API_URL;
 
 // ── Carte produit en vente ───────────────────────────────────
 const SellCard = ({ product, onEdit, onDelete, onView, onViewSaleDetail }) => {
+  const { t } = useAppContext(); // ← Récupère les traductions
+  
   return (
     <div className="bg-white dark:bg-gray-800 rounded-2xl p-4 shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-md transition-all duration-300">
       {product.lignes?.map((ligne) => (
@@ -28,9 +32,9 @@ const SellCard = ({ product, onEdit, onDelete, onView, onViewSaleDetail }) => {
             <h3 className="font-semibold text-lg text-gray-800 dark:text-white">{ligne.annonce_titre}</h3>
             <p className="text-orange-500 font-bold text-lg">{(ligne.prix_unitaire ?? 0).toLocaleString()} FCFA</p>
             <div className="flex flex-wrap gap-4 mt-1 text-sm text-gray-500 dark:text-gray-400">
-              <p>Stock: <strong className="text-gray-700 dark:text-gray-300">{ligne.annonce_qte} unités</strong></p>
-              <p>Vendus: <strong className="text-gray-700 dark:text-gray-300">{ligne.quantite || 0}</strong></p>
-              <p>Vues: <strong className="text-gray-700 dark:text-gray-300">{ligne.vues || 0}</strong></p>
+              <p><T>stock</T>: <strong className="text-gray-700 dark:text-gray-300">{ligne.annonce_qte} <T>units</T></strong></p>
+              <p><T>sold</T>: <strong className="text-gray-700 dark:text-gray-300">{ligne.quantite || 0}</strong></p>
+              <p><T>views</T>: <strong className="text-gray-700 dark:text-gray-300">{ligne.vues || 0}</strong></p>
             </div>
           </div>
 
@@ -39,7 +43,7 @@ const SellCard = ({ product, onEdit, onDelete, onView, onViewSaleDetail }) => {
             {/* Statut */}
             <div className="flex items-center gap-2 bg-green-100 dark:bg-green-900 px-3 py-1 rounded-full transition-colors duration-300">
               <div className="w-2 h-2 bg-green-600 dark:bg-green-400 rounded-full"></div>
-              <span className="text-green-700 dark:text-green-300 text-sm font-medium">{product.status || "Actif"}</span>
+              <span className="text-green-700 dark:text-green-300 text-sm font-medium">{t.active || "Actif"}</span>
             </div>
 
             {/* Actions */}
@@ -48,25 +52,25 @@ const SellCard = ({ product, onEdit, onDelete, onView, onViewSaleDetail }) => {
                 onClick={() => onEdit(product.code)}
                 className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg text-sm flex items-center gap-1 transition-colors"
               >
-                <FaEdit /> Modifier
+                <FaEdit /> <T>edit</T>
               </button>
               <button
                 onClick={() => onView(product.code)}
                 className="bg-gray-500 hover:bg-gray-600 dark:bg-gray-600 dark:hover:bg-gray-500 text-white px-3 py-1.5 rounded-lg text-sm flex items-center gap-1 transition-colors"
               >
-                <FaEye /> Voir
+                <FaEye /> <T>view</T>
               </button>
               <button
                 onClick={() => onDelete(product.code, ligne.annonce_titre)}
                 className="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded-lg text-sm flex items-center gap-1 transition-colors"
               >
-                <FaTrash /> Supprimer
+                <FaTrash /> <T>delete</T>
               </button>
               <button
                 onClick={() => onViewSaleDetail(product.code)}
                 className="bg-purple-600 hover:bg-purple-700 text-white px-3 py-1.5 rounded-lg text-sm flex items-center gap-1 transition-colors"
               >
-                <FaReceipt /> Détail vente
+                <FaReceipt /> <T>saleDetails</T>
               </button>
             </div>
           </div>
@@ -78,6 +82,7 @@ const SellCard = ({ product, onEdit, onDelete, onView, onViewSaleDetail }) => {
 
 // Page principale Mes ventes
 export default function MySell() {
+  const { t } = useAppContext(); // ← Récupère les traductions
   const [user, setUser] = useState(null);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -116,14 +121,14 @@ export default function MySell() {
   };
 
   const handleDelete = async (code, titre) => {
-    if (!window.confirm(`Supprimer "${titre}" ?`)) return;
+    if (!window.confirm(t.confirmDelete?.replace('{titre}', titre) || `Supprimer "${titre}" ?`)) return;
     try {
       // TODO: Appel API suppression
       // await api.delete(`annonces/${code}/`);
       setProducts(prev => prev.filter(p => p.code !== code));
-      toast.success("Produit supprimé");
+      toast.success(t.successDelete || "Produit supprimé");
     } catch (error) {
-      toast.error("Erreur lors de la suppression");
+      toast.error(t.errorDelete || "Erreur lors de la suppression");
     }
   };
 
@@ -150,23 +155,27 @@ export default function MySell() {
           <BackToHome />
 
           <div className="flex justify-between items-center mb-6">
-            <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Mes produits en vente</h1>
+            <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
+              <T>myProductsOnSale</T>
+            </h1>
             <button
               onClick={() => navigate("/publier")}
               className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors"
             >
-              + Publier un produit
+              + <T>publishProduct</T>
             </button>
           </div>
 
           {products.length === 0 ? (
             <div className="bg-white dark:bg-gray-800 rounded-2xl p-12 text-center shadow-sm border border-gray-100 dark:border-gray-700 transition-colors duration-300">
-              <p className="text-gray-400 dark:text-gray-400 text-lg">Vous n'avez aucun produit en vente.</p>
+              <p className="text-gray-400 dark:text-gray-400 text-lg">
+                <T>noProducts</T>
+              </p>
               <button
                 onClick={() => navigate("/publier")}
                 className="mt-4 bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-lg transition-colors"
               >
-                Publier un produit
+                <T>publishProduct</T>
               </button>
             </div>
           ) : (

@@ -1,11 +1,15 @@
+// src/pages/CategoriePage.jsx
 import React, { useState, useEffect, useMemo } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import CategorySection from "../../components/Categorie";
 import BackToHome from "../../components/BackToHome";
 import api from "../../api";
 import toast from "react-hot-toast";
+import { useAppContext } from "../../context/AppContext"; // ← IMPORT
+import T from "../../components/T"; // ← IMPORT
 
 const CategoriePage = () => {
+  const { t } = useAppContext(); // ← Récupère les traductions
   const { categorieSlug } = useParams();
   const [searchParams] = useSearchParams();
   const categorieId = searchParams.get("id");
@@ -30,11 +34,11 @@ const CategoriePage = () => {
           nom: `${response.data.nom}`
         }));
       } catch (error) {
-        toast.error("Une erreur est survenue lors de la collection de la catégorie:" + error, { position: 'top-center' });
+        toast.error(t.errorLoading + ": " + error, { position: 'top-center' });
       }
     };
     getCategorie();
-  }, [categorieId]);
+  }, [categorieId, t]);
   
   useEffect(() => {
     setCategorieNom(categorie.nom);
@@ -46,11 +50,11 @@ const CategoriePage = () => {
         const response = await api.get("categories/");
         setCategories(response.data);
       } catch (error) {
-        toast.error("Erreur survenue lors de la collection des catégories de produits:" + error, { position: 'top-center' });
+        toast.error(t.errorLoadingCategories + ": " + error, { position: 'top-center' });
       }
     };
     getCategories();
-  }, []);
+  }, [t]);
 
   const slugToNom = useMemo(() => {
     const map = {};
@@ -66,7 +70,7 @@ const CategoriePage = () => {
       const response = await api.get(`low_categories/${id_categorie}/sous_categories/`);
       return response.data;
     } catch (error) {
-      toast.error("Erreur survenue lors de la collection des sous catégories" + error, { position: 'top-center' });
+      toast.error(t.errorLoadingSubCategories + ": " + error, { position: 'top-center' });
       return [];
     }
   };
@@ -87,7 +91,7 @@ const CategoriePage = () => {
         if (data.length > 0) {
           setActiveSousCategorie(data[0].code);
         }
-        setCategorieNom(slugToNom[categorieSlug] || "Catégorie");
+        setCategorieNom(slugToNom[categorieSlug] || t.category || "Catégorie");
       } catch (error) {
         console.error("Erreur API:", error);
         setSousCategories([]);
@@ -97,7 +101,7 @@ const CategoriePage = () => {
     };
 
     loadSousCategories();
-  }, [categorieId, categorieSlug, slugToNom]);
+  }, [categorieId, categorieSlug, slugToNom, t]);
 
   const scrollToSection = (code) => {
     setActiveSousCategorie(code);
@@ -116,10 +120,10 @@ const CategoriePage = () => {
         {/* En-tête */}
         <div className="mb-8">
           <h1 className="text-3xl sm:text-4xl font-bold text-gray-800 dark:text-white">
-            {categorieNom || "Catégorie"}
+            {categorieNom || <T>category</T>}
           </h1>
           <p className="text-gray-500 dark:text-gray-400 mt-1">
-            Découvrez tous nos produits
+            <T>discoverAllProducts</T>
           </p>
           {categorieId && process.env.NODE_ENV === "development" && (
             <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
@@ -131,7 +135,7 @@ const CategoriePage = () => {
         {sousCategories.length > 0 && (
           <div className="mb-10">
             <h2 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-3">
-              Rechercher par Catégories
+              <T>searchCategories</T>
             </h2>
             <div className="flex flex-wrap gap-2">
               {sousCategories.map((sc) => (
@@ -167,10 +171,10 @@ const CategoriePage = () => {
             {sousCategories.length === 0 && (
               <div className="text-center py-20 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 transition-colors duration-300">
                 <p className="text-gray-500 dark:text-gray-400 text-lg">
-                  Aucune sous-catégorie trouvée.
+                  <T>noSubCategories</T>
                 </p>
                 <p className="text-gray-400 dark:text-gray-500 text-sm mt-2">
-                  Cette catégorie n'a pas encore de sous-catégories.
+                  <T>noSubCategoriesDesc</T>
                 </p>
               </div>
             )}

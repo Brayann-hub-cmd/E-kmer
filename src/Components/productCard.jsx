@@ -3,8 +3,13 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { FaMapMarkerAlt, FaClock, FaHeart, FaRegHeart, FaEye } from "react-icons/fa";
 import api from "../api";
-const LINK = import.meta.env.VITE_API_URL
+import { useAppContext } from "../context/AppContext"; // ← IMPORT
+import T from "../components/T"; // ← IMPORT
+
+const LINK = import.meta.env.VITE_API_URL;
+
 const ProductCard = ({ product }) => {
+  const { t } = useAppContext(); // ← Récupère les traductions
   const [isLiked, setIsLiked] = useState(false);
   const [likesCount, setLikesCount] = useState(product?.likes_count || 0);
   const [viewsCount, setViewsCount] = useState(product?.views_count || 0);
@@ -70,17 +75,17 @@ const ProductCard = ({ product }) => {
     return new Intl.NumberFormat('fr-FR').format(price) + " FCFA";
   };
 
-  // Formatage de la date
+  // ✅ Formatage de la date avec traduction
   const formatDate = (dateString) => {
-    if (!dateString) return "Date inconnue";
+    if (!dateString) return t.unknownDate || "Date inconnue";
     const date = new Date(dateString);
     const today = new Date();
     const diffTime = Math.abs(today - date);
     const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
 
-    if (diffDays === 0) return "Aujourd'hui";
-    if (diffDays === 1) return "Hier";
-    if (diffDays < 7) return `Il y a ${diffDays} jours`;
+    if (diffDays === 0) return t.today || "Aujourd'hui";
+    if (diffDays === 1) return t.yesterday || "Hier";
+    if (diffDays < 7) return (t.daysAgo || "Il y a {days} jours").replace('{days}', diffDays);
     return date.toLocaleDateString('fr-FR');
   };
 
@@ -90,7 +95,7 @@ const ProductCard = ({ product }) => {
       {/* Badge de vues - en haut à gauche */}
       <div className="absolute top-2 left-2 z-10 bg-black/60 backdrop-blur-sm text-white text-[10px] px-2 py-1 rounded-full flex items-center gap-1">
         <FaEye className="text-[9px]" />
-        <span>{viewsCount.toLocaleString()} vues</span>
+        <span>{viewsCount.toLocaleString()} <T>views</T></span>
       </div>
 
       {/* Bouton Like - en haut à droite */}
@@ -98,7 +103,7 @@ const ProductCard = ({ product }) => {
         onClick={handleLike}
         disabled={isLoading}
         className="absolute top-2 right-2 z-10 bg-white/90 hover:bg-white rounded-full p-1.5 shadow-md hover:scale-110 transition-all duration-200 disabled:opacity-50"
-        aria-label={isLiked ? "Retirer des favoris" : "Ajouter aux favoris"}
+        aria-label={isLiked ? t.removeFavorite || "Retirer des favoris" : t.addFavorite || "Ajouter aux favoris"}
       >
         {isLiked ? (
           <FaHeart className="text-red-500 text-sm" />
@@ -116,7 +121,7 @@ const ProductCard = ({ product }) => {
       <Link to={`/produit/${product?.code}`} className="block overflow-hidden">
         <img
           src={product?.image ? product.image : "/placeholder-image.jpg"}
-          alt={product?.titre || "Produit"}
+          alt={product?.titre || t.untitled || "Produit"}
           className="w-full h-40 object-cover bg-gray-100 group-hover:scale-105 transition-transform duration-300"
         />
       </Link>
@@ -126,7 +131,7 @@ const ProductCard = ({ product }) => {
         {/* Titre */}
         <Link to={`/produit/${product?.code}`} className="block hover:text-orange-500 transition-colors">
           <h3 className="text-sm font-semibold text-gray-800 line-clamp-1 mb-1">
-            {product?.titre || "Sans titre"}
+            {product?.titre || t.untitled || "Sans titre"}
           </h3>
         </Link>
 
@@ -139,7 +144,7 @@ const ProductCard = ({ product }) => {
         <div className="flex items-center gap-1 mb-1">
           <FaMapMarkerAlt className="text-orange-500 text-[10px]" />
           <span className="text-gray-500 text-xs truncate">
-            {product?.localisation || "Localisation inconnue"}
+            {product?.localisation || t.unknownLocation || "Localisation inconnue"}
           </span>
         </div>
 
@@ -154,7 +159,7 @@ const ProductCard = ({ product }) => {
           to={`/produit/${product?.code}`}
           className="block w-full text-center bg-orange-500 hover:bg-orange-600 text-white text-xs font-medium py-2 rounded-lg transition-colors"
         >
-          Voir les détails
+          <T>viewDetails</T>
         </Link>
       </div>
     </div>

@@ -5,8 +5,11 @@ import { FaSearch, FaFilter } from "react-icons/fa";
 import ProductCard from "../../components/productCard";
 import api from "../../api";
 import BackToHome from "../../Components/BackToHome";
+import { useAppContext } from "../../context/AppContext"; // ← IMPORT
+import T from "../../components/T"; // ← IMPORT
 
 export default function AllProducts() {
+  const { t } = useAppContext(); // ← Récupère les traductions
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -61,8 +64,12 @@ export default function AllProducts() {
       <div className="max-w-7xl mx-auto px-4 py-8">
         <BackToHome />
 
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Tous les produits</h1>
-        <p className="text-gray-500 dark:text-gray-400 mb-6">Découvrez tous les produits disponibles sur la plateforme</p>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+          <T>allProducts</T>
+        </h1>
+        <p className="text-gray-500 dark:text-gray-400 mb-6">
+          <T>discoverAllProducts</T>
+        </p>
 
         {/* Barre de recherche et filtres */}
         <div className="flex flex-col sm:flex-row gap-4 mb-8">
@@ -70,7 +77,7 @@ export default function AllProducts() {
             <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500" />
             <input
               type="text"
-              placeholder="Rechercher un produit..."
+              placeholder={t.searchProduct || "Rechercher un produit..."}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full pl-10 pr-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-colors duration-300"
@@ -83,7 +90,7 @@ export default function AllProducts() {
               onChange={(e) => setSelectedCategory(e.target.value)}
               className="pl-10 pr-8 py-3 border border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white appearance-none transition-colors duration-300"
             >
-              <option value="">Toutes les catégories</option>
+              <option value=""><T>allCategoriesFilter</T></option>
               {categories.map((cat) => {
                 return (
                   <option key={cat.code} value={cat.code}>{cat.nom}</option>
@@ -94,13 +101,17 @@ export default function AllProducts() {
         </div>
 
         {/* Résultats */}
-        <p className="text-gray-500 dark:text-gray-400 text-sm mb-4">{filteredProducts.length} produit(s) trouvé(s)</p>
+        <p className="text-gray-500 dark:text-gray-400 text-sm mb-4">
+          {filteredProducts.length} <T>productsFound</T>
+        </p>
 
         {filteredProducts.length === 0 ? (
           <div className="bg-white dark:bg-gray-800 rounded-2xl p-16 text-center shadow-sm border border-gray-100 dark:border-gray-700 transition-colors duration-300">
-            <p className="text-gray-400 dark:text-gray-400 text-lg">Aucun produit trouvé</p>
+            <p className="text-gray-400 dark:text-gray-400 text-lg">
+              <T>noProductsFound</T>
+            </p>
             <button onClick={() => { setSearchTerm(""); setSelectedCategory(""); }} className="mt-4 text-orange-500 dark:text-orange-400 hover:text-orange-600 dark:hover:text-orange-300 transition-colors">
-              Réinitialiser les filtres
+              <T>resetFilters</T>
             </button>
           </div>
         ) : (

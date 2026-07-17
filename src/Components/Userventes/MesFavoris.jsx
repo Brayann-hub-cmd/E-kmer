@@ -5,37 +5,44 @@ import SideBar from "./SideBar";
 import api from "../../api";
 import toast from "react-hot-toast";
 import { FaShoppingCart, FaHeart } from "react-icons/fa";
+import { useAppContext } from "../../context/AppContext"; // ← IMPORT
+import T from "../../components/T"; // ← IMPORT
 
 // ── Carte favori ──────────────────────────────────────────────
-const FavoriCard = ({ produit, onAcheter }) => (
-  <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden flex flex-col transition-colors duration-300">
-    {/* Image */}
-    <div className="relative">
-      <img
-        src={produit.image || "/placeholder.webp"}
-        alt={produit.titre}
-        className="w-full h-44 object-cover"
-      />
-    </div>
-
-    {/* Infos */}
-    <div className="p-4 flex flex-col gap-3">
-      <div>
-        <p className="text-orange-500 font-bold text-lg">{produit.prix.toLocaleString()} FCFA</p>
-        <p className="text-gray-700 dark:text-gray-300 font-medium text-sm mt-0.5">{produit.titre}</p>
+const FavoriCard = ({ produit, onAcheter }) => {
+  const { t } = useAppContext(); // ← Récupère les traductions
+  
+  return (
+    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden flex flex-col transition-colors duration-300">
+      {/* Image */}
+      <div className="relative">
+        <img
+          src={produit.image || "/placeholder.webp"}
+          alt={produit.titre}
+          className="w-full h-44 object-cover"
+        />
       </div>
-      <button
-        onClick={() => onAcheter(produit.id)}
-        className="w-full bg-orange-500 hover:bg-orange-600 text-white py-2 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 transition-colors"
-      >
-        <FaShoppingCart /> Acheter
-      </button>
+
+      {/* Infos */}
+      <div className="p-4 flex flex-col gap-3">
+        <div>
+          <p className="text-orange-500 font-bold text-lg">{produit.prix.toLocaleString()} FCFA</p>
+          <p className="text-gray-700 dark:text-gray-300 font-medium text-sm mt-0.5">{produit.titre}</p>
+        </div>
+        <button
+          onClick={() => onAcheter(produit.id)}
+          className="w-full bg-orange-500 hover:bg-orange-600 text-white py-2 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 transition-colors"
+        >
+          <FaShoppingCart /> <T>buy</T>
+        </button>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 // ── Page principale ───────────────────────────────────────────
 export default function MesFavoris() {
+  const { t } = useAppContext(); // ← Récupère les traductions
   const [user, setUser] = useState(null);
   const [favoris, setFavoris] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -47,13 +54,11 @@ export default function MesFavoris() {
         const userResponse = await api.get("auth/profile/");
         setUser(userResponse.data);
 
-        // TODO: remplacer par l'appel API réel → GET /api/favoris/
-        // Les produits sont récupérés depuis l'API des favoris
         const favorisResponse = await api.get("favoris/");
         setFavoris(favorisResponse.data);
       } catch (error) {
         console.error("Erreur chargement favoris:", error);
-        toast.error("Erreur de chargement des favoris");
+        toast.error(t.errorLoading || "Erreur de chargement");
         // Données mock en attendant l'API
         setFavoris([
           { id: 1, titre: "Casque Sony", image: "/casque.webp", prix: 15000 },
@@ -88,14 +93,18 @@ export default function MesFavoris() {
         {/* Contenu principal */}
         <div className="flex-1 p-4 sm:p-6">
 
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Mes favoris</h1>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+            <T>myFavorites</T>
+          </h1>
 
           {favoris.length === 0 ? (
             <div className="bg-white dark:bg-gray-800 rounded-2xl p-12 text-center shadow-sm border border-gray-100 dark:border-gray-700 transition-colors duration-300">
               <FaHeart className="text-gray-300 dark:text-gray-600 text-5xl mx-auto mb-4" />
-              <p className="text-gray-400 dark:text-gray-400 text-lg">Vous n'avez pas encore de favoris.</p>
+              <p className="text-gray-400 dark:text-gray-400 text-lg">
+                <T>noFavorites</T>
+              </p>
               <p className="text-gray-400 dark:text-gray-500 text-sm mt-2">
-                Ajoutez des produits en favoris en cliquant sur le ❤️ sur les produits qui vous intéressent.
+                <T>addFavoritesHint</T>
               </p>
             </div>
           ) : (

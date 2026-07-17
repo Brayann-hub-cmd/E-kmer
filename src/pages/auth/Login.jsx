@@ -1,3 +1,4 @@
+// src/pages/Login.jsx
 import React, { useState } from "react";
 import { AiOutlineLock, AiOutlinePhone, AiOutlineMail } from "react-icons/ai";
 import { MdAlternateEmail } from "react-icons/md";
@@ -5,50 +6,73 @@ import { Link, useNavigate } from "react-router-dom";
 import BackToHome from "../../components/BackToHome";
 import api from '../../api';
 import toast from "react-hot-toast";
+import { useAppContext } from "../../context/AppContext";
+import T from "../../components/T";
 
 function Login() {
+  const { t } = useAppContext();
   const [loginMethod, setLoginMethod] = useState("phone");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (loginMethod === "email") {
-      try {
-        const response = await api.post('auth/login/', { email: email, password: password });
-        localStorage.setItem('token', response.data.token);
-        const userData = response.data.user;
-        toast.success(`Bienvenu M./Mme ${userData.username} !`);
-        setTimeout(() => {
-          navigate('/');
-        }, 1500);
-      } catch (error) {
-        if (error.response?.status === 401) {
-          toast.error('Email ou mot de passe incorrect.');
-        } else {
-          console.log(`Erreur! ${error}.`);
-        }
+    setIsLoading(true);
+
+    try {
+      // 1. Construction du payload selon la méthode choisie
+      const endpoint = loginMethod === "email" ? 'auth/login/' : 'auth/login/tel';
+      const payload = loginMethod === "email"
+        ? { email, password }
+        : { telephone: phone, password };
+
+      // 2. Appel API
+      const response = await api.post(endpoint, payload);
+
+      // 3. Vérification de la réponse
+      if (!response.data || !response.data.token || !response.data.user) {
+        throw new Error("Réponse invalide du serveur");
       }
-    }
-    if (loginMethod === "phone") {
-      try {
-        const response = await api.post('auth/login/tel', { telephone: phone, password: password });
-        localStorage.setItem('token', response.data.token);
-        const userData = response.data.user;
-        toast.success(`Bienvenu M./Mme ${userData.username} !`);
-        setTimeout(() => {
-          navigate('/', { state: { user: userData } });
-        }, 1500);
-      } catch (error) {
-        if (error.response?.status === 401) {
-          toast.error('Téléphone ou mot de passe incorrect.');
-        } else {
-          console.log(`Erreur! ${error.message}.`);
-        }
+
+      // 4. Stockage du token
+      localStorage.setItem('token', response.data.token);
+      if (rememberMe) {
+        localStorage.setItem('user', JSON.stringify(response.data.user));
       }
+
+      // 5. Message de succès (avec fallback)
+      const username = response.data.user?.username || 'Utilisateur';
+      const welcomeMsg = t.welcomeMessage 
+        ? t.welcomeMessage.replace('{username}', username)
+        : `Bienvenue ${username} !`;
+      toast.success(welcomeMsg);
+
+      // 6. Redirection immédiate et sécurisée
+      console.log("✅ Connexion réussie, redirection vers l'accueil...");
+      navigate('/', { replace: true });
+
+    } catch (error) {
+      console.error("Erreur lors de la connexion :", error);
+
+      // Gestion des erreurs
+      if (error.response?.status === 401) {
+        const errorMsg = loginMethod === "email"
+          ? t.invalidEmailPassword || 'Email ou mot de passe incorrect.'
+          : t.invalidPhonePassword || 'Téléphone ou mot de passe incorrect.';
+        toast.error(errorMsg);
+      } else if (error.response?.status === 404) {
+        toast.error(t.accountNotFound || 'Compte introuvable.');
+      } else if (error.code === 'ERR_NETWORK') {
+        toast.error(t.connectionError || 'Erreur de connexion au serveur.');
+      } else {
+        toast.error(t.serverError || 'Une erreur est survenue. Veuillez réessayer.');
+      }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -62,9 +86,11 @@ function Login() {
 
         <div className="text-center mb-6 mt-6">
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-            Connexion à <span className="text-orange-500">E-kmer</span>
+            <T>loginTitle</T>
           </h1>
-          <p className="text-gray-500 dark:text-gray-400 text-sm">Accédez à votre compte pour continuer</p>
+          <p className="text-gray-500 dark:text-gray-400 text-sm">
+            <T>loginSubtitle</T>
+          </p>
         </div>
 
         <div className="mb-6">
@@ -78,7 +104,7 @@ function Login() {
                   : "bg-white dark:bg-gray-700 text-gray-500 dark:text-gray-300"
               }`}
             >
-              Avec votre téléphone
+              <T>withPhone</T>
             </button>
             <button
               type="button"
@@ -89,7 +115,7 @@ function Login() {
                   : "bg-white dark:bg-gray-700 text-gray-500 dark:text-gray-300"
               }`}
             >
-              Avec votre email
+              <T>withEmail</T>
             </button>
           </div>
         </div>
@@ -98,7 +124,7 @@ function Login() {
           {loginMethod === "phone" ? (
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Numéro de téléphone
+                <T>phone</T>
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -110,7 +136,7 @@ function Login() {
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   className="w-full pl-20 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-orange-500 focus:border-orange-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-colors duration-300"
-                  placeholder="6XX XXX XXX"
+                  placeholder={t.phonePlaceholder || "6XX XXX XXX"}
                   required
                 />
               </div>
@@ -118,7 +144,7 @@ function Login() {
           ) : (
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Adresse email
+                <T>email</T>
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -129,7 +155,7 @@ function Login() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-orange-500 focus:border-orange-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-colors duration-300"
-                  placeholder="votre@email.com"
+                  placeholder={t.emailPlaceholder || "votre@email.com"}
                   required
                 />
               </div>
@@ -138,7 +164,7 @@ function Login() {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Mot de passe
+              <T>password</T>
             </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -149,7 +175,7 @@ function Login() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-orange-500 focus:border-orange-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-colors duration-300"
-                placeholder="••••••••"
+                placeholder={t.passwordPlaceholder || "••••••••"}
                 required
               />
             </div>
@@ -163,18 +189,25 @@ function Login() {
                 onChange={(e) => setRememberMe(e.target.checked)}
                 className="w-4 h-4 text-orange-600 bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-600 rounded focus:ring-orange-500"
               />
-              <span className="ml-2 text-sm text-gray-600 dark:text-gray-300">Se souvenir de moi</span>
+              <span className="ml-2 text-sm text-gray-600 dark:text-gray-300">
+                <T>rememberMe</T>
+              </span>
             </label>
             <a href="#" className="text-sm text-orange-600 dark:text-orange-400 hover:text-orange-700 dark:hover:text-orange-300">
-              Mot de passe oublié ?
+              <T>forgotPassword</T>
             </a>
           </div>
 
           <button
             type="submit"
-            className="w-full bg-orange-500 hover:bg-orange-600 text-white py-2 px-4 rounded-lg transition-colors duration-300"
+            disabled={isLoading}
+            className={`w-full py-2 px-4 rounded-lg transition-colors duration-300 ${
+              isLoading
+                ? "bg-orange-300 cursor-not-allowed"
+                : "bg-orange-500 hover:bg-orange-600 text-white"
+            }`}
           >
-            Connexion
+            {isLoading ? "Connexion en cours..." : <T>signIn</T>}
           </button>
         </form>
 
@@ -191,9 +224,9 @@ function Login() {
 
         <div className="mt-6 text-center">
           <p className="text-gray-600 dark:text-gray-400 text-sm">
-            Vous n'avez pas de compte ?{" "}
+            <T>noAccount</T>{" "}
             <Link to={'/auth/register'} className="text-orange-600 dark:text-orange-400 hover:text-orange-700 dark:hover:text-orange-300 font-medium transition-colors">
-              Créer un compte
+              <T>createAccount</T>
             </Link>
           </p>
         </div>
