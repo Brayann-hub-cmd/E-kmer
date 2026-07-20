@@ -1,6 +1,6 @@
 // src/pages/ProductDetail.jsx
 import React, { useState, useEffect } from 'react';
-import Footer from '../../Components/Footer';
+import Footer from '../../components/Footer';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { 
   FaShoppingCart, 
@@ -12,7 +12,7 @@ import {
   FaUserCircle
 } from 'react-icons/fa';
 import api from '../../api';
-import BackToHome from '../../Components/BackToHome';
+import BackToHome from '../../components/BackToHome';
 import { useAppContext } from "../../context/AppContext"; // ← IMPORT
 import T from "../../components/T"; // ← IMPORT
 

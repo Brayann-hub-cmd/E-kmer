@@ -7,47 +7,26 @@ import RecapCommande from "../../components/RecapCommande";
 import PaiementMobile from "../../components/PaiementMobile";
 import BackToHome from "../../components/BackToHome";
 import toast from "react-hot-toast";
-import { useAppContext } from "../../context/AppContext"; // ← IMPORT
-import T from "../../components/T"; // ← IMPORT
+import { useAppContext } from "../../context/AppContext";
+import T from "../../components/T";
 
 export default function Paiement() {
-  const { t } = useAppContext(); // ← Récupère les traductions
+  const { t } = useAppContext();
   const [commande, setCommande] = useState([]);
   const [panierTotal, setPanierTotal] = useState(0);
   const [etape, setEtape] = useState(1);
   const [livraison, setLivraison] = useState(null);
+  const [order, setOrder] = useState(null);           // ← la vraie Order créée côté backend
+  const [creatingOrder, setCreatingOrder] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchPanier = async () => {
       try {
         const res = await api.get("panier/");
-        console.log("Panier API response:", res.data);
-        
-        // ✅ CORRECTION : Extraire les items correctement
-        let items = [];
-        let total = 0;
-        
-        if (res.data && Array.isArray(res.data)) {
-          // Si l'API renvoie directement un tableau
-          items = res.data;
-        } else if (res.data && res.data.items && Array.isArray(res.data.items)) {
-          // Si l'API renvoie { items: [...] }
-          items = res.data.items;
-          total = res.data.total || 0;
-        } else {
-          // Si la réponse est vide ou mal formée
-          items = [];
-          toast.error(t.emptyCartError || "Panier vide ou mal formaté");
-        }
-        
-        setCommande(items);
-        setPanierTotal(total);
-        
-        console.log("Items extraits:", items);
-        console.log("Total:", total);
-        
-      } catch (err) { 
+        setCommande(res.data.items || []);
+        setPanierTotal(Number(res.data.total) || 0);
+      } catch (err) {
         console.error("Erreur chargement panier:", err);
         toast.error(err?.response?.data?.error || t.cartLoadError || "Erreur chargement panier");
         setCommande([]);
@@ -62,34 +41,23 @@ export default function Paiement() {
     setEtape(2);
   };
 
-  const handleConfirmCommande = () => setEtape(3);
-
-  const handlePaiementSucces = async () => {
+  // Étape 2 → 3 : on crée VRAIMENT la commande ici, avant le paiement
+  const handleConfirmCommande = async () => {
+    setCreatingOrder(true);
     try {
-      await api.post("commandes/", { commande, livraison });
-      navigate("/confirmation");
-    } catch (err) { 
-      console.error(err);
-      toast.error(err?.response?.data?.error || t.orderConfirmError || "Erreur lors de la confirmation");
+      const res = await api.post("commandes/");
+      setOrder(res.data);
+      setEtape(3);
+    } catch (err) {
+      console.error("Erreur création commande:", err);
+      toast.error(err?.response?.data?.error || t.orderCreateError || "Erreur lors de la création de la commande");
+    } finally {
+      setCreatingOrder(false);
     }
   };
 
-  // ✅ Calcul du sous-total avec vérification
-  const sousTotal = Array.isArray(commande) 
-    ? commande.reduce((acc, item) => {
-        const prix = item.prix || item.annonce_prix || 0;
-        const qte = item.quantite || 1;
-        return acc + (prix * qte);
-      }, 0)
-    : 0;
-    
-  // Utiliser le total du panier si disponible, sinon le calcul
-  const total = (panierTotal || sousTotal) + (livraison?.fraisTotal || 0);
-
-  // ✅ Log pour déboguer
-  console.log("Commande:", commande);
-  console.log("Sous-total:", sousTotal);
-  console.log("Total:", total);
+  const sousTotal = panierTotal;
+  const total = sousTotal + (livraison?.fraisTotal || 0);
 
   if (commande.length === 0) {
     return (
@@ -118,7 +86,6 @@ export default function Paiement() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4 transition-colors duration-300">
       <div className="max-w-4xl mx-auto">
-        
         <BackToHome />
 
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
@@ -138,14 +105,18 @@ export default function Paiement() {
 
         {etape === 1 && <LivraisonChoix onValidate={handleLivraisonValidee} />}
         {etape === 2 && (
-          <RecapCommande 
-            commande={commande} 
-            livraison={livraison} 
-            onConfirm={handleConfirmCommande} 
-            onBack={() => setEtape(1)} 
+          <RecapCommande
+            commande={commande}
+            livraison={livraison}
+            total={total}
+            onConfirm={handleConfirmCommande}
+            onBack={() => setEtape(1)}
+            loading={creatingOrder}
           />
         )}
-        {etape === 3 && <PaiementMobile total={total} onSuccess={handlePaiementSucces} />}
+        {etape === 3 && order && (
+          <PaiementMobile order={order} total={total} />
+        )}
       </div>
     </div>
   );

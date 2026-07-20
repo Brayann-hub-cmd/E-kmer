@@ -1,6 +1,6 @@
 // src/pages/Footer/Confidentialite.jsx
 import { FaDatabase, FaCookie, FaUserSecret, FaRegClock } from "react-icons/fa";
-import BackToHome from "../../Components/BackToHome";
+import BackToHome from "../../components/BackToHome";
 import { useAppContext } from "../../context/AppContext"; // ← IMPORT
 import T from "../../components/T"; // ← IMPORT
 

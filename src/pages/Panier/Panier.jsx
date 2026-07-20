@@ -3,42 +3,37 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaTrash } from "react-icons/fa";
 import api from "../../api";
-import BackToHome from "../../Components/BackToHome";
+import BackToHome from "../../components/BackToHome";
 import toast from "react-hot-toast";
-import { useAppContext } from "../../context/AppContext"; // ← IMPORT
-import T from "../../components/T"; // ← IMPORT
+import { useAppContext } from "../../context/AppContext";
+import T from "../../components/T";
 
 const LINK = import.meta.env.VITE_API_URL;
 const LIVRAISON = 5000;
 
-// ── Carte produit panier ──────────────────────────────────────
 const PanierCard = ({ item, onQteChange, onSupprimer }) => {
-  const { t } = useAppContext(); // ← Récupère les traductions
-  const sousTotalItem = item.sous_total || item.prix * item.quantite;
-  
+  const { t } = useAppContext();
+
   return (
     <div className="bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 transition-colors duration-300">
       <div className="flex gap-5 items-start">
-        {/* Image */}
         <img
-          src={LINK + (item.annonce_image || item.image) || "/placeholder.webp"}
-          alt={item.annonce_titre || item.titre}
+          src={item.annonce_image ? `${LINK}${item.annonce_image}` : "/placeholder.webp"}
+          alt={item.annonce_titre}
           className="w-40 h-32 object-cover rounded-xl flex-shrink-0"
         />
 
-        {/* Infos */}
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between gap-2">
             <div>
-              <h3 className="font-bold text-lg text-gray-900 dark:text-white">{item.annonce_titre || item.titre}</h3>
+              <h3 className="font-bold text-lg text-gray-900 dark:text-white">{item.annonce_titre}</h3>
               <p className="text-gray-400 dark:text-gray-400 text-sm mt-0.5 font-medium">
-                <T>publishedBy</T> {item.annonce_vendeur || item.vendeur}
+                <T>publishedBy</T> {item.annonce_vendeur}
               </p>
               <p className="text-orange-500 font-bold text-xl mt-2">
-                {(item.annonce_prix || item.prix)?.toLocaleString()} FCFA
+                {Number(item.annonce_prix).toLocaleString()} FCFA
               </p>
             </div>
-            {/* Bouton supprimer */}
             <button
               onClick={() => onSupprimer(item.id)}
               className="text-orange-500 hover:text-red-600 transition-colors p-1"
@@ -48,13 +43,11 @@ const PanierCard = ({ item, onQteChange, onSupprimer }) => {
             </button>
           </div>
 
-          {/* Sélecteur quantité */}
           <div className="flex items-center gap-4 mt-3">
             <div className="flex items-center border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
               <button
-                onClick={() => onQteChange(item.id, item.quantite + 1, item.annonce_id)}
+                onClick={() => onQteChange(item.id, item.quantite + 1)}
                 className="px-3 py-1.5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors font-bold text-lg"
-                disabled={item.quantite >= (item.stock || item.annonce_qte || 999)}
               >
                 +
               </button>
@@ -62,82 +55,66 @@ const PanierCard = ({ item, onQteChange, onSupprimer }) => {
                 {item.quantite}
               </span>
               <button
-                onClick={() => onQteChange(item.id, item.quantite - 1, item.annonce_id)}
+                onClick={() => onQteChange(item.id, item.quantite - 1)}
                 className="px-3 py-1.5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors font-bold text-lg"
                 disabled={item.quantite <= 1}
               >
                 -
               </button>
             </div>
-            <span className="text-gray-500 dark:text-gray-400 text-sm">
-              {(item.stock || item.annonce_qte || 0)} <T>inStock</T>
-            </span>
           </div>
         </div>
       </div>
 
-      {/* Séparateur + sous-total */}
       <hr className="my-4 border-gray-100 dark:border-gray-700" />
       <p className="text-gray-700 dark:text-gray-300 font-semibold text-sm">
-        <T>subtotal</T> : {sousTotalItem.toLocaleString()} FCFA
+        <T>subtotal</T> : {Number(item.sous_total).toLocaleString()} FCFA
       </p>
     </div>
   );
 };
 
-// ── Page principale ───────────────────────────────────────────
 export default function Panier() {
-  const { t } = useAppContext(); // ← Récupère les traductions
+  const { t } = useAppContext();
   const [panierData, setPanierData] = useState({ items: [], total: 0 });
   const [loadingPanier, setLoadingPanier] = useState(true);
   const navigate = useNavigate();
 
-  // Chargement du panier au montage
+  const fetchPanier = async () => {
+    try {
+      const response = await api.get("panier/");
+      setPanierData(response.data);
+    } catch (error) {
+      console.error("Erreur chargement panier:", error);
+      toast.error(error?.response?.data?.error || t.cartLoadError || "Erreur chargement panier");
+      setPanierData({ items: [], total: 0 });
+    } finally {
+      setLoadingPanier(false);
+    }
+  };
+
   useEffect(() => {
-    const getPanier = async () => {
-      try {
-        const response = await api.get("panier/");
-        if (response.data && Array.isArray(response.data)) {
-          setPanierData({ items: response.data, total: 0 });
-        } else if (response.data && response.data.items) {
-          setPanierData(response.data);
-        } else {
-          setPanierData({ items: [], total: 0 });
-        }
-      } catch (error) {
-        console.error("Erreur chargement panier:", error);
-        toast.error(error?.response?.data?.error || t.cartLoadError || "Erreur chargement panier");
-        setPanierData({ items: [], total: 0 });
-      } finally {
-        setLoadingPanier(false);
-      }
-    };
-    getPanier();
+    fetchPanier();
   }, [t]);
 
-  const handleQteChange = async (id, nouvelleQte, annonce_id) => {
+  const handleQteChange = async (id, nouvelleQte) => {
     if (nouvelleQte < 1) return;
-    
+
     setPanierData((prev) => ({
       ...prev,
       items: prev.items.map((item) =>
         item.id === id
-          ? { 
-              ...item, 
-              quantite: Math.min(nouvelleQte, item.stock || item.annonce_qte || 999),
-              sous_total: (item.annonce_prix || item.prix) * Math.min(nouvelleQte, item.stock || item.annonce_qte || 999)
-            }
+          ? { ...item, quantite: nouvelleQte, sous_total: item.annonce_prix * nouvelleQte }
           : item
       )
     }));
-    
+
     try {
-      await api.patch(`panier/items/${id}/`, { annonce: annonce_id, quantite: nouvelleQte });
+      await api.patch(`panier/items/${id}/`, { quantite: nouvelleQte });
     } catch (error) {
       console.error("Erreur mise à jour quantité:", error);
       toast.error(error?.response?.data?.error || t.quantityError || "Erreur mise à jour");
-      const response = await api.get("panier/");
-      setPanierData(response.data);
+      fetchPanier();
     }
   };
 
@@ -146,20 +123,19 @@ export default function Panier() {
       ...prev,
       items: prev.items.filter((item) => item.id !== id)
     }));
-    
+
     try {
       await api.delete(`panier/items/${id}/`);
       toast.success(t.successRemove || "Article supprimé du panier");
     } catch (error) {
       console.error("Erreur suppression:", error);
       toast.error(error?.response?.data?.error || t.deleteError || "Erreur suppression");
-      const response = await api.get("panier/");
-      setPanierData(response.data);
+      fetchPanier();
     }
   };
 
   const items = panierData.items || [];
-  const sousTotal = panierData.total || items.reduce((acc, item) => acc + (item.sous_total || (item.annonce_prix || item.prix) * item.quantite), 0);
+  const sousTotal = Number(panierData.total) || 0;
   const total = sousTotal + LIVRAISON;
 
   if (loadingPanier) {
@@ -173,7 +149,6 @@ export default function Panier() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
       <div className="max-w-6xl mx-auto px-4 py-8">
-        
         <BackToHome />
 
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
@@ -197,7 +172,6 @@ export default function Panier() {
           </div>
         ) : (
           <div className="flex flex-col lg:flex-row gap-8 items-start">
-            
             <div className="flex-1 space-y-4 w-full">
               {items.map((item) => (
                 <PanierCard
@@ -244,7 +218,6 @@ export default function Panier() {
                 <T>continueShopping</T>
               </button>
             </div>
-
           </div>
         )}
       </div>

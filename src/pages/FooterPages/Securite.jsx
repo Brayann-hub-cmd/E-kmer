@@ -1,6 +1,6 @@
 // src/pages/Footer/Securite.jsx
 import { FaShieldAlt, FaLock, FaUserSecret, FaExclamationTriangle } from "react-icons/fa";
-import BackToHome from "../../Components/BackToHome";
+import BackToHome from "../../components/BackToHome";
 import { useAppContext } from "../../context/AppContext"; // ← IMPORT
 import T from "../../components/T"; // ← IMPORT
 

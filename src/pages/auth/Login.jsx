@@ -37,11 +37,34 @@ function Login() {
       if (!response.data || !response.data.token || !response.data.user) {
         throw new Error("Réponse invalide du serveur");
       }
+<<<<<<< HEAD
 
       // 4. Stockage du token
       localStorage.setItem('token', response.data.token);
       if (rememberMe) {
         localStorage.setItem('user', JSON.stringify(response.data.user));
+=======
+    }
+    if (loginMethod === "phone") {
+      try {
+        const response = await api.post('auth/login/tel', {
+          telephone: `+237${phone}`,
+          password: password
+        });
+        localStorage.setItem('token', response.data.token);
+        const userData = response.data.user;
+        toast.success(t.welcomeMessage.replace('{username}', userData.username) || `Bienvenu M./Mme ${userData.username} !`);
+        setTimeout(() => {
+          navigate('/', { state: { user: userData } });
+        }, 1500);
+      } catch (error) {
+        if (error.response?.status === 401) {
+          toast.error(t.invalidPhonePassword || 'Téléphone ou mot de passe incorrect.');
+        } else {
+          toast.error(t.serverError || "Une erreur est survenue, réessayez.");
+          console.error(error);
+        }
+>>>>>>> 9663f3ca58c9dbfb6bc283f1dc8196ced7777218
       }
 
       // 5. Message de succès (avec fallback)
@@ -79,7 +102,7 @@ function Login() {
   return (
     <div className="min-h-screen bg-[#F3F3F3] dark:bg-gray-900 flex items-center justify-center transition-colors duration-300">
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-8 w-[420px] relative transition-colors duration-300">
-        
+
         <div className="absolute top-4 left-4">
           <BackToHome />
         </div>
@@ -98,22 +121,20 @@ function Login() {
             <button
               type="button"
               onClick={() => setLoginMethod("phone")}
-              className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition ${
-                loginMethod === "phone"
-                  ? "bg-orange-500 text-white"
-                  : "bg-white dark:bg-gray-700 text-gray-500 dark:text-gray-300"
-              }`}
+              className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition ${loginMethod === "phone"
+                ? "bg-orange-500 text-white"
+                : "bg-white dark:bg-gray-700 text-gray-500 dark:text-gray-300"
+                }`}
             >
               <T>withPhone</T>
             </button>
             <button
               type="button"
               onClick={() => setLoginMethod("email")}
-              className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition ${
-                loginMethod === "email"
-                  ? "bg-orange-500 text-white"
-                  : "bg-white dark:bg-gray-700 text-gray-500 dark:text-gray-300"
-              }`}
+              className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition ${loginMethod === "email"
+                ? "bg-orange-500 text-white"
+                : "bg-white dark:bg-gray-700 text-gray-500 dark:text-gray-300"
+                }`}
             >
               <T>withEmail</T>
             </button>
