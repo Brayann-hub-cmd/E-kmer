@@ -28,7 +28,7 @@ const PanierCard = ({ item, onQteChange, onSupprimer }) => {
             <div>
               <h3 className="font-bold text-lg text-gray-900 dark:text-white">{item.annonce_titre}</h3>
               <p className="text-gray-400 dark:text-gray-400 text-sm mt-0.5 font-medium">
-                <T>publishedBy</T> {item.annonce_vendeur}
+                <T>published by</T> {item.annonce_vendeur}
               </p>
               <p className="text-orange-500 font-bold text-xl mt-2">
                 {Number(item.annonce_prix).toLocaleString()} FCFA
