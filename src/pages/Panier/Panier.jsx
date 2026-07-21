@@ -18,7 +18,7 @@ const PanierCard = ({ item, onQteChange, onSupprimer }) => {
     <div className="bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 transition-colors duration-300">
       <div className="flex gap-5 items-start">
         <img
-          src={item.annonce_image ? `${LINK}${item.annonce_image}` : "/placeholder.webp"}
+          src={item.annonce_image ? `${item.annonce_image}` : "/placeholder.webp"}
           alt={item.annonce_titre}
           className="w-40 h-32 object-cover rounded-xl flex-shrink-0"
         />
