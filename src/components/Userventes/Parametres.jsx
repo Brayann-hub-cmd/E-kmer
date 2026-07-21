@@ -109,7 +109,7 @@ export default function Parametres() {
           description_boutique: u.description_boutique || "",
         });
         if (u.photo_profil) {
-          setAvatarPreview(`${LINK}${u.photo_profil}`);
+          setAvatarPreview(`${u.photo_profil}`);
         }
       } catch (error) {
         toast.error(error.response?.data?.error || t.errorLoading || "Erreur de chargement");
