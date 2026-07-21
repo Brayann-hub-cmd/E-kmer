@@ -30,7 +30,7 @@ const ProductCard = ({ product }) => {
       {/* Image */}
       <Link to={`/produit/${product.code}`} className="block overflow-hidden">
         <img
-          src={product.image ? `${LINK}${product.image}` : "/placeholder-image.jpg"}
+          src={product.image ? `${product.image}` : "/placeholder-image.jpg"}
           alt={product.titre}
           className="w-full h-40 object-cover bg-gray-100 group-hover:scale-105 transition-transform duration-300"
         />
