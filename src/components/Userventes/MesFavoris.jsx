@@ -12,7 +12,7 @@ const FavoriCard = ({ produit, onAcheter }) => (
     {/* Image */}
     <div className="relative">
       <img
-        src={produit.annonce_image ? `${LINK}${produit.annonce_image}` : "/placeholder.webp"}
+        src={produit.annonce_image ? `${produit.annonce_image}` : "/placeholder.webp"}
         alt={produit?.annonce_titre || "Sans titre"}
         className="w-full h-44 object-cover"
       />
