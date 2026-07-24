@@ -1,6 +1,6 @@
 // src/components/Footer.jsx
 import React, { useEffect, useState, useMemo } from 'react';
-import logo from '../../public/logo.png'
+import logo from '../../public/logo.png';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 // Icônes
@@ -15,44 +15,60 @@ import {
 } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import api from '../api';
-import { useAppContext } from '../context/AppContext'; // ← IMPORT
-import T from '../components/T'; // ← IMPORT
+import { useAppContext } from '../context/AppContext';
+import T from '../components/T';
 
 const Footer = () => {
-    const { t } = useAppContext(); // ← Récupère les traductions
-    const [data, setData] = useState([])
+    const { t } = useAppContext();
+    const [data, setData] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const getCategories = async () => {
+            setLoading(true);
             try {
-                const response = await api.get("categories/")
-                setData(response.data)
+                const response = await api.get('categories/');
+                // Vérifier que la réponse est bien un tableau
+                if (Array.isArray(response.data)) {
+                    setData(response.data);
+                } else {
+                    console.warn('La réponse API n\'est pas un tableau :', response.data);
+                    setData([]);
+                }
             } catch (error) {
-                console.error("footer error, ", error);
+                console.error('Erreur footer (catégories) :', error);
+                setData([]);
+            } finally {
+                setLoading(false);
             }
-        }
+        };
         getCategories();
-    }, [])
+    }, []);
 
-    const categories = useMemo(
-        () => {
-            return data.map((cat) => ({
-                code: `${cat.code}`,
-                name: `${cat.nom}`,
-                path: `/categorie/${cat.nom.toLowerCase().replace(/\s+/g, '-').normalize("NFD").replace(/[\u0300-\u036f]/g, '')}?id=${cat.code}`,
-            }));
-        }, [data]
-    );
+    const categories = useMemo(() => {
+        // Vérifier que data est un tableau avant d'appeler map
+        if (!Array.isArray(data)) {
+            return [];
+        }
+        return data.map((cat) => ({
+            code: `${cat.code}`,
+            name: `${cat.nom}`,
+            path: `/categorie/${cat.nom
+                .toLowerCase()
+                .replace(/\s+/g, '-')
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')}?id=${cat.code}`,
+        }));
+    }, [data]);
 
     useEffect(() => {
         AOS.init({
             duration: 1000,
             once: true,
-            offset: 100
+            offset: 100,
         });
     }, []);
 
-    // Liens utiles - maintenant traduits dynamiquement
     const liensUtiles = [
         { key: 'about', path: '/a-propos' },
         { key: 'register', path: '/auth/register' },
@@ -60,22 +76,21 @@ const Footer = () => {
         { key: 'security', path: '/securite' },
         { key: 'help', path: '/aide' },
         { key: 'terms', path: '/conditions' },
-        { key: 'privacy', path: '/confidentialite' }
+        { key: 'privacy', path: '/confidentialite' },
     ];
 
-    // Vendre et acheter - maintenant traduits dynamiquement
     const vendreAcheter = [
         { key: 'howToSell', path: '/comment-vendre' },
         { key: 'howToBuy', path: '/comment-acheter' },
         { key: 'startSelling', path: '/vendre' },
-        { key: 'orders', path: '/commandes' }
+        { key: 'orders', path: '/commandes' },
     ];
 
     const socialIcons = [
         { icon: FaFacebookF, path: 'https://facebook.com', label: 'Facebook' },
         { icon: FaWhatsapp, path: 'https://whatsapp.com', label: 'WhatsApp' },
         { icon: FaTwitter, path: 'https://twitter.com', label: 'Twitter' },
-        { icon: FaYoutube, path: 'https://youtube.com', label: 'YouTube' }
+        { icon: FaYoutube, path: 'https://youtube.com', label: 'YouTube' },
     ];
 
     return (
@@ -84,18 +99,15 @@ const Footer = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-4">
 
                     {/* Colonne 1 - Logo et réseaux sociaux */}
-                    <div
-                        className="space-y-4"
-                        data-aos="fade-up"
-                        data-aos-delay="100"
-                    >
+                    <div className="space-y-4" data-aos="fade-up" data-aos-delay="100">
                         <div className="relative w-64 right-9">
-                            <a href='/' className='cursor-pointer'><img src={logo} alt="Logo" /></a>
+                            <a href="/" className="cursor-pointer">
+                                <img src={logo} alt="Logo" />
+                            </a>
                         </div>
                         <p className="text-gray-300 dark:text-gray-400 text-sm">
                             <T>sellAndBuyTagline</T>
                         </p>
-
                         <div className="flex gap-5 pt-2">
                             {socialIcons.map((social, index) => (
                                 <a
@@ -112,35 +124,33 @@ const Footer = () => {
                         </div>
                     </div>
 
-                    {/* Colonne 2 - Catégorie */}
-                    <div
-                        className="space-y-4"
-                        data-aos="fade-up"
-                        data-aos-delay="200"
-                    >
+                    {/* Colonne 2 - Catégories */}
+                    <div className="space-y-4" data-aos="fade-up" data-aos-delay="200">
                         <h3 className="text-lg font-semibold text-[#F25012] dark:text-orange-500 pb-2">
                             <T>category</T>
                         </h3>
                         <ul className="space-y-2">
-                            {categories.map((item, index) => (
-                                <li key={item.code}>
-                                    <Link
-                                        to={item.path}
-                                        className="text-gray-300 dark:text-gray-400 hover:text-[#F25012] dark:hover:text-orange-400 transition-colors duration-300 text-sm cursor-pointer"
-                                    >
-                                        {item.name}
-                                    </Link>
-                                </li>
-                            ))}
+                            {loading ? (
+                                <li className="text-gray-400 text-sm">Chargement des catégories...</li>
+                            ) : categories.length === 0 ? (
+                                <li className="text-gray-400 text-sm">Aucune catégorie disponible</li>
+                            ) : (
+                                categories.map((item) => (
+                                    <li key={item.code}>
+                                        <Link
+                                            to={item.path}
+                                            className="text-gray-300 dark:text-gray-400 hover:text-[#F25012] dark:hover:text-orange-400 transition-colors duration-300 text-sm cursor-pointer"
+                                        >
+                                            {item.name}
+                                        </Link>
+                                    </li>
+                                ))
+                            )}
                         </ul>
                     </div>
 
                     {/* Colonne 3 - Liens utiles */}
-                    <div
-                        className="space-y-4"
-                        data-aos="fade-up"
-                        data-aos-delay="300"
-                    >
+                    <div className="space-y-4" data-aos="fade-up" data-aos-delay="300">
                         <h3 className="text-lg font-semibold text-[#F25012] dark:text-orange-500 pb-2">
                             <T>usefulLinks</T>
                         </h3>
@@ -159,11 +169,7 @@ const Footer = () => {
                     </div>
 
                     {/* Colonne 4 - Vendre et acheter */}
-                    <div
-                        className="space-y-4"
-                        data-aos="fade-up"
-                        data-aos-delay="400"
-                    >
+                    <div className="space-y-4" data-aos="fade-up" data-aos-delay="400">
                         <h3 className="text-lg font-semibold text-[#F25012] dark:text-orange-500 pb-2">
                             <T>sellAndBuy</T>
                         </h3>
@@ -182,11 +188,7 @@ const Footer = () => {
                     </div>
 
                     {/* Colonne 5 - Contact */}
-                    <div
-                        className="space-y-4"
-                        data-aos="fade-up"
-                        data-aos-delay="500"
-                    >
+                    <div className="space-y-4" data-aos="fade-up" data-aos-delay="500">
                         <h3 className="text-lg font-semibold text-[#F25012] dark:text-orange-500 pb-2">
                             <T>contact</T>
                         </h3>
@@ -195,7 +197,6 @@ const Footer = () => {
                                 <FaMapMarkerAlt className="text-[#F25012] dark:text-orange-500 mt-1 flex-shrink-0" />
                                 <span>Douala, Cameroun</span>
                             </div>
-
                             <div className="flex items-center gap-3">
                                 <FaPhoneAlt className="text-[#F25012] dark:text-orange-500 flex-shrink-0" />
                                 <a
@@ -205,7 +206,6 @@ const Footer = () => {
                                     +237 6XX XXX XXX
                                 </a>
                             </div>
-
                             <div className="flex items-center gap-3">
                                 <FaEnvelope className="text-[#F25012] dark:text-orange-500 flex-shrink-0" />
                                 <a
