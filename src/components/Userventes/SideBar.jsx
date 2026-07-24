@@ -106,7 +106,7 @@ export default function SideBar({ user }) {
         <div className="relative w-24 h-24 mx-auto">
           {user?.photo_profil ? (
             <img
-              src={`${LINK}${user.photo_profil}`}
+              src={`${user.photo_profil}`}
               alt="Avatar"
               className="w-full h-full object-cover rounded-full"
             />
