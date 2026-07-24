@@ -58,8 +58,7 @@ export default function Paiement() {
 
   const sousTotal = panierTotal;
   const total = sousTotal + (livraison?.fraisTotal || 0);
-  const paymentAmount = order?.total ?? sousTotal;
-  const paymentAmount = order?.total ?? sousTotal;
+  const paymentAmount = order?.total ?? total;
 
   if (commande.length === 0) {
     return (
