@@ -12,17 +12,23 @@ const Home = () => {
   const { t } = useAppContext();
   const [categorie, setCategorie] = useState("CAT_000");
   const [title, setTitle] = useState("");
-  
+
   return (
-    <div className="min-h-screen flex flex-col bg-white dark:bg-gray-900 transition-colors duration-300">
-      <Navbar setTitle={setTitle} setCategorie={setCategorie} />
-      <Header />
-      <PopularOffers title={title} categorie={categorie} />
-      <Hero1Blue />
-      <RecentProduct />
-      <Hero2Orange />
-      <Footer />
-    </div>
+    <>
+      <SEO
+        title="Ekmer | Marketplace de commerce électronique"
+        description="Achetez, vendez et faites livrer vos produits partout au Cameroun grâce à Ekmer."
+      />
+      <div className="min-h-screen flex flex-col bg-white dark:bg-gray-900 transition-colors duration-300">
+        <Navbar setTitle={setTitle} setCategorie={setCategorie} />
+        <Header />
+        <PopularOffers title={title} categorie={categorie} />
+        <Hero1Blue />
+        <RecentProduct />
+        <Hero2Orange />
+        <Footer />
+      </div>
+    </>
   );
 };
 
