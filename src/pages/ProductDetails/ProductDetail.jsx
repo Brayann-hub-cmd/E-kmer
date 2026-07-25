@@ -38,7 +38,6 @@ const ProductDetail = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [isFavorite, setIsFavorite] = useState(false);
-  const [favoriteLoading, setFavoriteLoading] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -56,7 +55,6 @@ const ProductDetail = () => {
       try {
         const response = await api.get(`annonces/${id}/`);
         setProduct(response.data);
-        setIsFavorite(response.data.est_favori ?? false);
         setCurrentImageIndex(0);
         setQuantity(1);
       } catch (error) {
@@ -93,26 +91,9 @@ const ProductDetail = () => {
     }
   };
 
-  const toggleFavorite = async () => {
-    if (!product.code || favoriteLoading) {
-      return;
-    }
-
-    setFavoriteLoading(true);
-    const nextValue = !isFavorite;
-
-    try {
-      if (nextValue) {
-        await api.post("favoris/", { annonce: product.code });
-      } else {
-        await api.delete(`favoris/${product.code}/`);
-      }
-      setIsFavorite(nextValue);
-    } catch (error) {
-      console.error("Erreur favoris:", error);
-    } finally {
-      setFavoriteLoading(false);
-    }
+  const toggleFavorite = () => {
+    
+    setIsFavorite(!isFavorite);
   };
 
   const handleAddToCart = async () => {
@@ -325,13 +306,12 @@ const ProductDetail = () => {
                 
                 <button
                   onClick={toggleFavorite}
-                  disabled={favoriteLoading}
                   className={`flex items-center justify-center gap-2 border-2 ${
                     isFavorite ? 'border-red-500 text-red-500' : 'border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300'
-                  } ${favoriteLoading ? 'opacity-70 cursor-wait' : 'hover:bg-gray-50 dark:hover:bg-gray-700'} font-medium rounded-xl py-3 px-4 transition-colors w-full`}
+                  } hover:bg-gray-50 dark:hover:bg-gray-700 font-medium rounded-xl py-3 px-4 transition-colors w-full`}
                 >
                   <FaHeart className={`text-base ${isFavorite ? 'text-red-500' : 'text-gray-400 dark:text-gray-500'}`} />
-                  {favoriteLoading ? (t.loading || "Chargement...") : <T>favorites</T>}
+                  <T>favorites</T>
                 </button>
               </div>
               

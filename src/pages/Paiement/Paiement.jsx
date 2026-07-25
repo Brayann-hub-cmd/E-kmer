@@ -45,7 +45,18 @@ export default function Paiement() {
   const handleConfirmCommande = async () => {
     setCreatingOrder(true);
     try {
-      const res = await api.post("commandes/");
+      const payload = {};
+      if (livraison?.modeLivraison === 'domicile') {
+        payload.livraison = {
+          modeLivraison: livraison.modeLivraison,
+          fraisTotal: livraison.fraisTotal,
+          livreur_id: livraison.livreur?.id,
+          ville_depart: livraison.trajet?.ville_depart,
+          ville_livraison: livraison.adresse?.ville,
+        };
+      }
+
+      const res = await api.post("commandes/", payload);
       setOrder(res.data);
       setEtape(3);
     } catch (err) {
@@ -116,7 +127,7 @@ export default function Paiement() {
           />
         )}
         {etape === 3 && order && (
-          <PaiementMobile order={order} total={total} />
+          <PaiementMobile order={order} total={paymentAmount} />
         )}
       </div>
     </div>
