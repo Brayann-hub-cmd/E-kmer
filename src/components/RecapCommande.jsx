@@ -18,7 +18,7 @@ export default function RecapCommande({ commande, livraison, total, onConfirm, o
         {commande.map(p => (
           <div key={p.id} className="flex gap-3 items-center border-b border-gray-100 dark:border-gray-700 pb-3">
             <img
-              src={p.annonce_image ? `${LINK}${p.annonce_image}` : "/placeholder.webp"}
+              src={p.annonce_image ? `${p.annonce_image}` : "/placeholder.webp"}
               className="w-16 h-16 object-cover rounded-lg"
               alt={p.annonce_titre}
             />
