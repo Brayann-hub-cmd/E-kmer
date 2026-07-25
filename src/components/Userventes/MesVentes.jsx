@@ -21,7 +21,7 @@ const SellCard = ({ product, onEdit, onDelete, onView, onViewSaleDetail }) => {
         <div key={ligne.id} className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
 
           <img
-            src={`${LINK}${ligne.annonce_image}`}
+            src={`${ligne.annonce_image}`}
             alt={ligne.annonce_titre}
             className="w-24 h-24 object-cover rounded-lg flex-shrink-0"
           />
@@ -36,24 +36,24 @@ const SellCard = ({ product, onEdit, onDelete, onView, onViewSaleDetail }) => {
 
           <div className="flex flex-col sm:flex-row gap-3 items-end sm:items-center">
             <div className="flex gap-2 flex-wrap">
-              <button
+              {/* <button
                 onClick={() => onEdit(ligne.annonce)}
                 className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg text-sm flex items-center gap-1 transition-colors"
               >
                 <FaEdit /> <T>edit</T>
-              </button>
-              <button
+              </button> */}
+              {/* <button
                 onClick={() => onView(ligne.annonce)}
                 className="bg-gray-500 hover:bg-gray-600 dark:bg-gray-600 dark:hover:bg-gray-500 text-white px-3 py-1.5 rounded-lg text-sm flex items-center gap-1 transition-colors"
               >
                 <FaEye /> <T>view</T>
-              </button>
-              <button
+              </button> */}
+              {/* <button
                 onClick={() => onDelete(ligne.annonce, ligne.annonce_titre)}
                 className="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded-lg text-sm flex items-center gap-1 transition-colors"
               >
                 <FaTrash /> <T>delete</T>
-              </button>
+              </button> */}
               <button
                 onClick={() => onViewSaleDetail(product.code)}
                 className="bg-purple-600 hover:bg-purple-700 text-white px-3 py-1.5 rounded-lg text-sm flex items-center gap-1 transition-colors"

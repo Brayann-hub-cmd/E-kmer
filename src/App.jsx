@@ -21,7 +21,9 @@ import Parametres from "./components/Userventes/Parametres";
 // ========== PAGES DÉTAILS COMMANDES ==========
 import PurchaseDetail from "./components/Userventes/PurchaseDetail";
 import SaleDetail from "./components/Userventes/SaleDetail";
-
+import MesCommandes from './pages/MesCommandes';
+import CommandeDetail from './pages/CommandeDetail';
+import VenteDetail from './pages/VenteDetail';
 // ========== PAGES PANIER & PAIEMENT ==========
 import PanierCard from "./pages/Panier/Panier";
 import Paiement from "./pages/Paiement/Paiement";
@@ -55,8 +57,11 @@ function App() {
 
     // ===== COMMANDES =====
     { path: "/achat/:id", element: <PurchaseDetail /> },
-    { path: "/vente/:id", element: <SaleDetail /> },
-
+    // { path: "/vente/:id", element: <SaleDetail /> },
+    { path: "/vente/:code", element: <VenteDetail /> },
+    { path: "/commandes", element: <MesCommandes /> },
+    { path: "/commandes/:orderId", element: <CommandeDetail /> },
+    
     // ===== PANIER & PAIEMENT =====
     { path: "/panier", element: <PanierCard /> },
     { path: "/paiement", element: <Paiement /> },

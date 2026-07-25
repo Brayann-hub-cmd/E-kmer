@@ -18,12 +18,14 @@ export default function PaiementMobile({ order, total }) {
     setLoading(true);
     setError("");
     try {
-      const res = await api.post("paiements/initier/", {
-        order_id: order.id,
-        telephone: numero,
-      });
-      // Redirection vers la page de paiement CinetPay
-      window.location.href = res.data.payment_url;
+      const res = await api.post("paiements/initier/", { order_id: order.id, telephone: numero });
+
+      if (res.data.mode === "simulation") {
+        await api.post("paiements/simuler/", { transaction_id: res.data.transaction_id });
+        window.location.href = `/commandes/${order.id}`; // adapte à ta vraie route de confirmation
+      } else {
+        window.location.href = res.data.payment_url;
+      }
     } catch (err) {
       console.error("Erreur initiation paiement:", err);
       setError(err?.response?.data?.error || t.paymentError || "Erreur de paiement");

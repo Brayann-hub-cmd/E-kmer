@@ -50,6 +50,7 @@ export default function SideBar({ user }) {
     { key: "achats", label: t.myPurchases || "Mes achats", icon: FaShoppingCart, path: "/profile/achats" },
     { key: "favoris", label: t.myFavorites || "Mes favoris", icon: FaHeart, path: "/profile/favoris" },
     { key: "articles", label: t.myArticles || "Mes articles", icon: FaBoxes, path: "/profile/articles" },
+    { key: "commandes", label: t.myOrders || "Mes commandes", icon: FaBoxes, path: "/commandes" },
     { key: "parametres", label: t.settings || "Paramètres", icon: FaCog, path: "/profile/parametres" },
   ];
 
