@@ -6,7 +6,7 @@ import BackToHome from "../BackToHome";
 import api from "../../api";
 import toast from "react-hot-toast";
 import { useAppContext } from "../../context/AppContext"; // ← IMPORT
-import T from "../../components/T"; // ← IMPORT
+import T from "../T"; // ← IMPORT
 const LINK = import.meta.env.VITE_API_URL;
 
 export default function SideBar({ user }) {

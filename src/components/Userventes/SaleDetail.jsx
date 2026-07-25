@@ -7,7 +7,7 @@ import BackToHome from "../BackToHome";
 import api from "../../api";
 import toast from "react-hot-toast";
 import { useAppContext } from "../../context/AppContext"; // ← IMPORT
-import T from "../../components/T"; // ← IMPORT
+import T from "../T"; // ← IMPORT
 
 const StatutBadge = ({ statut }) => {
   const { t } = useAppContext(); // ← Récupère les traductions

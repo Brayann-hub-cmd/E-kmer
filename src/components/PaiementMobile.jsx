@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import api from '../api';
 import { useAppContext } from '../context/AppContext';
-import T from '../components/T';
+import T from './T';
 
 export default function PaiementMobile({ order, total }) {
   const { t } = useAppContext();

@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { FaStore, FaTruck, FaCheckCircle } from "react-icons/fa";
 import api from "../api";
 import { useAppContext } from "../context/AppContext";
-import T from "../components/T";
+import T from "./T";
 
 const villesCameroun = [
   "Douala", "Yaoundé", "Bafoussam", "Garoua", "Maroua",

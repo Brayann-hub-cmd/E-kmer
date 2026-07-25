@@ -6,7 +6,7 @@ import api from "../../api";
 import toast from "react-hot-toast";
 import { FaUser, FaEnvelope, FaPhone, FaStore, FaSave, FaCamera, FaTimes, FaUpload, FaEdit } from "react-icons/fa";
 import { useAppContext } from "../../context/AppContext"; // ← IMPORT
-import T from "../../components/T"; // ← IMPORT
+import T from "../T"; // ← IMPORT
 const LINK = import.meta.env.VITE_API_URL;
 // ── Champ de formulaire ───────────────────────────────────────
 const FormField = ({ label, required, icon: Icon, type = "text", name, value, onChange, placeholder, error, disabled }) => {

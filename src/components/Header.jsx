@@ -6,7 +6,7 @@ import bg from "../assets/images/bg Header.png";
 import products from "../assets/images/products.png";
 import toast from "react-hot-toast";
 import api from "../api";
-import T from '../components/T'; // ← IMPORT DU TRADUCTEUR
+import T from './T'; // ← IMPORT DU TRADUCTEUR
 
 export default function Header() {
   const [active, setActive] = useState("Electronique");

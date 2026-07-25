@@ -4,7 +4,7 @@ import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import ProductCard from "./ProductCard";
 import api from "../api";
 import { useAppContext } from "../context/AppContext"; // ← IMPORT
-import T from "../components/T"; // ← IMPORT
+import T from "./T"; // ← IMPORT
 
 const CategorySection = ({ sousCategorie, categorieId }) => {
   const { t } = useAppContext(); // ← Récupère les traductions

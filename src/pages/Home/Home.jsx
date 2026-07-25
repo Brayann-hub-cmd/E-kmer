@@ -7,7 +7,7 @@ import Header from '../../components/Header';
 import Navbar from '../../components/Navbar';
 import Hero2Orange from '../../components/Hero2Orange';
 import { useAppContext } from '../../context/AppContext';
-import SEO from '../../Components/SEO';
+import SEO from '../../components/SEO';
 const Home = () => {
   const { t } = useAppContext();
   const [categorie, setCategorie] = useState("CAT_000");

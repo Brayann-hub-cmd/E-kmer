@@ -16,7 +16,7 @@ import {
 import { Link } from 'react-router-dom';
 import api from '../api';
 import { useAppContext } from '../context/AppContext'; // ← IMPORT
-import T from '../components/T'; // ← IMPORT
+import T from './T'; // ← IMPORT
 
 const Footer = () => {
     const { t } = useAppContext(); // ← Récupère les traductions

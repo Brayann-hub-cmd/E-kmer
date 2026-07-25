@@ -6,7 +6,7 @@ import api from "../../api";
 import toast from "react-hot-toast";
 import { FaCheckCircle, FaClock, FaTruck, FaTimesCircle } from "react-icons/fa";
 import { useAppContext } from "../../context/AppContext"; // ← IMPORT
-import T from "../../components/T"; // ← IMPORT
+import T from "../T"; // ← IMPORT
 
 // ── Badge statut ──────────────────────────────────────────────
 const StatutBadge = ({ statut }) => {

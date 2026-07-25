@@ -1,6 +1,6 @@
 // src/components/RecapCommande.jsx
 import { useAppContext } from "../context/AppContext";
-import T from "../components/T";
+import T from "./T";
 
 const LINK = import.meta.env.VITE_API_URL;
 

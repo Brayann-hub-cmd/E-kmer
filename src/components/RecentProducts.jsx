@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaClock, FaMapMarkerAlt } from "react-icons/fa";
 import { useAppContext } from "../context/AppContext"; // ← IMPORT
-import T from "../components/T"; // ← IMPORT
+import T from "./T"; // ← IMPORT
 
 function RecentProducts() {
   const { t } = useAppContext(); // ← Récupère les traductions

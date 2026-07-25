@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { FaMapMarkerAlt, FaCalendarAlt, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import api from "../api";
 import { useAppContext } from "../context/AppContext"; // ← IMPORT
-import T from "../components/T"; // ← IMPORT
+import T from "./T"; // ← IMPORT
 
 function PopularOffers({ title, categorie }) {
   const { t } = useAppContext(); // ← Récupère les traductions

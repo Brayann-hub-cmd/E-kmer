@@ -5,7 +5,7 @@ import { FaChevronDown, FaTimes, FaPlus } from "react-icons/fa";
 import api from '../api';
 import toast from "react-hot-toast";
 import { useAppContext } from "../context/AppContext"; // ← IMPORT
-import T from "../components/T"; // ← IMPORT
+import T from "./T"; // ← IMPORT
 
 const PublishProduct = () => {
   const { t } = useAppContext(); // ← Récupère les traductions

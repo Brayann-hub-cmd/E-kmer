@@ -1,7 +1,7 @@
 // src/components/HeroSection.jsx
 import React from 'react';
 import { useAppContext } from '../context/AppContext'; // ← IMPORT
-import T from '../components/T'; // ← IMPORT
+import T from './T'; // ← IMPORT
 
 const HeroSection = () => {
   const { t } = useAppContext(); // ← Récupère les traductions
