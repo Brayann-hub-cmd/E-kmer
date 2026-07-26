@@ -16,9 +16,11 @@ import {
 import { Link } from 'react-router-dom';
 import api from '../api';
 import T from './T';
+import { useAppContext } from '../context/AppContext';
 
 const Footer = () => {
     const [data, setData] = useState([]);
+    const { isDarkMode } = useAppContext();
 
     useEffect(() => {
         const getCategories = async () => {
@@ -66,8 +68,8 @@ const Footer = () => {
 
     // Vendre et acheter - maintenant traduits dynamiquement
     const vendreAcheter = [
-        { key: 'howToSell', path: '/comment-vendre' },
-        { key: 'howToBuy', path: '/comment-acheter' },
+        { key: 'howToSell', path: '/comment-ca-marche' },
+        { key: 'howToBuy', path: '/comment-ca-marche' },
         { key: 'startSelling', path: '/vendre' },
         { key: 'orders', path: '/commandes' }
     ];
@@ -91,7 +93,13 @@ const Footer = () => {
                         data-aos-delay="100"
                     >
                         <div className="relative w-64 right-9">
-                            <a href='/' className='cursor-pointer'><img src={logo} alt="Logo" /></a>
+                            <Link to="/" className='cursor-pointer'>
+                                <img
+                                    src={logo}
+                                    alt="Logo E-kmer"
+                                    className={`max-w-[180px] h-auto transition-all duration-300 ${isDarkMode ? 'brightness-0 invert' : ''}`}
+                                />
+                            </Link>
                         </div>
                         <p className="text-gray-300 dark:text-gray-400 text-sm">
                             <T>sellAndBuyTagline</T>
@@ -148,12 +156,12 @@ const Footer = () => {
                         <ul className="space-y-2">
                             {liensUtiles.map((item) => (
                                 <li key={item.key}>
-                                    <a
-                                        href={item.path}
+                                    <Link
+                                        to={item.path}
                                         className="text-gray-300 dark:text-gray-400 hover:text-[#F25012] dark:hover:text-orange-400 transition-colors duration-300 text-sm cursor-pointer"
                                     >
                                         <T>{item.key}</T>
-                                    </a>
+                                    </Link>
                                 </li>
                             ))}
                         </ul>
@@ -171,12 +179,12 @@ const Footer = () => {
                         <ul className="space-y-2">
                             {vendreAcheter.map((item, index) => (
                                 <li key={index}>
-                                    <a
-                                        href={item.path}
+                                    <Link
+                                        to={item.path}
                                         className="text-gray-300 dark:text-gray-400 hover:text-[#F25012] dark:hover:text-orange-400 transition-colors duration-300 text-sm cursor-pointer"
                                     >
                                         <T>{item.key}</T>
-                                    </a>
+                                    </Link>
                                 </li>
                             ))}
                         </ul>

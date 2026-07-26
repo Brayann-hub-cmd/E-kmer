@@ -17,7 +17,7 @@ import { useAppContext } from "../../context/AppContext"; // ← IMPORT
 import T from "../../components/T"; // ← IMPORT
 
 const ProductDetail = () => {
-  const { t } = useAppContext(); // ← Récupère les traductions
+  const { t } = useAppContext();
   const { id } = useParams();
   const navigate = useNavigate();
   
@@ -40,6 +40,11 @@ const ProductDetail = () => {
   const [isFavorite, setIsFavorite] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const favoriteIds = JSON.parse(localStorage.getItem('favorites') || '[]');
+    setIsFavorite(favoriteIds.includes(id));
+  }, [id]);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -92,7 +97,13 @@ const ProductDetail = () => {
   };
 
   const toggleFavorite = () => {
-    
+    const key = `favorite:${id}`;
+    const stored = JSON.parse(localStorage.getItem('favorites') || '[]');
+    const next = isFavorite
+      ? stored.filter((item) => item !== id)
+      : [...stored, id];
+
+    localStorage.setItem('favorites', JSON.stringify(next));
     setIsFavorite(!isFavorite);
   };
 

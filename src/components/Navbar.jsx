@@ -32,6 +32,7 @@ export default function Navbar({ setTitle, setCategorie }) {
 
   // Panier — nombre dynamique
   const [cartCount, setCartCount] = useState(0);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Profil utilisateur
   const [userProfile, setUserProfile] = useState(null);
@@ -77,6 +78,7 @@ export default function Navbar({ setTitle, setCategorie }) {
     setUserProfile(null);
     setCartCount(0);
     setShowLogoutModal(false);
+    setMobileMenuOpen(false);
     navigate("/auth/login");
   };
 
@@ -218,6 +220,7 @@ export default function Navbar({ setTitle, setCategorie }) {
       onClick={toggleTheme}
       className="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-700 hover:bg-gray-600 dark:bg-gray-600 dark:hover:bg-gray-500 border border-gray-600 transition-colors"
       title={isDarkMode ? "Mode clair" : "Mode sombre"}
+      aria-label={isDarkMode ? "Activer le mode clair" : "Activer le mode sombre"}
     >
       {isDarkMode
         ? <FaSun className="text-yellow-400 text-sm" />
@@ -237,7 +240,7 @@ export default function Navbar({ setTitle, setCategorie }) {
         <div className="hidden lg:flex items-center justify-between gap-4">
 
           <Link to="/" className="flex-shrink-0">
-            <img src="/logo.png" alt="eKMER" className="h-10 w-auto" />
+            <img src="/logo.png" alt="eKMER" className={`h-10 w-auto transition-all duration-300 ${isDarkMode ? 'brightness-0 invert' : ''}`} />
           </Link>
 
           <div className="flex-1 max-w-2xl relative" ref={searchRef}>
@@ -321,7 +324,7 @@ export default function Navbar({ setTitle, setCategorie }) {
             TABLET (md → lg)
         ═══════════════════════════════════ */}
         <div className="hidden md:flex lg:hidden items-center justify-between gap-2">
-          <Link to="/"><img src="/logo.png" alt="eKMER" className="h-8 w-auto" /></Link>
+          <Link to="/"><img src="/logo.png" alt="eKMER" className={`h-8 w-auto transition-all duration-300 ${isDarkMode ? 'brightness-0 invert' : ''}`} /></Link>
 
           <div className="flex-1 max-w-md relative" ref={searchRef}>
             <form onSubmit={handleSearch} className="flex items-center bg-gray-100 dark:bg-gray-800 rounded-lg h-10">
@@ -399,7 +402,7 @@ export default function Navbar({ setTitle, setCategorie }) {
         ═══════════════════════════════════ */}
         <div className="md:hidden">
           <div className="flex items-center justify-between mb-3">
-            <Link to="/"><img src="/logo.png" alt="eKMER" className="h-6 w-auto" /></Link>
+            <Link to="/"><img src="/logo.png" alt="eKMER" className={`h-6 w-auto transition-all duration-300 ${isDarkMode ? 'brightness-0 invert' : ''}`} /></Link>
 
             <div className="flex items-center gap-2">
               <DarkBtn />

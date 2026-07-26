@@ -47,14 +47,31 @@ export default function MesFavoris() {
         const userResponse = await api.get("auth/profile/");
         setUser(userResponse.data);
 
-        // TODO: remplacer par l'appel API réel → GET /api/favoris/
-        // Les produits sont récupérés depuis l'API des favoris
-        const favorisResponse = await api.get("favoris/");
-        setFavoris(favorisResponse.data);
+        const favoriteIds = JSON.parse(localStorage.getItem('favorites') || '[]');
+        if (!favoriteIds.length) {
+          setFavoris([]);
+          setLoading(false);
+          return;
+        }
+
+        const favorisResponse = await Promise.all(
+          favoriteIds.map((id) => api.get(`annonces/${id}/`).catch(() => null))
+        );
+
+        const normalized = favorisResponse
+          .filter(Boolean)
+          .map((response) => ({
+            id: response.data?.code ?? response.data?.id,
+            annonce: response.data?.code,
+            annonce_titre: response.data?.titre,
+            annonce_prix: response.data?.prix,
+            annonce_image: response.data?.images?.[0]?.image || response.data?.image,
+          }));
+
+        setFavoris(normalized);
       } catch (error) {
         console.error("Erreur chargement favoris:", error);
         toast.error("Erreur de chargement des favoris");
-
         setFavoris([]);
       } finally {
         setLoading(false);

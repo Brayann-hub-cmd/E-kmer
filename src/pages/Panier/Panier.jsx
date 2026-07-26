@@ -28,7 +28,7 @@ const PanierCard = ({ item, onQteChange, onSupprimer }) => {
             <div>
               <h3 className="font-bold text-lg text-gray-900 dark:text-white">{item.annonce_titre}</h3>
               <p className="text-gray-400 dark:text-gray-400 text-sm mt-0.5 font-medium">
-                <T>published by</T> {item.annonce_vendeur}
+                {t.publishedBy || 'Publié par'} {item.annonce_vendeur}
               </p>
               <p className="text-orange-500 font-bold text-xl mt-2">
                 {Number(item.annonce_prix).toLocaleString()} FCFA
@@ -141,7 +141,10 @@ export default function Panier() {
   if (loadingPanier) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center transition-colors duration-300">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500"></div>
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto"></div>
+          <p className="mt-4 text-gray-500 dark:text-gray-400">{t.loadingCart || 'Chargement du panier...'}</p>
+        </div>
       </div>
     );
   }
