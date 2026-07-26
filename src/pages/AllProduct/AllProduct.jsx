@@ -1,6 +1,5 @@
 // src/pages/AllProducts.jsx
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { FaSearch, FaFilter } from "react-icons/fa";
 import ProductCard from "../../components/ProductCard";
 import api from "../../api";
@@ -16,7 +15,6 @@ export default function AllProducts() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [categories, setCategories] = useState([]);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {

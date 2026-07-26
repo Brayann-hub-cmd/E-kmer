@@ -6,8 +6,9 @@ import { Link, useNavigate } from "react-router-dom";
 import BackToHome from "../../components/BackToHome";
 import api from '../../api';
 import toast from "react-hot-toast";
-import { useAppContext } from "../../context/AppContext"; // ← IMPORT
-import T from "../../components/T"; // ← IMPORT
+import { useAppContext } from "../../context/AppContext";
+import T from "../../components/T";
+import { persistAuthToken } from "../../utils/storage";
 
 function Login() {
   const { t } = useAppContext(); // ← Récupère les traductions
@@ -23,7 +24,7 @@ function Login() {
     if (loginMethod === "email") {
       try {
         const response = await api.post('auth/login/', { email: email, password: password });
-        localStorage.setItem('token', response.data.token);
+        persistAuthToken(response.data.token, rememberMe);
         const userData = response.data.user;
         toast.success(`Bienvenu M./Mme ${userData.username} !`);
         setTimeout(() => {
@@ -44,7 +45,7 @@ function Login() {
           telephone: `+237${phone}`,
           password: password
         });
-        localStorage.setItem('token', response.data.token);
+        persistAuthToken(response.data.token, rememberMe);
         const userData = response.data.user;
         toast.success(t.welcomeMessage.replace('{username}', userData.username) || `Bienvenu M./Mme ${userData.username} !`);
         setTimeout(() => {

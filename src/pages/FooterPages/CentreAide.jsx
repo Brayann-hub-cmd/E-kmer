@@ -2,11 +2,9 @@
 import { useState } from "react";
 import { FaChevronDown, FaChevronUp, FaQuestionCircle, FaEnvelope, FaTrash } from "react-icons/fa";
 import BackToHome from "../../components/BackToHome";
-import { useAppContext } from "../../context/AppContext"; // ← IMPORT
 import T from "../../components/T"; // ← IMPORT
 
 export default function CentreAide() {
-  const { t } = useAppContext(); // ← Récupère les traductions
   const [openIndex, setOpenIndex] = useState(null);
 
   // FAQ - Utilisation des clés traduites

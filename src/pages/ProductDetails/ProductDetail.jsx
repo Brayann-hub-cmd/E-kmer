@@ -13,11 +13,13 @@ import {
 } from 'react-icons/fa';
 import api from '../../api';
 import BackToHome from '../../components/BackToHome';
-import { useAppContext } from "../../context/AppContext"; // ← IMPORT
-import T from "../../components/T"; // ← IMPORT
+import { useAppContext } from "../../context/AppContext";
+import T from "../../components/T";
+import toast from 'react-hot-toast';
+import { safeReadStorageJSON, safeWriteStorageJSON } from '../../utils/storage';
 
 const ProductDetail = () => {
-  const { t } = useAppContext(); // ← Récupère les traductions
+  const { t } = useAppContext();
   const { id } = useParams();
   const navigate = useNavigate();
   
@@ -38,9 +40,13 @@ const ProductDetail = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [isFavorite, setIsFavorite] = useState(false);
-  const [favoriteLoading, setFavoriteLoading] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const favoriteIds = safeReadStorageJSON('favorites', []);
+    setIsFavorite(Array.isArray(favoriteIds) && favoriteIds.includes(id));
+  }, [id]);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -56,7 +62,6 @@ const ProductDetail = () => {
       try {
         const response = await api.get(`annonces/${id}/`);
         setProduct(response.data);
-        setIsFavorite(response.data.est_favori ?? false);
         setCurrentImageIndex(0);
         setQuantity(1);
       } catch (error) {
@@ -93,26 +98,14 @@ const ProductDetail = () => {
     }
   };
 
-  const toggleFavorite = async () => {
-    if (!product.code || favoriteLoading) {
-      return;
-    }
+  const toggleFavorite = () => {
+    const stored = safeReadStorageJSON('favorites', []);
+    const next = Array.isArray(stored)
+      ? (isFavorite ? stored.filter((item) => item !== id) : [...stored, id])
+      : [id];
 
-    setFavoriteLoading(true);
-    const nextValue = !isFavorite;
-
-    try {
-      if (nextValue) {
-        await api.post("favoris/", { annonce: product.code });
-      } else {
-        await api.delete(`favoris/${product.code}/`);
-      }
-      setIsFavorite(nextValue);
-    } catch (error) {
-      console.error("Erreur favoris:", error);
-    } finally {
-      setFavoriteLoading(false);
-    }
+    safeWriteStorageJSON('favorites', next);
+    setIsFavorite(!isFavorite);
   };
 
   const handleAddToCart = async () => {
@@ -121,21 +114,23 @@ const ProductDetail = () => {
         annonce: product.code,
         quantite: quantity
       });
-      console.log(`Ajouté au panier: ${product.titre}, Quantité: ${quantity}, Code: ${product.code}`);
+      toast.success(`${product.titre} ${t.successAddToCart || 'ajouté au panier !'}`);
     } catch (error) {
       console.error("Erreur ajout au panier:", error);
+      toast.error(error?.response?.data?.error || t.cartError || 'Impossible d’ajouter au panier');
     }
   };
 
   const handleBuyNow = async () => {
     try {
-      await api.post("panier/", {
-        produit_id: product.code,
+      await api.post("panier/items/", {
+        annonce: product.code,
         quantite: quantity
       });
       navigate("/paiement");
     } catch (error) {
       console.error("Erreur achat immédiat:", error);
+      toast.error(error?.response?.data?.error || t.cartError || 'Impossible de préparer l’achat');
     }
   };
 
@@ -325,13 +320,12 @@ const ProductDetail = () => {
                 
                 <button
                   onClick={toggleFavorite}
-                  disabled={favoriteLoading}
                   className={`flex items-center justify-center gap-2 border-2 ${
                     isFavorite ? 'border-red-500 text-red-500' : 'border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300'
-                  } ${favoriteLoading ? 'opacity-70 cursor-wait' : 'hover:bg-gray-50 dark:hover:bg-gray-700'} font-medium rounded-xl py-3 px-4 transition-colors w-full`}
+                  } hover:bg-gray-50 dark:hover:bg-gray-700 font-medium rounded-xl py-3 px-4 transition-colors w-full`}
                 >
                   <FaHeart className={`text-base ${isFavorite ? 'text-red-500' : 'text-gray-400 dark:text-gray-500'}`} />
-                  {favoriteLoading ? (t.loading || "Chargement...") : <T>favorites</T>}
+                  <T>favorites</T>
                 </button>
               </div>
               

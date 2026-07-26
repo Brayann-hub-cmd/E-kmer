@@ -1,11 +1,11 @@
 // src/pages/Footer/Confidentialite.jsx
 import { FaDatabase, FaCookie, FaUserSecret, FaRegClock } from "react-icons/fa";
+import { useAppContext } from "../../context/AppContext";
 import BackToHome from "../../components/BackToHome";
-import { useAppContext } from "../../context/AppContext"; // ← IMPORT
 import T from "../../components/T"; // ← IMPORT
 
 export default function Confidentialite() {
-  const { t } = useAppContext(); // ← Récupère les traductions
+  const { t } = useAppContext();
 
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 py-8 transition-colors duration-300">

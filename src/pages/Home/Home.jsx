@@ -6,10 +6,12 @@ import RecentProduct from '../../components/RecentProducts';
 import Header from '../../components/Header';
 import Navbar from '../../components/Navbar';
 import Hero2Orange from '../../components/Hero2Orange';
+<<<<<<< HEAD
 import { useAppContext } from '../../context/AppContext';
+=======
+>>>>>>> 81b0fad12d62105a35d7265a807c75a2a90fc77d
 import SEO from '../../components/SEO';
 const Home = () => {
-  const { t } = useAppContext();
   const [categorie, setCategorie] = useState("CAT_000");
   const [title, setTitle] = useState("");
 

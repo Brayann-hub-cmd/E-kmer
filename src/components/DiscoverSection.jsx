@@ -1,10 +1,8 @@
 // src/components/DiscoverSection.jsx
 import React from "react";
-import { useAppContext } from "../context/AppContext"; // ← IMPORT
-import T from "../components/T"; // ← IMPORT
+import T from "../components/T";
 
 function DiscoverSection() {
-  const { t } = useAppContext(); // ← Récupère les traductions
   
   return (
     <section className="bg-blue-900 dark:bg-blue-950 text-white rounded-xl p-10 my-10 flex flex-col md:flex-row items-center justify-between transition-colors duration-300">

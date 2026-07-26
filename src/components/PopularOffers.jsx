@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { FaMapMarkerAlt, FaCalendarAlt, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import api from "../api";
 import { useAppContext } from "../context/AppContext"; // ← IMPORT
-import T from "../components/T"; // ← IMPORT
+import T from "./T"; // ← IMPORT
 
 function PopularOffers({ title, categorie }) {
   const { t } = useAppContext(); // ← Récupère les traductions
@@ -96,31 +96,28 @@ function PopularOffers({ title, categorie }) {
     return "w-[200px] xs:w-[220px] sm:w-[240px] md:w-[260px] lg:w-[280px] xl:w-[300px]";
   };
 
-  const handleSearch = async () => {
-    try {
-      console.log("Recherche: ", title);
-      
-      let response = [];
-      if (categorie.code !== "CAT_000") {
-        const matchTitle = await api.get(`annonce/search/?titre=${title}&categorie=${categorie.code}`);
-        response = matchTitle.data;
-      } else {
-        const matchTitle = await api.get(`annonce/search/?titre=${title}`);
-        response = matchTitle.data;
-      }
-      console.log("dans popular offer", response);
-      setData(response);
-    } catch (error) {
-      console.error("Erreur de recherche:", error);
-      setData(dataR);
-    }
-  };
-
   useEffect(() => {
-    if (title) {
-      handleSearch();
-    }
-  }, [title]);
+    if (!title) return;
+
+    const searchAnnonces = async () => {
+      try {
+        let response;
+        if (categorie.code !== "CAT_000") {
+          const matchTitle = await api.get(`annonce/search/?titre=${title}&categorie=${categorie.code}`);
+          response = matchTitle.data;
+        } else {
+          const matchTitle = await api.get(`annonce/search/?titre=${title}`);
+          response = matchTitle.data;
+        }
+        setData(response);
+      } catch (error) {
+        console.error("Erreur de recherche:", error);
+        setData(dataR);
+      }
+    };
+
+    searchAnnonces();
+  }, [title, categorie, dataR]);
 
   return (
     <section className="py-4 sm:py-6 md:py-8 lg:py-10 px-3 sm:px-4 md:px-6 relative bg-gray-50 dark:bg-gray-900 transition-colors duration-300">

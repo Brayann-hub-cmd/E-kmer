@@ -8,7 +8,6 @@ import T from "../components/T"; // ← IMPORT
 
 export default function Userventes() {
   const { t } = useAppContext(); // ← Récupère les traductions
-  const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
@@ -16,14 +15,13 @@ export default function Userventes() {
     const getUser = async () => {
       try {
         const response = await api.get("auth/profile/");
-        setUser(response.data);
         
         if (response.data.username) {
           navigate("/profile");
         } else {
           navigate("/auth/login");
         }
-      } catch (error) {
+      } catch {
         toast.error(t.loginRequired || "Connectez-vous !");
         localStorage.removeItem("token");
         navigate("/");

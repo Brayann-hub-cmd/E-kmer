@@ -6,7 +6,7 @@ import api from "../../api";
 import toast from "react-hot-toast";
 import { FaUser, FaEnvelope, FaPhone, FaStore, FaSave, FaCamera, FaTimes, FaUpload, FaEdit } from "react-icons/fa";
 import { useAppContext } from "../../context/AppContext"; // ← IMPORT
-import T from "../../components/T"; // ← IMPORT
+import T from "../T"; // ← IMPORT
 const LINK = import.meta.env.VITE_API_URL;
 // ── Champ de formulaire ───────────────────────────────────────
 const FormField = ({ label, required, icon: Icon, type = "text", name, value, onChange, placeholder, error, disabled }) => {
@@ -61,8 +61,6 @@ const FormTextArea = ({ label, required, name, value, onChange, placeholder, err
 
 // ── Mode édition ─────────────────────────────────────────────
 const InfoDisplay = ({ label, value, icon: Icon }) => {
-  const { t } = useAppContext();
-
   return (
     <div className="flex flex-col gap-1.5">
       <label className="text-sm font-semibold text-gray-700 dark:text-gray-300"><T>{label}</T></label>
@@ -118,7 +116,7 @@ export default function Parametres() {
       }
     };
     getUser();
-  }, []);
+  }, [navigate, t.errorLoading]);
 
   const handleAvatarChange = async (e) => {
     const file = e.target.files[0];
@@ -164,7 +162,7 @@ export default function Parametres() {
     try {
       await api.delete("auth/profile/avatar/");
       setAvatarPreview(null);
-      setUser((prev) => ({ ...prev, photo_profil: response.data.photo_profil }));
+      setUser((prev) => ({ ...prev, photo_profil: null }));
       toast.success(t.avatarDeleted || "Photo de profil supprimée");
     } catch (error) {
       console.error("Erreur suppression avatar:", error);
@@ -184,6 +182,7 @@ export default function Parametres() {
     if (!formData.email.trim()) e.email = "required";
     else if (!/\S+@\S+\.\S+/.test(formData.email)) e.email = "invalidEmail";
     if (!formData.telephone.trim()) e.telephone = "required";
+    else if (!/^\+?[0-9\s-]{7,15}$/.test(formData.telephone)) e.telephone = "invalidPhone";
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -239,6 +238,7 @@ export default function Parametres() {
               <button
                 onClick={() => {
                   setIsEditing(false);
+                  setErrors({});
                   if (user) {
                     setFormData({
                       nom_complet: user.username || "",

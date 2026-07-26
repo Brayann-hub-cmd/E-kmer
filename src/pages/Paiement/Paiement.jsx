@@ -9,6 +9,7 @@ import BackToHome from "../../components/BackToHome";
 import toast from "react-hot-toast";
 import { useAppContext } from "../../context/AppContext";
 import T from "../../components/T";
+import { safeReadStorageJSON, safeWriteStorageJSON } from "../../utils/storage";
 
 export default function Paiement() {
   const { t } = useAppContext();
@@ -18,19 +19,28 @@ export default function Paiement() {
   const [livraison, setLivraison] = useState(null);
   const [order, setOrder] = useState(null);           // ← la vraie Order créée côté backend
   const [creatingOrder, setCreatingOrder] = useState(false);
+  const [loadingCart, setLoadingCart] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchPanier = async () => {
       try {
         const res = await api.get("panier/");
-        setCommande(res.data.items || []);
-        setPanierTotal(Number(res.data.total) || 0);
+        const items = Array.isArray(res?.data?.items) ? res.data.items : [];
+        const total = Number(res?.data?.total) || 0;
+        setCommande(items);
+        setPanierTotal(total);
+        safeWriteStorageJSON('checkoutCart', { items, total });
       } catch (err) {
         console.error("Erreur chargement panier:", err);
-        toast.error(err?.response?.data?.error || t.cartLoadError || "Erreur chargement panier");
-        setCommande([]);
-        setPanierTotal(0);
+        const cached = safeReadStorageJSON('checkoutCart', { items: [], total: 0 });
+        setCommande(cached.items || []);
+        setPanierTotal(Number(cached.total) || 0);
+        if (!(cached.items || []).length) {
+          toast.error(err?.response?.data?.error || t.cartLoadError || "Erreur chargement panier");
+        }
+      } finally {
+        setLoadingCart(false);
       }
     };
     fetchPanier();
@@ -45,8 +55,24 @@ export default function Paiement() {
   const handleConfirmCommande = async () => {
     setCreatingOrder(true);
     try {
-      const res = await api.post("commandes/");
-      setOrder(res.data);
+      const payload = {};
+      if (livraison?.modeLivraison === 'domicile') {
+        payload.livraison = {
+          modeLivraison: livraison.modeLivraison,
+          fraisTotal: livraison.fraisTotal,
+          livreur_id: livraison.livreur?.id,
+          ville_depart: livraison.trajet?.ville_depart,
+          ville_livraison: livraison.adresse?.ville,
+        };
+      }
+
+      const res = await api.post("commandes/", payload);
+      const nextOrder = res?.data || null;
+      if (!nextOrder) {
+        throw new Error("Réponse vide du serveur");
+      }
+      setOrder(nextOrder);
+      safeWriteStorageJSON('lastOrder', nextOrder);
       setEtape(3);
     } catch (err) {
       console.error("Erreur création commande:", err);
@@ -59,6 +85,17 @@ export default function Paiement() {
   const sousTotal = panierTotal;
   const total = sousTotal + (livraison?.fraisTotal || 0);
   const paymentAmount = order?.total ?? total;
+
+  if (loadingCart) {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4 transition-colors duration-300 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto"></div>
+          <p className="mt-4 text-gray-500 dark:text-gray-400">{t.loadingCart || 'Chargement du panier...'}</p>
+        </div>
+      </div>
+    );
+  }
 
   if (commande.length === 0) {
     return (
@@ -116,7 +153,7 @@ export default function Paiement() {
           />
         )}
         {etape === 3 && order && (
-          <PaiementMobile order={order} total={total} />
+          <PaiementMobile order={order} total={paymentAmount} />
         )}
       </div>
     </div>
