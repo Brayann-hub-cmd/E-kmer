@@ -3,6 +3,7 @@
 import { createContext, useState, useContext, useEffect } from 'react';
 import { fr } from '../locales/fr';
 import { en } from '../locales/en';
+import { safeReadStorage, safeWriteStorage } from '../utils/storage';
 
 const AppContext = createContext();
 
@@ -10,13 +11,13 @@ export const useAppContext = () => useContext(AppContext);
 
 export const AppProvider = ({ children }) => {
   const [isDarkMode, setIsDarkMode] = useState(() => {
-    if (typeof window === 'undefined') return false;
-    return window.localStorage.getItem('darkMode') === 'true';
+    const stored = safeReadStorage('darkMode');
+    return stored === 'true';
   });
 
   const [language, setLanguage] = useState(() => {
-    if (typeof window === 'undefined') return 'FRA';
-    return window.localStorage.getItem('language') || 'FRA';
+    const stored = safeReadStorage('language');
+    return stored || 'FRA';
   });
 
   useEffect(() => {
@@ -24,15 +25,11 @@ export const AppProvider = ({ children }) => {
       document.documentElement.classList.toggle('dark', isDarkMode);
       document.documentElement.style.colorScheme = isDarkMode ? 'dark' : 'light';
     }
-    if (typeof window !== 'undefined') {
-      window.localStorage.setItem('darkMode', String(isDarkMode));
-    }
+    safeWriteStorage('darkMode', String(isDarkMode));
   }, [isDarkMode]);
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      window.localStorage.setItem('language', language);
-    }
+    safeWriteStorage('language', language);
   }, [language]);
 
   const toggleTheme = () => setIsDarkMode(prev => !prev);

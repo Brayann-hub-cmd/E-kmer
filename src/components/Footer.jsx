@@ -30,7 +30,7 @@ const Footer = () => {
                 const categoriesData = Array.isArray(response.data) ? response.data : [];
                 setData(categoriesData);
             } catch (error) {
-                console.error("footer error, ", error);
+                console.error("footer error", error);
                 setData([]); // En cas d'erreur, on met un tableau vide
             }
         };

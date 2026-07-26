@@ -9,6 +9,7 @@ import BackToHome from "../../components/BackToHome";
 import toast from "react-hot-toast";
 import { useAppContext } from "../../context/AppContext";
 import T from "../../components/T";
+import { safeReadStorageJSON, safeWriteStorageJSON } from "../../utils/storage";
 
 export default function Paiement() {
   const { t } = useAppContext();
@@ -25,13 +26,19 @@ export default function Paiement() {
     const fetchPanier = async () => {
       try {
         const res = await api.get("panier/");
-        setCommande(res.data.items || []);
-        setPanierTotal(Number(res.data.total) || 0);
+        const items = Array.isArray(res?.data?.items) ? res.data.items : [];
+        const total = Number(res?.data?.total) || 0;
+        setCommande(items);
+        setPanierTotal(total);
+        safeWriteStorageJSON('checkoutCart', { items, total });
       } catch (err) {
         console.error("Erreur chargement panier:", err);
-        toast.error(err?.response?.data?.error || t.cartLoadError || "Erreur chargement panier");
-        setCommande([]);
-        setPanierTotal(0);
+        const cached = safeReadStorageJSON('checkoutCart', { items: [], total: 0 });
+        setCommande(cached.items || []);
+        setPanierTotal(Number(cached.total) || 0);
+        if (!(cached.items || []).length) {
+          toast.error(err?.response?.data?.error || t.cartLoadError || "Erreur chargement panier");
+        }
       } finally {
         setLoadingCart(false);
       }
@@ -60,7 +67,12 @@ export default function Paiement() {
       }
 
       const res = await api.post("commandes/", payload);
-      setOrder(res.data);
+      const nextOrder = res?.data || null;
+      if (!nextOrder) {
+        throw new Error("Réponse vide du serveur");
+      }
+      setOrder(nextOrder);
+      safeWriteStorageJSON('lastOrder', nextOrder);
       setEtape(3);
     } catch (err) {
       console.error("Erreur création commande:", err);

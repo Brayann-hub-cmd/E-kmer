@@ -182,6 +182,7 @@ export default function Parametres() {
     if (!formData.email.trim()) e.email = "required";
     else if (!/\S+@\S+\.\S+/.test(formData.email)) e.email = "invalidEmail";
     if (!formData.telephone.trim()) e.telephone = "required";
+    else if (!/^\+?[0-9\s-]{7,15}$/.test(formData.telephone)) e.telephone = "invalidPhone";
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -237,6 +238,7 @@ export default function Parametres() {
               <button
                 onClick={() => {
                   setIsEditing(false);
+                  setErrors({});
                   if (user) {
                     setFormData({
                       nom_complet: user.username || "",

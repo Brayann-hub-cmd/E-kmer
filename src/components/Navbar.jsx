@@ -7,6 +7,7 @@ import {
 } from "react-icons/fa";
 import api from "../api";
 import { useAppContext } from "../context/AppContext";
+import { safeReadStorage, safeRemoveStorage } from "../utils/storage";
 
 export default function Navbar({ setTitle, setCategorie }) {
   const { isDarkMode, toggleTheme, language, changeLanguage, t } = useAppContext();
@@ -49,7 +50,9 @@ export default function Navbar({ setTitle, setCategorie }) {
   const getPanier = async () => {
     try {
       const res = await api.get("panier/");
-      setPanier(res.data.items || []);
+      const items = Array.isArray(res?.data?.items) ? res.data.items : [];
+      setPanier(items);
+      setCartCount(items.length);
     } catch (error) {
       setCartCount(0);
     }
@@ -57,13 +60,16 @@ export default function Navbar({ setTitle, setCategorie }) {
 
   // ── Vérification connexion + chargement profil + panier ──
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = safeReadStorage("token");
     setIsLoggedIn(!!token);
     if (token) {
       api.get("auth/profile/")
         .then((res) => setUserProfile(res.data))
         .catch(() => setUserProfile(null));
       getPanier();
+    } else {
+      setUserProfile(null);
+      setCartCount(0);
     }
   }, []);
 
@@ -73,7 +79,7 @@ export default function Navbar({ setTitle, setCategorie }) {
 
   // ── Déconnexion ───────────────────────────────────────────
   const handleLogout = () => {
-    localStorage.removeItem("token");
+    safeRemoveStorage("token");
     setIsLoggedIn(false);
     setUserProfile(null);
     setCartCount(0);

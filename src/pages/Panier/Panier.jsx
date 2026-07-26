@@ -7,6 +7,7 @@ import BackToHome from "../../components/BackToHome";
 import toast from "react-hot-toast";
 import { useAppContext } from "../../context/AppContext";
 import T from "../../components/T";
+import { safeReadStorageJSON, safeWriteStorageJSON } from "../../utils/storage";
 
 const LINK = import.meta.env.VITE_API_URL;
 const LIVRAISON = 5000;
@@ -83,11 +84,19 @@ export default function Panier() {
   const fetchPanier = useCallback(async () => {
     try {
       const response = await api.get("panier/");
-      setPanierData(response.data);
+      const nextData = {
+        items: Array.isArray(response?.data?.items) ? response.data.items : [],
+        total: Number(response?.data?.total) || 0
+      };
+      setPanierData(nextData);
+      safeWriteStorageJSON('cartCache', nextData);
     } catch (error) {
       console.error("Erreur chargement panier:", error);
-      toast.error(error?.response?.data?.error || t.cartLoadError || "Erreur chargement panier");
-      setPanierData({ items: [], total: 0 });
+      const cached = safeReadStorageJSON('cartCache', { items: [], total: 0 });
+      setPanierData(cached);
+      if (!cached?.items?.length) {
+        toast.error(error?.response?.data?.error || t.cartLoadError || "Erreur chargement panier");
+      }
     } finally {
       setLoadingPanier(false);
     }
@@ -102,15 +111,16 @@ export default function Panier() {
 
     setPanierData((prev) => ({
       ...prev,
-      items: prev.items.map((item) =>
+      items: (prev.items || []).map((item) =>
         item.id === id
-          ? { ...item, quantite: nouvelleQte, sous_total: item.annonce_prix * nouvelleQte }
+          ? { ...item, quantite: nouvelleQte, sous_total: Number(item.annonce_prix || 0) * nouvelleQte }
           : item
       )
     }));
 
     try {
       await api.patch(`panier/items/${id}/`, { quantite: nouvelleQte });
+      await fetchPanier();
     } catch (error) {
       console.error("Erreur mise à jour quantité:", error);
       toast.error(error?.response?.data?.error || t.quantityError || "Erreur mise à jour");
@@ -121,12 +131,13 @@ export default function Panier() {
   const handleSupprimer = async (id) => {
     setPanierData((prev) => ({
       ...prev,
-      items: prev.items.filter((item) => item.id !== id)
+      items: (prev.items || []).filter((item) => item.id !== id)
     }));
 
     try {
       await api.delete(`panier/items/${id}/`);
       toast.success(t.successRemove || "Article supprimé du panier");
+      await fetchPanier();
     } catch (error) {
       console.error("Erreur suppression:", error);
       toast.error(error?.response?.data?.error || t.deleteError || "Erreur suppression");
