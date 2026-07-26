@@ -33,7 +33,8 @@ function Login() {
         if (error.response?.status === 401) {
           toast.error(t.invalidEmailPassword || 'Email ou mot de passe incorrect.');
         } else {
-          console.log(`Erreur! ${error}.`);
+          toast.error(t.serverError || 'Une erreur est survenue, réessayez.');
+          console.error(error);
         }
       }
     }
@@ -62,7 +63,7 @@ function Login() {
 
   return (
     <div className="min-h-screen bg-[#F3F3F3] dark:bg-gray-900 flex items-center justify-center transition-colors duration-300">
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-8 w-[420px] relative transition-colors duration-300">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-8 w-full max-w-md relative transition-colors duration-300">
 
         <div className="absolute top-4 left-4">
           <BackToHome />

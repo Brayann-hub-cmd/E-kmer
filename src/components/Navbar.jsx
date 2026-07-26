@@ -18,10 +18,13 @@ export default function Navbar({ setTitle, setCategorie }) {
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const [isLanguageOpen, setIsLanguageOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [showResults, setShowResults] = useState(false);
+  const [isSearching, setIsSearching] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const [categories, setCategories] = useState([]);
   const [categorySelected, setCategorySelected] = useState("CAT_000");
   const [panier, setPanier] = useState([]);
-  const [, setShowResults] = useState(false);
 
   // Connexion
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -46,7 +49,7 @@ export default function Navbar({ setTitle, setCategorie }) {
     try {
       const res = await api.get("panier/");
       setPanier(res.data.items || []);
-    } catch {
+    } catch (error) {
       setCartCount(0);
     }
   };
@@ -102,12 +105,18 @@ export default function Navbar({ setTitle, setCategorie }) {
   const handleSearch = async (e) => {
     e.preventDefault();
     if (!searchTerm.trim()) return;
+    setIsSearching(true);
+    setShowResults(true);
     setTitle(searchTerm);
     setCategorie(categorySelected);
     try {
-      await api.get(`annonce/search/?titre=${encodeURIComponent(searchTerm)}`);
+      const res = await api.get(`annonce/search/?titre=${encodeURIComponent(searchTerm)}`);
+      setSearchResults(res.data);
     } catch (error) {
       console.error("Erreur recherche:", error);
+      setSearchResults([]);
+    } finally {
+      setIsSearching(false);
     }
   };
 

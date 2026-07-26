@@ -48,7 +48,7 @@ const PublishProduct = () => {
         console.log("Catégories chargées:", response.data);
         setCategories(response.data);
         setApiError(null);
-      } catch {
+      } catch (error) {
         setApiError(t.errorLoadingCategories || "Impossible de charger les catégories. Vérifiez votre connexion au réseau.");
         setCategories([]);
       } finally {
@@ -56,7 +56,7 @@ const PublishProduct = () => {
       }
     };
     fetchCategories();
-  }, [t.errorLoadingCategories]);
+  }, []);
 
   useEffect(() => {
     const fetchSousCategories = async () => {
