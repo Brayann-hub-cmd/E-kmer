@@ -6,20 +6,22 @@ import { Link, useNavigate } from "react-router-dom";
 import BackToHome from "../../components/BackToHome";
 import api from '../../api';
 import toast from "react-hot-toast";
-import { useAppContext } from "../../context/AppContext"; // ← IMPORT
-import T from "../../components/T"; // ← IMPORT
+import { useAppContext } from "../../context/AppContext";
+import T from "../../components/T";
 
 function Login() {
-  const { t } = useAppContext(); // ← Récupère les traductions
+  const { t } = useAppContext();
   const [loginMethod, setLoginMethod] = useState("phone");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+<<<<<<< HEAD
     if (loginMethod === "email") {
       try {
         const response = await api.post('auth/login/', { email: email, password: password });
@@ -35,7 +37,31 @@ function Login() {
         } else {
           console.log(`Erreur! ${error}.`);
         }
+=======
+    setIsLoading(true);
+
+    try {
+      // 1. Construction du payload selon la méthode choisie
+      const endpoint = loginMethod === "email" ? 'auth/login/' : 'auth/login/tel';
+      const payload = loginMethod === "email"
+        ? { email, password }
+        : { telephone: phone, password };
+
+      // 2. Appel API
+      const response = await api.post(endpoint, payload);
+
+      // 3. Vérification de la réponse
+      if (!response.data || !response.data.token || !response.data.user) {
+        throw new Error("Réponse invalide du serveur");
+>>>>>>> da8b5bb959b44d8291019d053935a0d9c2d600e9
       }
+<<<<<<< HEAD
+
+      // 4. Stockage du token
+      localStorage.setItem('token', response.data.token);
+      if (rememberMe) {
+        localStorage.setItem('user', JSON.stringify(response.data.user));
+=======
     }
     if (loginMethod === "phone") {
       try {
@@ -56,7 +82,38 @@ function Login() {
           toast.error(t.serverError || "Une erreur est survenue, réessayez.");
           console.error(error);
         }
+>>>>>>> 9663f3ca58c9dbfb6bc283f1dc8196ced7777218
       }
+
+      // 5. Message de succès (avec fallback)
+      const username = response.data.user?.username || 'Utilisateur';
+      const welcomeMsg = t.welcomeMessage 
+        ? t.welcomeMessage.replace('{username}', username)
+        : `Bienvenue ${username} !`;
+      toast.success(welcomeMsg);
+
+      // 6. Redirection immédiate et sécurisée
+      console.log("✅ Connexion réussie, redirection vers l'accueil...");
+      navigate('/', { replace: true });
+
+    } catch (error) {
+      console.error("Erreur lors de la connexion :", error);
+
+      // Gestion des erreurs
+      if (error.response?.status === 401) {
+        const errorMsg = loginMethod === "email"
+          ? t.invalidEmailPassword || 'Email ou mot de passe incorrect.'
+          : t.invalidPhonePassword || 'Téléphone ou mot de passe incorrect.';
+        toast.error(errorMsg);
+      } else if (error.response?.status === 404) {
+        toast.error(t.accountNotFound || 'Compte introuvable.');
+      } else if (error.code === 'ERR_NETWORK') {
+        toast.error(t.connectionError || 'Erreur de connexion au serveur.');
+      } else {
+        toast.error(t.serverError || 'Une erreur est survenue. Veuillez réessayer.');
+      }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -182,9 +239,14 @@ function Login() {
 
           <button
             type="submit"
-            className="w-full bg-orange-500 hover:bg-orange-600 text-white py-2 px-4 rounded-lg transition-colors duration-300"
+            disabled={isLoading}
+            className={`w-full py-2 px-4 rounded-lg transition-colors duration-300 ${
+              isLoading
+                ? "bg-orange-300 cursor-not-allowed"
+                : "bg-orange-500 hover:bg-orange-600 text-white"
+            }`}
           >
-            <T>signIn</T>
+            {isLoading ? "Connexion en cours..." : <T>signIn</T>}
           </button>
         </form>
 
