@@ -65,15 +65,14 @@ export default function MyArticles() {
 
         const response = await api.get("annonces-user/");
         setArticles(response.data);
-    
-      } catch (error) {
+      } catch {
         toast.error(t.errorLoading || "Erreur de chargement");
       } finally {
         setLoading(false);
       }
     };
     fetchData();
-  }, []);
+  }, [t.errorLoading]);
 
   const handleEdit = (code) => navigate(`/produit/modifier/${code}`);
   const handleView = (code) => navigate(`/produit/${code}`);

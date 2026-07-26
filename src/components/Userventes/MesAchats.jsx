@@ -52,8 +52,6 @@ const StatutBadge = ({ statut }) => {
 
 // ── Carte achat ───────────────────────────────────────────────
 const AchatCard = ({ achat, onVoirDetails, date }) => {
-  const { t } = useAppContext(); // ← Récupère les traductions
-  
   return (
     <div className="bg-white dark:bg-gray-800 rounded-xl sm:rounded-2xl p-3 sm:p-5 shadow-sm border border-gray-100 dark:border-gray-700 transition-colors duration-300">
       <div className="flex flex-col sm:flex-row gap-3 sm:gap-5 items-start sm:items-center">
@@ -113,7 +111,7 @@ const AchatCard = ({ achat, onVoirDetails, date }) => {
 
 // Page principale Mes achats
 export default function MesAchats() {
-  const { t } = useAppContext(); // ← Récupère les traductions
+  const { t } = useAppContext();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [achats, setAchats] = useState([]);

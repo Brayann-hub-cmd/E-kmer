@@ -15,34 +15,35 @@ import {
 } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import api from '../api';
-import { useAppContext } from '../context/AppContext'; // ← IMPORT
-import T from './T'; // ← IMPORT
+import T from './T';
 
 const Footer = () => {
-    const { t } = useAppContext(); // ← Récupère les traductions
-    const [data, setData] = useState([])
+    const [data, setData] = useState([]);
 
     useEffect(() => {
         const getCategories = async () => {
             try {
-                const response = await api.get("categories/")
-                setData(response.data)
+                const response = await api.get("categories/");
+                // ✅ CORRECTION : On s'assure que data est toujours un tableau
+                const categoriesData = Array.isArray(response.data) ? response.data : [];
+                setData(categoriesData);
             } catch (error) {
                 console.error("footer error, ", error);
+                setData([]); // En cas d'erreur, on met un tableau vide
             }
-        }
+        };
         getCategories();
-    }, [])
+    }, []);
 
-    const categories = useMemo(
-        () => {
-            return data.map((cat) => ({
-                code: `${cat.code}`,
-                name: `${cat.nom}`,
-                path: `/categorie/${cat.nom.toLowerCase().replace(/\s+/g, '-').normalize("NFD").replace(/[\u0300-\u036f]/g, '')}?id=${cat.code}`,
-            }));
-        }, [data]
-    );
+    const categories = useMemo(() => {
+        // ✅ CORRECTION : Vérification que data est un tableau
+        if (!Array.isArray(data)) return [];
+        return data.map((cat) => ({
+            code: `${cat.code}`,
+            name: `${cat.nom}`,
+            path: `/categorie/${cat.nom.toLowerCase().replace(/\s+/g, '-').normalize("NFD").replace(/[\u0300-\u036f]/g, '')}?id=${cat.code}`,
+        }));
+    }, [data]);
 
     useEffect(() => {
         AOS.init({
@@ -97,9 +98,9 @@ const Footer = () => {
                         </p>
 
                         <div className="flex gap-5 pt-2">
-                            {socialIcons.map((social, index) => (
+                            {socialIcons.map((social) => (
                                 <a
-                                    key={index}
+                                    key={social.label}
                                     href={social.path}
                                     target="_blank"
                                     rel="noopener noreferrer"
@@ -122,7 +123,7 @@ const Footer = () => {
                             <T>category</T>
                         </h3>
                         <ul className="space-y-2">
-                            {categories.map((item, index) => (
+                            {categories.map((item) => (
                                 <li key={item.code}>
                                     <Link
                                         to={item.path}
@@ -145,8 +146,8 @@ const Footer = () => {
                             <T>usefulLinks</T>
                         </h3>
                         <ul className="space-y-2">
-                            {liensUtiles.map((item, index) => (
-                                <li key={index}>
+                            {liensUtiles.map((item) => (
+                                <li key={item.key}>
                                     <a
                                         href={item.path}
                                         className="text-gray-300 dark:text-gray-400 hover:text-[#F25012] dark:hover:text-orange-400 transition-colors duration-300 text-sm cursor-pointer"

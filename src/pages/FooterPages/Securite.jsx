@@ -1,11 +1,9 @@
 // src/pages/Footer/Securite.jsx
 import { FaShieldAlt, FaLock, FaUserSecret, FaExclamationTriangle } from "react-icons/fa";
 import BackToHome from "../../components/BackToHome";
-import { useAppContext } from "../../context/AppContext"; // ← IMPORT
 import T from "../../components/T"; // ← IMPORT
 
 export default function Securite() {
-  const { t } = useAppContext(); // ← Récupère les traductions
 
   const conseils = [
     { key: "securityTip1" },

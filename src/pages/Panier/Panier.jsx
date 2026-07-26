@@ -1,5 +1,5 @@
 // src/pages/Panier.jsx
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaTrash } from "react-icons/fa";
 import api from "../../api";
@@ -80,7 +80,7 @@ export default function Panier() {
   const [loadingPanier, setLoadingPanier] = useState(true);
   const navigate = useNavigate();
 
-  const fetchPanier = async () => {
+  const fetchPanier = useCallback(async () => {
     try {
       const response = await api.get("panier/");
       setPanierData(response.data);
@@ -91,11 +91,11 @@ export default function Panier() {
     } finally {
       setLoadingPanier(false);
     }
-  };
+  }, [t]);
 
   useEffect(() => {
     fetchPanier();
-  }, [t]);
+  }, [fetchPanier]);
 
   const handleQteChange = async (id, nouvelleQte) => {
     if (nouvelleQte < 1) return;

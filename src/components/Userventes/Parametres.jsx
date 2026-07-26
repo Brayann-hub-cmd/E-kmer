@@ -61,8 +61,6 @@ const FormTextArea = ({ label, required, name, value, onChange, placeholder, err
 
 // ── Mode édition ─────────────────────────────────────────────
 const InfoDisplay = ({ label, value, icon: Icon }) => {
-  const { t } = useAppContext();
-
   return (
     <div className="flex flex-col gap-1.5">
       <label className="text-sm font-semibold text-gray-700 dark:text-gray-300"><T>{label}</T></label>
@@ -118,7 +116,7 @@ export default function Parametres() {
       }
     };
     getUser();
-  }, []);
+  }, [navigate, t.errorLoading]);
 
   const handleAvatarChange = async (e) => {
     const file = e.target.files[0];
@@ -164,7 +162,7 @@ export default function Parametres() {
     try {
       await api.delete("auth/profile/avatar/");
       setAvatarPreview(null);
-      setUser((prev) => ({ ...prev, photo_profil: response.data.photo_profil }));
+      setUser((prev) => ({ ...prev, photo_profil: null }));
       toast.success(t.avatarDeleted || "Photo de profil supprimée");
     } catch (error) {
       console.error("Erreur suppression avatar:", error);

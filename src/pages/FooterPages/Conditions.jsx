@@ -1,11 +1,11 @@
 // src/pages/Footer/Conditions.jsx
 import { FaFileContract, FaUserCheck, FaBan, FaMoneyBillWave, FaTruck, FaHandshake } from "react-icons/fa";
+import { useAppContext } from "../../context/AppContext";
 import BackToHome from "../../components/BackToHome";
-import { useAppContext } from "../../context/AppContext"; // ← IMPORT
 import T from "../../components/T"; // ← IMPORT
 
 export default function Conditions() {
-  const { t } = useAppContext(); // ← Récupère les traductions
+  const { t } = useAppContext();
 
   const articles = [
     { 

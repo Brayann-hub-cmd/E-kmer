@@ -1,6 +1,6 @@
 // src/pages/Seller/SaleDetail.jsx
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { FaCheckCircle, FaClock, FaTruck, FaTimesCircle, FaUser, FaStore, FaCalendarAlt, FaMoneyBillWave } from "react-icons/fa";
 import SideBar from "./SideBar";
 import BackToHome from "../BackToHome";
@@ -49,29 +49,55 @@ const StatutBadge = ({ statut }) => {
 export default function SaleDetail() {
   const { t } = useAppContext();
   const { id } = useParams();
-  const navigate = useNavigate();
   const [sale, setSale] = useState(null);
-  const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const userRes = await api.get("auth/profile/");
-        setUser(userRes.data);
+        await api.get("auth/profile/");
 
         const response = await api.get(`ventes/${id}/`);
         setSale(response.data);
-      } catch (error) {
-        toast.error(error?.response?.data?.error || t.errorLoading || "Erreur de chargement");
+      } catch (_error) {
+        toast.error(_error?.response?.data?.error || t.errorLoading || "Erreur de chargement");
       } finally {
         setLoading(false);
       }
     };
     fetchData();
-  }, [id, t]);
+  }, [id, t.errorLoading]);
 
-  // ... formatDate, loading, !sale : inchangés
+  const formatDate = (dateString) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    return date.toLocaleDateString('fr-FR', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex items-center justify-center transition-colors duration-300">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500"></div>
+      </div>
+    );
+  }
+
+  if (!sale) {
+    return (
+      <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex items-center justify-center transition-colors duration-300">
+        <div className="text-center bg-white dark:bg-gray-800 rounded-xl p-8 shadow-sm border border-gray-100 dark:border-gray-700">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-3"><T>saleNotFound</T></h2>
+          <p className="text-gray-500 dark:text-gray-400"><T>pleaseTryAgain</T></p>
+        </div>
+      </div>
+    );
+  }
 
   const acheteur = sale.acheteur || {};
   const lignes = sale.lignes || [];

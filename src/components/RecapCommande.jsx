@@ -1,11 +1,9 @@
 // src/components/RecapCommande.jsx
-import { useAppContext } from "../context/AppContext";
 import T from "./T";
 
 const LINK = import.meta.env.VITE_API_URL;
 
-export default function RecapCommande({ commande, livraison, total, onConfirm, onBack, loading }) {
-  const { t } = useAppContext();
+export default function RecapCommande({ commande = [], livraison = {}, total = 0, onConfirm, onBack, loading }) {
 
   const sousTotal = commande.reduce((acc, p) => acc + Number(p.sous_total || p.annonce_prix * p.quantite), 0);
 

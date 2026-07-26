@@ -1,26 +1,21 @@
 // src/components/CategorySection.jsx
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import ProductCard from "./ProductCard";
 import api from "../api";
-import { useAppContext } from "../context/AppContext"; // ← IMPORT
 import T from "./T"; // ← IMPORT
 
-const CategorySection = ({ sousCategorie, categorieId }) => {
-  const { t } = useAppContext(); // ← Récupère les traductions
+const CategorySection = ({ sousCategorie }) => {
   const [produits, setProduits] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [totalProduits, setTotalProduits] = useState(0);
 
-  const loadProduits = async (page) => {
+  const loadProduits = useCallback(async (page) => {
     setLoading(true);
     try {
       const limit = 12;
-      
       const response = await api.get(`all_annonces/${sousCategorie.code}/annonces/?page=${page}&limit=${limit}`);
-      
       const data = response.data;
       const produitsData = data.results || data;
 
@@ -39,22 +34,18 @@ const CategorySection = ({ sousCategorie, categorieId }) => {
       }));
 
       setProduits(produitsFormates);
-      
-      const total = data.count || produitsData.length;
-      setTotalProduits(total);
-      setTotalPages(Math.ceil(total / limit));
+      setTotalPages(Math.ceil((data.count || produitsData.length) / limit));
       setCurrentPage(page);
-
     } catch (error) {
       console.error("Erreur chargement produits:", error);
     } finally {
       setLoading(false);
     }
-  };
+  }, [sousCategorie.code]);
 
   useEffect(() => {
     loadProduits(1);
-  }, [sousCategorie.code]);
+  }, [loadProduits]);
 
   const goToPage = (page) => {
     if (page >= 1 && page <= totalPages) {

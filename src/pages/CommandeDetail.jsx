@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import SideBar from "../components/Userventes/SideBar";
 import api from "../api";
@@ -14,7 +14,7 @@ export default function CommandeDetail() {
   const [confirming, setConfirming] = useState(false);
   const [error, setError] = useState("");
 
-  const fetchAll = async () => {
+  const fetchAll = useCallback(async () => {
     setLoading(true);
     setError("");
     try {
@@ -39,9 +39,9 @@ export default function CommandeDetail() {
       setLivraison(null);
     }
     setLoading(false);
-  };
+  }, [orderId]);
 
-  useEffect(() => { fetchAll(); }, [orderId]);
+  useEffect(() => { fetchAll(); }, [fetchAll]);
 
   const handleConfirmerReception = async () => {
     setConfirming(true);
