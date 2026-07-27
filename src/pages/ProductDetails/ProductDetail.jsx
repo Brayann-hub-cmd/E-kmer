@@ -13,13 +13,11 @@ import {
 } from 'react-icons/fa';
 import api from '../../api';
 import BackToHome from '../../components/BackToHome';
-import { useAppContext } from "../../context/AppContext";
-import T from "../../components/T";
-import toast from 'react-hot-toast';
-import { safeReadStorageJSON, safeWriteStorageJSON } from '../../utils/storage';
+import { useAppContext } from "../../context/AppContext"; // ← IMPORT
+import T from "../../components/T"; // ← IMPORT
 
 const ProductDetail = () => {
-  const { t } = useAppContext();
+  const { t } = useAppContext(); // ← Récupère les traductions
   const { id } = useParams();
   const navigate = useNavigate();
   
@@ -42,11 +40,6 @@ const ProductDetail = () => {
   const [isFavorite, setIsFavorite] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  useEffect(() => {
-    const favoriteIds = safeReadStorageJSON('favorites', []);
-    setIsFavorite(Array.isArray(favoriteIds) && favoriteIds.includes(id));
-  }, [id]);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -99,12 +92,7 @@ const ProductDetail = () => {
   };
 
   const toggleFavorite = () => {
-    const stored = safeReadStorageJSON('favorites', []);
-    const next = Array.isArray(stored)
-      ? (isFavorite ? stored.filter((item) => item !== id) : [...stored, id])
-      : [id];
-
-    safeWriteStorageJSON('favorites', next);
+    
     setIsFavorite(!isFavorite);
   };
 
@@ -114,23 +102,21 @@ const ProductDetail = () => {
         annonce: product.code,
         quantite: quantity
       });
-      toast.success(`${product.titre} ${t.successAddToCart || 'ajouté au panier !'}`);
+      console.log(`Ajouté au panier: ${product.titre}, Quantité: ${quantity}, Code: ${product.code}`);
     } catch (error) {
       console.error("Erreur ajout au panier:", error);
-      toast.error(error?.response?.data?.error || t.cartError || 'Impossible d’ajouter au panier');
     }
   };
 
   const handleBuyNow = async () => {
     try {
-      await api.post("panier/items/", {
-        annonce: product.code,
+      await api.post("panier/", {
+        produit_id: product.code,
         quantite: quantity
       });
       navigate("/paiement");
     } catch (error) {
       console.error("Erreur achat immédiat:", error);
-      toast.error(error?.response?.data?.error || t.cartError || 'Impossible de préparer l’achat');
     }
   };
 
