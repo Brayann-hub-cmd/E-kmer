@@ -50,9 +50,9 @@ export default function LivraisonChoix({ onValidate }) {
 
   const handleChoisirLivreur = (l) => {
     // On prend le trajet qui correspond à la ville choisie (déjà filtré côté backend, mais on précise lequel)
-    const trajet = l.trajets.find(
+    const trajet = l.trajets?.find(
       t => t.ville_arrivee.toLowerCase() === adresse.ville.toLowerCase() && t.actif
-    );
+    ) || null;
     setLivreur(l);
     setTrajetChoisi(trajet);
   };
@@ -67,7 +67,7 @@ export default function LivraisonChoix({ onValidate }) {
       if (!adresse.telephone) newErrors.telephone = t.required || "Requis";
       if (!adresse.ville) newErrors.ville = t.required || "Requis";
       if (!adresse.quartier) newErrors.quartier = t.required || "Requis";
-      if (!livreur) newErrors.service = t.chooseService || "Choisissez un livreur";
+      if (!livreur || !trajetChoisi) newErrors.service = t.chooseService || "Choisissez un livreur";
     }
     if (Object.keys(newErrors).length) {
       setErrors(newErrors);

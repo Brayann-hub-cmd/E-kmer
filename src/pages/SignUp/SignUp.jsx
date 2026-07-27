@@ -129,53 +129,32 @@ const SignUp = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    const nouvellesErreurs = validerFormulaire();
-    const telephoneInput = formData.telephone.split(' ');
-    const telephone = telephoneInput[0] + telephoneInput[1] + telephoneInput[2] + telephoneInput[3];
+  const nouvellesErreurs = validerFormulaire();
 
-    if (Object.keys(nouvellesErreurs).length === 0) {
-      try {
-        const role = "user";
-        const response = await api.post('auth/register/', {
-          username: formData.nomComplet,
-          telephone: telephone,
-          email: formData.email,
-          password: formData.motDePasse,
-          role: role
-        });
+  if (Object.keys(nouvellesErreurs).length === 0) {
+    const telephone = formData.telephone.replace(/\s/g, '');
 
-        toast.success(
-          <div className="flex items-center gap-2">
-            <BsCheckCircle className="text-green-500 text-xl" />
-            <span>{response.data.message || t.registrationSuccess}</span>
-          </div>,
-          {
-            duration: 4000,
-            position: 'top-center',
-            style: {
-              background: '#10b981',
-              color: '#fff',
-              padding: '16px',
-            },
-          }
-        );
+    try {
+      const response = await api.post('auth/register/', {
+        username: formData.nomComplet,
+        telephone: telephone,
+        email: formData.email,
+        password: formData.motDePasse,
+      });
 
-        setTimeout(() => {
-          navigate('/auth/login');
-        }, 1500);
-
-      } catch (error) {
-        if (error.response?.status === 400) {
-          toast.error(error.response.data.error || t.registrationError);
-        } else if (error.response?.status === 500) {
-          toast.error(t.serverError || "Un problème avec le serveur est survenue!");
-        } else {
-          toast.error(`${t.registrationError || "Erreur d'inscription"}`);
-          console.error(error);
+      toast.success(
+        <div className="flex items-center gap-2">
+          <BsCheckCircle className="text-green-500 text-xl" />
+          <span>{response.data.message || t.registrationSuccess}</span>
+        </div>,
+        {
+          duration: 4000,
+          position: 'top-center',
+          style: { background: '#10b981', color: '#fff', padding: '16px' },
         }
-      }
+      );
 
       setFormData({
         nomComplet: '',
@@ -186,23 +165,39 @@ const SignUp = () => {
         accepteConditions: false
       });
       setTouched({});
-    } else {
-      setErreurs(nouvellesErreurs);
-      setTouched({
-        nomComplet: true,
-        email: true,
-        telephone: true,
-        motDePasse: true,
-        confirmerMotDePasse: true,
-        accepteConditions: true
-      });
 
-      toast.error(t.formErrors || 'Veuillez corriger les erreurs dans le formulaire', {
-        duration: 3000,
-        position: 'top-center',
-      });
+      setTimeout(() => {
+        navigate('/auth/login');
+      }, 1500);
+
+    } catch (error) {
+      if (error.response?.status === 400) {
+        toast.error(error.response.data.error || t.registrationError);
+      } else if (error.response?.status === 500) {
+        toast.error(t.serverError || "Un problème avec le serveur est survenue!");
+      } else {
+        toast.error(`${t.registrationError || "Erreur d'inscription"}`);
+        console.error(error);
+      }
+      // formulaire conservé tel quel en cas d'échec — l'utilisateur ne retape pas tout
     }
-  };
+  } else {
+    setErreurs(nouvellesErreurs);
+    setTouched({
+      nomComplet: true,
+      email: true,
+      telephone: true,
+      motDePasse: true,
+      confirmerMotDePasse: true,
+      accepteConditions: true
+    });
+
+    toast.error(t.formErrors || 'Veuillez corriger les erreurs dans le formulaire', {
+      duration: 3000,
+      position: 'top-center',
+    });
+  }
+};
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center p-4 transition-colors duration-300">

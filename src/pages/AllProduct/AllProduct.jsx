@@ -1,6 +1,6 @@
 // src/pages/AllProducts.jsx
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { FaSearch, FaFilter } from "react-icons/fa";
 import ProductCard from "../../components/ProductCard";
 import api from "../../api";
@@ -10,11 +10,12 @@ import T from "../../components/T";
 
 export default function AllProducts() {
   const { t } = useAppContext();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("");
+  const [searchTerm, setSearchTerm] = useState(() => searchParams.get("search") || "");
+  const [selectedCategory, setSelectedCategory] = useState(() => searchParams.get("categorie") || "");
   const [categories, setCategories] = useState([]);
   const navigate = useNavigate();
 
@@ -49,6 +50,13 @@ export default function AllProducts() {
 
     setFilteredProducts(filtered);
   }, [searchTerm, selectedCategory, products]);
+
+  useEffect(() => {
+    const params = {};
+    if (searchTerm) params.search = searchTerm;
+    if (selectedCategory) params.categorie = selectedCategory;
+    setSearchParams(params, { replace: true });
+  }, [searchTerm, selectedCategory, setSearchParams]);
 
   if (loading) {
     return (

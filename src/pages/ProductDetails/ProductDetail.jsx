@@ -110,8 +110,8 @@ const ProductDetail = () => {
 
   const handleBuyNow = async () => {
     try {
-      await api.post("panier/", {
-        produit_id: product.code,
+      await api.post("panier/items/", {
+        annonce: product.code,
         quantite: quantity
       });
       navigate("/paiement");

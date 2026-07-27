@@ -13,26 +13,21 @@ export default function Userventes() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const getUser = async () => {
-      try {
-        const response = await api.get("auth/profile/");
-        setUser(response.data);
-        
-        if (response.data.username) {
-          navigate("/profile");
-        } else {
-          navigate("/auth/login");
-        }
-      } catch (error) {
-        toast.error(t.loginRequired || "Connectez-vous !");
-        localStorage.removeItem("token");
-        navigate("/");
-      } finally {
-        setLoading(false);
-      }
-    };
-    getUser();
-  }, [navigate, t]);
+  const getUser = async () => {
+    try {
+      const response = await api.get("auth/profile/");
+      setUser(response.data);
+      navigate("/profile");
+    } catch (error) {
+      toast.error(t.loginRequired || "Connectez-vous !");
+      localStorage.removeItem("token");
+      navigate("/");
+    } finally {
+      setLoading(false);
+    }
+  };
+  getUser();
+}, [navigate, t]);
 
   if (loading) {
     return (

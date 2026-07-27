@@ -99,15 +99,26 @@ function PopularOffers({ title, categorie }) {
   const handleSearch = async () => {
     try {
       console.log("Recherche: ", title);
-      
+      const categoryCode = typeof categorie === 'string'
+        ? categorie
+        : categorie?.code || "CAT_000";
       let response = [];
-      if (categorie.code !== "CAT_000") {
-        const matchTitle = await api.get(`annonce/search/?titre=${title}&categorie=${categorie.code}`);
+
+      if (title) {
+        if (categoryCode !== "CAT_000") {
+          const matchTitle = await api.get(`annonce/search/?titre=${title}&categorie=${categoryCode}`);
+          response = matchTitle.data;
+        } else {
+          const matchTitle = await api.get(`annonce/search/?titre=${title}`);
+          response = matchTitle.data;
+        }
+      } else if (categoryCode !== "CAT_000") {
+        const matchTitle = await api.get(`annonce/search/?categorie=${categoryCode}`);
         response = matchTitle.data;
       } else {
-        const matchTitle = await api.get(`annonce/search/?titre=${title}`);
-        response = matchTitle.data;
+        response = dataR;
       }
+
       console.log("dans popular offer", response);
       setData(response);
     } catch (error) {

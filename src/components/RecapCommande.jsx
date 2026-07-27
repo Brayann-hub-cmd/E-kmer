@@ -25,7 +25,9 @@ export default function RecapCommande({ commande, livraison, total, onConfirm, o
             <div className="flex-1">
               <p className="font-semibold text-gray-900 dark:text-white">{p.annonce_titre}</p>
               <p className="text-xs text-gray-500 dark:text-gray-400"><T>quantity</T>: {p.quantite}</p>
-              <p className="text-orange-500 font-bold">{Number(p.sous_total).toLocaleString()} FCFA</p>
+              <p className="text-orange-500 font-bold">
+                {Number(p.sous_total ?? p.annonce_prix * p.quantite).toLocaleString()} FCFA
+              </p>
             </div>
           </div>
         ))}
@@ -48,9 +50,9 @@ export default function RecapCommande({ commande, livraison, total, onConfirm, o
             <p className="font-semibold text-gray-900 dark:text-white"><T>deliveryAddress</T></p>
             <p className="text-gray-600 dark:text-gray-300">
               {livraison.adresse.nomComplet}, {livraison.adresse.telephone}
-              <br/>{livraison.adresse.quartier}, {livraison.adresse.ville}
-              <br/>{livraison.adresse.adresseComplete}
-              <br/><T>service</T>: {livraison.livreur?.nom || livraison.livreur?.username}
+              <br />{livraison.adresse.quartier}, {livraison.adresse.ville}
+              <br />{livraison.adresse.adresseComplete}
+              <br /><T>service</T>: {livraison.livreur?.nom || livraison.livreur?.username}
             </p>
           </div>
         )}

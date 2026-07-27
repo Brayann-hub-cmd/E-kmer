@@ -45,7 +45,10 @@ function Login() {
         });
         localStorage.setItem('token', response.data.token);
         const userData = response.data.user;
-        toast.success(t.welcomeMessage.replace('{username}', userData.username) || `Bienvenu M./Mme ${userData.username} !`);
+        const welcomeMessage = t.welcomeMessage
+          ? t.welcomeMessage.replace('{username}', userData.username)
+          : `Bienvenu M./Mme ${userData.username} !`;
+        toast.success(welcomeMessage);
         setTimeout(() => {
           navigate('/', { state: { user: userData } });
         }, 1500);
