@@ -14,14 +14,9 @@ export default function Userventes() {
   useEffect(() => {
     const getUser = async () => {
       try {
-        const response = await api.get("auth/profile/");
-        
-        if (response.data.username) {
-          navigate("/profile");
-        } else {
-          navigate("/auth/login");
-        }
-      } catch {
+        await api.get("auth/profile/");
+        navigate("/profile");
+      } catch (error) {
         toast.error(t.loginRequired || "Connectez-vous !");
         localStorage.removeItem("token");
         navigate("/");
@@ -31,6 +26,7 @@ export default function Userventes() {
     };
     getUser();
   }, [navigate, t]);
+
 
   if (loading) {
     return (

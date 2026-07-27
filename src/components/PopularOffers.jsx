@@ -78,7 +78,6 @@ function PopularOffers({ title, categorie }) {
     }
   };
 
-  // ✅ Formatage de date avec traduction
   const formatDate = (dateString) => {
     if (!dateString) return "";
     const date = new Date(dateString);
@@ -97,19 +96,25 @@ function PopularOffers({ title, categorie }) {
   };
 
   useEffect(() => {
-    if (!title) return;
+    const categoryCode = typeof categorie === 'string'
+      ? categorie
+      : categorie?.code || "CAT_000";
+    const hasTitle = title?.trim().length > 0;
+    const shouldSearch = hasTitle || categoryCode !== "CAT_000";
+
+    if (!shouldSearch) {
+      setData(dataR);
+      return;
+    }
 
     const searchAnnonces = async () => {
       try {
-        let response;
-        if (categorie.code !== "CAT_000") {
-          const matchTitle = await api.get(`annonce/search/?titre=${title}&categorie=${categorie.code}`);
-          response = matchTitle.data;
-        } else {
-          const matchTitle = await api.get(`annonce/search/?titre=${title}`);
-          response = matchTitle.data;
-        }
-        setData(response);
+        const params = new URLSearchParams();
+        if (hasTitle) params.set('titre', title);
+        if (categoryCode !== "CAT_000") params.set('categorie', categoryCode);
+
+        const response = await api.get(`annonce/search/?${params.toString()}`);
+        setData(response.data);
       } catch (error) {
         console.error("Erreur de recherche:", error);
         setData(dataR);
@@ -182,6 +187,7 @@ function PopularOffers({ title, categorie }) {
                 <img
                   src={product.image}
                   alt={product.title}
+                  onError={(e) => { e.target.onerror = null; e.target.src = '/placeholder.webp'; }}
                   className="w-full h-[120px] xs:h-[130px] sm:h-[140px] md:h-[160px] lg:h-[160px] object-cover"
                 />
               </Link>

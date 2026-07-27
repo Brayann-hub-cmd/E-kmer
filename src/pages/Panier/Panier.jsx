@@ -69,7 +69,7 @@ const PanierCard = ({ item, onQteChange, onSupprimer }) => {
 
       <hr className="my-4 border-gray-100 dark:border-gray-700" />
       <p className="text-gray-700 dark:text-gray-300 font-semibold text-sm">
-        <T>subtotal</T> : {Number(item.sous_total).toLocaleString()} FCFA
+        <T>subtotal</T> : {Number(item.sous_total ?? item.annonce_prix * item.quantite).toLocaleString()} FCFA
       </p>
     </div>
   );

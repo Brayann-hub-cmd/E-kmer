@@ -65,7 +65,10 @@ export default function Navbar({ setTitle, setCategorie }) {
     if (token) {
       api.get("auth/profile/")
         .then((res) => setUserProfile(res.data))
-        .catch(() => setUserProfile(null));
+        .catch(() => {
+          setUserProfile(null);
+          setIsLoggedIn(false);
+        });
       getPanier();
     } else {
       setUserProfile(null);
@@ -114,18 +117,18 @@ export default function Navbar({ setTitle, setCategorie }) {
     e.preventDefault();
     if (!searchTerm.trim()) return;
     setIsSearching(true);
-    setShowResults(true);
-    setTitle(searchTerm);
-    setCategorie(categorySelected);
-    try {
-      const res = await api.get(`annonce/search/?titre=${encodeURIComponent(searchTerm)}`);
-      setSearchResults(res.data);
-    } catch (error) {
-      console.error("Erreur recherche:", error);
-      setSearchResults([]);
-    } finally {
-      setIsSearching(false);
+
+    if (setTitle) setTitle(searchTerm);
+    if (setCategorie) setCategorie(categorySelected);
+
+    const params = new URLSearchParams();
+    params.set("search", searchTerm);
+    if (categorySelected && categorySelected !== "CAT_000") {
+      params.set("categorie", categorySelected);
     }
+
+    navigate(`/produits?${params.toString()}`);
+    setIsSearching(false);
   };
 
   useEffect(() => {

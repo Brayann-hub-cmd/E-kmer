@@ -1,52 +1,67 @@
 // src/context/AppContext.jsx
-/* eslint-disable react-refresh/only-export-components */
 import { createContext, useState, useContext, useEffect } from 'react';
-import { fr } from '../locales/fr';
-import { en } from '../locales/en';
-import { safeReadStorage, safeWriteStorage } from '../utils/storage';
+import { getTranslations } from '../i18n/i18n';
 
 const AppContext = createContext();
 
 export const useAppContext = () => useContext(AppContext);
 
 export const AppProvider = ({ children }) => {
+  // 🌙 Thème
   const [isDarkMode, setIsDarkMode] = useState(() => {
-    const stored = safeReadStorage('darkMode');
-    return stored === 'true';
+    return localStorage.getItem('darkMode') === 'true';
   });
 
-  const [language, setLanguage] = useState(() => {
-    const stored = safeReadStorage('language');
-    return stored || 'FRA';
-  });
-
-  useEffect(() => {
-    if (typeof document !== 'undefined') {
-      document.documentElement.classList.toggle('dark', isDarkMode);
-      document.documentElement.style.colorScheme = isDarkMode ? 'dark' : 'light';
-    }
-    safeWriteStorage('darkMode', String(isDarkMode));
-  }, [isDarkMode]);
-
-  useEffect(() => {
-    safeWriteStorage('language', language);
-  }, [language]);
-
-  const toggleTheme = () => setIsDarkMode(prev => !prev);
-  const changeLanguage = (lang) => setLanguage(lang);
-
-  const translations = {
-    FRA: fr,
-    ENG: en,
+  const toggleTheme = () => {
+    setIsDarkMode(prev => !prev);
   };
 
-  const t = translations[language] || translations.FRA;
+  // 🌍 Langue
+  const [language, setLanguage] = useState(() => {
+    return localStorage.getItem('language') || 'FRA';
+  });
+
+  const changeLanguage = (lang) => {
+    setLanguage(lang);
+    localStorage.setItem('language', lang);
+  };
+
+  // 🔄 Fonction de traduction
+  const t = (key, params = {}) => {
+    const dict = getTranslations(language);
+    let text = dict[key] || key;
+    
+    Object.keys(params).forEach((p) => {
+      text = text.replace(`{${p}}`, params[p]);
+    });
+    
+    return text;
+  };
+
+  // Sauvegarder la langue à chaque changement
+  useEffect(() => {
+    localStorage.setItem('language', language);
+  }, [language]);
+
+  // Appliquer le thème
+  useEffect(() => {
+    if (isDarkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+    localStorage.setItem('darkMode', isDarkMode);
+  }, [isDarkMode]);
 
   return (
-    <AppContext.Provider value={{ isDarkMode, toggleTheme, language, changeLanguage, t }}>
+    <AppContext.Provider value={{
+      isDarkMode,
+      toggleTheme,
+      language,
+      changeLanguage,
+      t
+    }}>
       {children}
     </AppContext.Provider>
   );
 };
-
-export default AppProvider;

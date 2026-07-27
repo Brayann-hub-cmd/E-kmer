@@ -44,17 +44,10 @@ export const safeRemoveStorage = (key) => {
   }
 };
 
-export const persistAuthToken = (token, rememberMe = true) => {
-  if (typeof window === 'undefined') return;
-
-  const storage = rememberMe ? window.localStorage : window.sessionStorage;
-  try {
-    if (token) {
-      storage.setItem('token', token);
-    } else {
-      storage.removeItem('token');
-    }
-  } catch {
-    // ignore storage errors
+export const persistAuthToken = (token) => {
+  if (token) {
+    safeWriteStorage('token', token);
+  } else {
+    safeRemoveStorage('token');
   }
 };

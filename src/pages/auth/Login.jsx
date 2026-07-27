@@ -24,7 +24,7 @@ function Login() {
     if (loginMethod === "email") {
       try {
         const response = await api.post('auth/login/', { email: email, password: password });
-        persistAuthToken(response.data.token, rememberMe);
+        persistAuthToken(response.data.token);
         const userData = response.data.user;
         toast.success(`Bienvenu M./Mme ${userData.username} !`);
         setTimeout(() => {
@@ -42,12 +42,15 @@ function Login() {
     if (loginMethod === "phone") {
       try {
         const response = await api.post('auth/login/tel', {
-          telephone: `+237${phone}`,
+          telephone: `+237${phone.replace(/\D/g, '')}`,
           password: password
         });
-        persistAuthToken(response.data.token, rememberMe);
+        persistAuthToken(response.data.token);
         const userData = response.data.user;
-        toast.success(t.welcomeMessage.replace('{username}', userData.username) || `Bienvenu M./Mme ${userData.username} !`);
+        const welcomeMessage = t.welcomeMessage
+          ? t.welcomeMessage.replace('{username}', userData.username)
+          : `Bienvenu M./Mme ${userData.username} !`;
+        toast.success(welcomeMessage);
         setTimeout(() => {
           navigate('/', { state: { user: userData } });
         }, 1500);

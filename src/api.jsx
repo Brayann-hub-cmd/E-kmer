@@ -1,9 +1,11 @@
 import axios from "axios";
 import { safeReadStorage } from './utils/storage';
 
+const baseURL = `${import.meta.env.VITE_API_URL.replace(/\/+$/, '')}/api/`;
+
 const api = axios.create({
-    baseURL: import.meta.env.VITE_API_URL + '/api/',
-});
+    baseURL,
+})
 
 api.interceptors.request.use((configs) => {
     const token = safeReadStorage('token');
