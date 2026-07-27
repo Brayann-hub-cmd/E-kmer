@@ -25,25 +25,110 @@ const ProductCard = ({ product }) => {
     return date.toLocaleDateString('fr-FR');
   };
 
+  // Fonction pour enregistrer la consultation
+  const enregistrerConsultation = async (codeAnnonce) => {
+    try {
+      const response = await fetch(`${LINK}/api/annonces/${codeAnnonce}/consultation/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include', // Pour envoyer les cookies (CSRF token si nécessaire)
+      });
+
+      if (!response.ok) {
+        console.error('Erreur lors de l\'enregistrement de la consultation');
+      }
+    } catch (error) {
+      console.error('Erreur réseau:', error);
+    }
+  };
+
+  // Fonction pour gérer le clic sur le bouton "Voir les détails"
+  const handleClick = (e) => {
+    // Empêcher la navigation immédiate
+    e.preventDefault();
+    
+    // Enregistrer la consultation
+    enregistrerConsultation(product.code);
+    
+    // Ajouter le produit aux produits récemment consultés dans localStorage
+    ajouterAuxRecents(product);
+    
+    // Rediriger vers la page du produit
+    window.location.href = `/produit/${product.code}`;
+  };
+
+  // Fonction pour ajouter aux produits récents dans localStorage
+  const ajouterAuxRecents = (product) => {
+    try {
+      // Récupérer les produits récents existants
+      const stored = localStorage.getItem("recentProducts");
+      let recentProducts = stored ? JSON.parse(stored) : [];
+      
+      // Créer l'objet produit avec la date de consultation
+      const productWithDate = {
+        ...product,
+        consultedAt: new Date().toISOString()
+      };
+      
+      // Vérifier si le produit existe déjà dans la liste
+      const existingIndex = recentProducts.findIndex(p => p.code === product.code);
+      
+      if (existingIndex !== -1) {
+        // Supprimer l'ancienne entrée
+        recentProducts.splice(existingIndex, 1);
+      }
+      
+      // Ajouter le produit au début de la liste
+      recentProducts.unshift(productWithDate);
+      
+      // Limiter à 10 produits maximum
+      recentProducts = recentProducts.slice(0, 10);
+      
+      // Sauvegarder dans localStorage
+      localStorage.setItem("recentProducts", JSON.stringify(recentProducts));
+      
+    } catch (error) {
+      console.error('Erreur lors de l\'ajout aux produits récents:', error);
+    }
+  };
+
   return (
     <div className="bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden group">
-      {/* Image */}
-      <Link to={`/produit/${product.code}`} className="block overflow-hidden">
+      {/* Image - Le clic sur l'image enregistre aussi la consultation */}
+      <div 
+        onClick={(e) => {
+          e.preventDefault();
+          enregistrerConsultation(product.code);
+          ajouterAuxRecents(product);
+          window.location.href = `/produit/${product.code}`;
+        }}
+        className="block overflow-hidden cursor-pointer"
+      >
         <img
           src={product.image ? `${product.image}` : "/placeholder-image.jpg"}
           alt={product.titre}
           className="w-full h-40 object-cover bg-gray-100 group-hover:scale-105 transition-transform duration-300"
         />
-      </Link>
+      </div>
 
       {/* Contenu */}
       <div className="p-3">
         {/* Titre */}
-        <Link to={`/produit/${product.code}`} className="block hover:text-orange-500 transition-colors">
+        <div 
+          onClick={(e) => {
+            e.preventDefault();
+            enregistrerConsultation(product.code);
+            ajouterAuxRecents(product);
+            window.location.href = `/produit/${product.code}`;
+          }}
+          className="block hover:text-orange-500 transition-colors cursor-pointer"
+        >
           <h3 className="text-sm font-semibold text-gray-800 line-clamp-1 mb-1">
             {product.titre}
           </h3>
-        </Link>
+        </div>
 
         {/* Prix */}
         <p className="text-orange-500 font-bold text-base mb-2">
@@ -63,12 +148,12 @@ const ProductCard = ({ product }) => {
         </div>
 
         {/* Bouton */}
-        <Link
-          to={`/produit/${product.code}`}
-          className="block w-full text-center bg-orange-500 hover:bg-orange-600 text-white text-xs font-medium py-2 rounded-lg transition-colors"
+        <button
+          onClick={handleClick}
+          className="block w-full text-center bg-orange-500 hover:bg-orange-600 text-white text-xs font-medium py-2 rounded-lg transition-colors cursor-pointer"
         >
           Voir les détails
-        </Link>
+        </button>
       </div>
     </div>
   );

@@ -208,10 +208,10 @@ const Footer = () => {
                             <div className="flex items-center gap-3">
                                 <FaPhoneAlt className="text-[#F25012] dark:text-orange-500 flex-shrink-0" />
                                 <a
-                                    href="tel:+2376XXXXXXX"
+                                    href="tel:+237691333780"
                                     className="hover:text-[#F25012] dark:hover:text-orange-400 transition-colors duration-300"
                                 >
-                                    +237 6XX XXX XXX
+                                    +237 691 333 780
                                 </a>
                             </div>
 
