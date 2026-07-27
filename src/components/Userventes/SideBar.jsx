@@ -7,7 +7,6 @@ import api from "../../api";
 import toast from "react-hot-toast";
 import { useAppContext } from "../../context/AppContext"; // ← IMPORT
 import T from "../T"; // ← IMPORT
-const LINK = import.meta.env.VITE_API_URL;
 
 export default function SideBar({ user }) {
   const { t } = useAppContext(); // ← Récupère les traductions
@@ -156,24 +155,27 @@ export default function SideBar({ user }) {
 
       {/* MENU */}
       <div className="space-y-2">
-        {menuItems.map(({ key, label, icon: Icon, path }) => (
-          <button
-            key={key}
-            onClick={() => navigate(path)}
-            className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all duration-200 ${isActive(path)
-                ? "bg-orange-500 text-white shadow-md"
-                : "hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300"
-              }`}
-          >
-            <Icon className={`text-lg flex-shrink-0 ${isActive(path) ? "text-white" : "text-gray-500 dark:text-gray-400"}`} />
-            <span className={`text-sm font-medium ${isActive(path) ? "text-white" : "text-gray-700 dark:text-gray-300"}`}>
-              {label}
-            </span>
-            {isActive(path) && (
-              <div className="ml-auto w-2 h-2 rounded-full bg-white" />
-            )}
-          </button>
-        ))}
+        {menuItems.map(({ key, label, icon, path }) => {
+          const Icon = icon;
+          return (
+            <button
+              key={key}
+              onClick={() => navigate(path)}
+              className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all duration-200 ${isActive(path)
+                  ? "bg-orange-500 text-white shadow-md"
+                  : "hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300"
+                }`}
+            >
+              <Icon className={`text-lg flex-shrink-0 ${isActive(path) ? "text-white" : "text-gray-500 dark:text-gray-400"}`} />
+              <span className={`text-sm font-medium ${isActive(path) ? "text-white" : "text-gray-700 dark:text-gray-300"}`}>
+                {label}
+              </span>
+              {isActive(path) && (
+                <div className="ml-auto w-2 h-2 rounded-full bg-white" />
+              )}
+            </button>
+          );
+        })}
       </div>
     </div>
   );

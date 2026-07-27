@@ -69,7 +69,6 @@ const PublishProduct = () => {
         const response = await api.get(
           `low_categories/${formData.categorieId}/sous_categories/`
         );
-        console.log("Sous-catégories chargées:", response.data);
         setSousCategories(response.data);
       } catch (error) {
         console.error("Erreur chargement sous-catégories:", error);
@@ -185,7 +184,6 @@ const PublishProduct = () => {
       submitData.append("image", formData.images[0].file);
 
       for (let [key, value] of submitData.entries()) {
-        console.log(key, value);
       }
       await api.post(`annonces/`, submitData);
       toast.success(t.successPublish || "Annonce publiée avec succès !", { position: "top-right" });

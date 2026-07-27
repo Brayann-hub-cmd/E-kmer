@@ -63,14 +63,14 @@ export default function PurchaseDetail() {
         const response = await api.get("achats/");
         const achatTrouve = response.data.find(a => a.code === id);
         setPurchase(achatTrouve || null);
-      } catch (error) {
+      } catch {
         toast.error(t.errorLoading || "Erreur de chargement");
       } finally {
         setLoading(false);
       }
     };
     fetchData();
-  }, [id]);
+  }, [id, t.errorLoading]);
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);

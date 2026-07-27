@@ -1,11 +1,9 @@
 // src/pages/Footer/Apropos.jsx
 import { FaBullseye, FaHistory, FaHandshake, FaMapMarkerAlt, FaPhone, FaEnvelope } from "react-icons/fa";
 import BackToHome from "../../components/BackToHome";
-import { useAppContext } from "../../context/AppContext"; // ← IMPORT
 import T from "../../components/T"; // ← IMPORT
 
 export default function Apropos() {
-  const { t } = useAppContext(); // ← Récupère les traductions
   
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 py-8 transition-colors duration-300">

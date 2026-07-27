@@ -210,7 +210,7 @@ const SignUp = () => {
         }}
       />
 
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg w-full max-w-[420px] p-8 relative transition-colors duration-300">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg w-full max-w-md p-8 relative transition-colors duration-300">
 
         <div className="absolute top-4 left-4">
           <BackToHome />

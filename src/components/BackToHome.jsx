@@ -1,11 +1,9 @@
 // src/components/BackToHome.jsx
 import { useNavigate } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
-import { useAppContext } from "../context/AppContext"; // ← IMPORT
-import T from "./T"; // ← IMPORT
+import T from "./T";
 
 export default function BackToHome() {
-  const { t } = useAppContext(); // ← Récupère les traductions
   const navigate = useNavigate();
 
   return (

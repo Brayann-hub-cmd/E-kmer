@@ -1,5 +1,5 @@
 // src/pages/Panier.jsx
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaTrash } from "react-icons/fa";
 import api from "../../api";
@@ -7,6 +7,7 @@ import BackToHome from "../../components/BackToHome";
 import toast from "react-hot-toast";
 import { useAppContext } from "../../context/AppContext";
 import T from "../../components/T";
+import { safeReadStorageJSON, safeWriteStorageJSON } from "../../utils/storage";
 
 const LINK = import.meta.env.VITE_API_URL;
 const LIVRAISON = 5000;
@@ -28,7 +29,7 @@ const PanierCard = ({ item, onQteChange, onSupprimer }) => {
             <div>
               <h3 className="font-bold text-lg text-gray-900 dark:text-white">{item.annonce_titre}</h3>
               <p className="text-gray-400 dark:text-gray-400 text-sm mt-0.5 font-medium">
-                <T>published by</T> {item.annonce_vendeur}
+                {t.publishedBy || 'Publié par'} {item.annonce_vendeur}
               </p>
               <p className="text-orange-500 font-bold text-xl mt-2">
                 {Number(item.annonce_prix).toLocaleString()} FCFA
@@ -80,37 +81,46 @@ export default function Panier() {
   const [loadingPanier, setLoadingPanier] = useState(true);
   const navigate = useNavigate();
 
-  const fetchPanier = async () => {
+  const fetchPanier = useCallback(async () => {
     try {
       const response = await api.get("panier/");
-      setPanierData(response.data);
+      const nextData = {
+        items: Array.isArray(response?.data?.items) ? response.data.items : [],
+        total: Number(response?.data?.total) || 0
+      };
+      setPanierData(nextData);
+      safeWriteStorageJSON('cartCache', nextData);
     } catch (error) {
       console.error("Erreur chargement panier:", error);
-      toast.error(error?.response?.data?.error || t.cartLoadError || "Erreur chargement panier");
-      setPanierData({ items: [], total: 0 });
+      const cached = safeReadStorageJSON('cartCache', { items: [], total: 0 });
+      setPanierData(cached);
+      if (!cached?.items?.length) {
+        toast.error(error?.response?.data?.error || t.cartLoadError || "Erreur chargement panier");
+      }
     } finally {
       setLoadingPanier(false);
     }
-  };
+  }, [t]);
 
   useEffect(() => {
     fetchPanier();
-  }, [t]);
+  }, [fetchPanier]);
 
   const handleQteChange = async (id, nouvelleQte) => {
     if (nouvelleQte < 1) return;
 
     setPanierData((prev) => ({
       ...prev,
-      items: prev.items.map((item) =>
+      items: (prev.items || []).map((item) =>
         item.id === id
-          ? { ...item, quantite: nouvelleQte, sous_total: item.annonce_prix * nouvelleQte }
+          ? { ...item, quantite: nouvelleQte, sous_total: Number(item.annonce_prix || 0) * nouvelleQte }
           : item
       )
     }));
 
     try {
       await api.patch(`panier/items/${id}/`, { quantite: nouvelleQte });
+      await fetchPanier();
     } catch (error) {
       console.error("Erreur mise à jour quantité:", error);
       toast.error(error?.response?.data?.error || t.quantityError || "Erreur mise à jour");
@@ -121,12 +131,13 @@ export default function Panier() {
   const handleSupprimer = async (id) => {
     setPanierData((prev) => ({
       ...prev,
-      items: prev.items.filter((item) => item.id !== id)
+      items: (prev.items || []).filter((item) => item.id !== id)
     }));
 
     try {
       await api.delete(`panier/items/${id}/`);
       toast.success(t.successRemove || "Article supprimé du panier");
+      await fetchPanier();
     } catch (error) {
       console.error("Erreur suppression:", error);
       toast.error(error?.response?.data?.error || t.deleteError || "Erreur suppression");
@@ -141,7 +152,10 @@ export default function Panier() {
   if (loadingPanier) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center transition-colors duration-300">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500"></div>
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto"></div>
+          <p className="mt-4 text-gray-500 dark:text-gray-400">{t.loadingCart || 'Chargement du panier...'}</p>
+        </div>
       </div>
     );
   }

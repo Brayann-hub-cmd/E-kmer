@@ -6,15 +6,13 @@ import SideBar from "./SideBar";
 import BackToHome from "../BackToHome";
 import api from "../../api";
 import toast from "react-hot-toast";
-import { useAppContext } from "../../context/AppContext"; // ← IMPORT
-import T from "../T"; // ← IMPORT
+import { useAppContext } from "../../context/AppContext";
+import T from "../T";
 
 const LINK = import.meta.env.VITE_API_URL;
 
 // ── Carte produit en vente ───────────────────────────────────
-const SellCard = ({ product, onEdit, onDelete, onView, onViewSaleDetail }) => {
-  const { t } = useAppContext();
-
+const SellCard = ({ product, onViewSaleDetail }) => {
   return (
     <div className="bg-white dark:bg-gray-800 rounded-2xl p-4 shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-md transition-all duration-300">
       {product.lignes?.map((ligne) => (
@@ -36,24 +34,6 @@ const SellCard = ({ product, onEdit, onDelete, onView, onViewSaleDetail }) => {
 
           <div className="flex flex-col sm:flex-row gap-3 items-end sm:items-center">
             <div className="flex gap-2 flex-wrap">
-              {/* <button
-                onClick={() => onEdit(ligne.annonce)}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg text-sm flex items-center gap-1 transition-colors"
-              >
-                <FaEdit /> <T>edit</T>
-              </button> */}
-              {/* <button
-                onClick={() => onView(ligne.annonce)}
-                className="bg-gray-500 hover:bg-gray-600 dark:bg-gray-600 dark:hover:bg-gray-500 text-white px-3 py-1.5 rounded-lg text-sm flex items-center gap-1 transition-colors"
-              >
-                <FaEye /> <T>view</T>
-              </button> */}
-              {/* <button
-                onClick={() => onDelete(ligne.annonce, ligne.annonce_titre)}
-                className="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded-lg text-sm flex items-center gap-1 transition-colors"
-              >
-                <FaTrash /> <T>delete</T>
-              </button> */}
               <button
                 onClick={() => onViewSaleDetail(product.code)}
                 className="bg-purple-600 hover:bg-purple-700 text-white px-3 py-1.5 rounded-lg text-sm flex items-center gap-1 transition-colors"
@@ -70,7 +50,7 @@ const SellCard = ({ product, onEdit, onDelete, onView, onViewSaleDetail }) => {
 
 // Page principale Mes ventes
 export default function MySell() {
-  const { t } = useAppContext(); // ← Récupère les traductions
+  const { t } = useAppContext();
   const [user, setUser] = useState(null);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -84,16 +64,20 @@ export default function MySell() {
         setUser(userRes.data);
 
         const productsRes = await api.get("ventes/vendeur/");
-        setProducts(productsRes.data);
+        
+        // ✅ CORRECTION : On s'assure que products est toujours un tableau
+        const productsData = Array.isArray(productsRes.data) ? productsRes.data : [];
+        setProducts(productsData);
       } catch (error) {
         console.error("Erreur:", error);
+        setProducts([]); // En cas d'erreur, on met un tableau vide
         navigate('/');
       } finally {
         setLoading(false);
       }
     };
     fetchData();
-  }, []);
+  }, [navigate]);
 
   const handleEdit = (code) => {
     navigate(`/produit/modifier/${code}`);
@@ -104,7 +88,6 @@ export default function MySell() {
   };
 
   const handleViewSaleDetail = (code) => {
-    // Rediriger vers la page détail de la vente
     navigate(`/vente/${code}`);
   };
 
@@ -118,7 +101,7 @@ export default function MySell() {
           .filter(p => p.lignes.length > 0)
       );
       toast.success(t.successDelete || "Produit supprimé");
-    } catch (error) {
+    } catch {
       toast.error(t.errorDelete || "Erreur lors de la suppression");
     }
   };
@@ -135,12 +118,10 @@ export default function MySell() {
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors duration-300">
       <div className="flex flex-col md:flex-row">
 
-        {/* Sidebar */}
         <div className="w-full md:w-auto">
           <SideBar user={user} activeTab="ventes" />
         </div>
 
-        {/* Contenu principal */}
         <div className="flex-1 p-4 sm:p-6">
 
           <BackToHome />

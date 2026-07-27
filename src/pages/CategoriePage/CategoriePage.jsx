@@ -25,14 +25,13 @@ const CategoriePage = () => {
   const [activeSousCategorie, setActiveSousCategorie] = useState(null);
   
   useEffect(() => {
-    const getCategorie = async (code) => {
+    const getCategorie = async () => {
       try {
         const response = await api.get(`categories/${categorieId}/`);
-        setCategorie(prev => ({
-          ...prev,
+        setCategorie({
           code: `${response.data.code}`,
           nom: `${response.data.nom}`
-        }));
+        });
       } catch (error) {
         toast.error(t.errorLoading + ": " + error, { position: 'top-center' });
       }
@@ -64,16 +63,6 @@ const CategoriePage = () => {
     });
     return map;
   }, [categories]);
-  
-  const allSousCategories = async (id_categorie) => {
-    try {
-      const response = await api.get(`low_categories/${id_categorie}/sous_categories/`);
-      return response.data;
-    } catch (error) {
-      toast.error(t.errorLoadingSubCategories + ": " + error, { position: 'top-center' });
-      return [];
-    }
-  };
   
   useEffect(() => {
     const loadSousCategories = async () => {
@@ -125,9 +114,9 @@ const CategoriePage = () => {
           <p className="text-gray-500 dark:text-gray-400 mt-1">
             <T>discoverAllProducts</T>
           </p>
-          {categorieId && process.env.NODE_ENV === "development" && (
+          {categorieId && import.meta.env.MODE === "development" && (
             <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
-            </p>
+          </p>
           )}
         </div>
 

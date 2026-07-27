@@ -8,26 +8,25 @@ import T from "../components/T"; // ← IMPORT
 
 export default function Userventes() {
   const { t } = useAppContext(); // ← Récupère les traductions
-  const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
-  const getUser = async () => {
-    try {
-      const response = await api.get("auth/profile/");
-      setUser(response.data);
-      navigate("/profile");
-    } catch (error) {
-      toast.error(t.loginRequired || "Connectez-vous !");
-      localStorage.removeItem("token");
-      navigate("/");
-    } finally {
-      setLoading(false);
-    }
-  };
-  getUser();
-}, [navigate, t]);
+    const getUser = async () => {
+      try {
+        await api.get("auth/profile/");
+        navigate("/profile");
+      } catch (error) {
+        toast.error(t.loginRequired || "Connectez-vous !");
+        localStorage.removeItem("token");
+        navigate("/");
+      } finally {
+        setLoading(false);
+      }
+    };
+    getUser();
+  }, [navigate, t]);
+
 
   if (loading) {
     return (

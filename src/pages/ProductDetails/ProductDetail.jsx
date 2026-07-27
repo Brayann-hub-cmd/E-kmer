@@ -13,11 +13,13 @@ import {
 } from 'react-icons/fa';
 import api from '../../api';
 import BackToHome from '../../components/BackToHome';
-import { useAppContext } from "../../context/AppContext"; // ← IMPORT
-import T from "../../components/T"; // ← IMPORT
+import { useAppContext } from "../../context/AppContext";
+import T from "../../components/T";
+import toast from 'react-hot-toast';
+import { safeReadStorageJSON, safeWriteStorageJSON } from '../../utils/storage';
 
 const ProductDetail = () => {
-  const { t } = useAppContext(); // ← Récupère les traductions
+  const { t } = useAppContext();
   const { id } = useParams();
   const navigate = useNavigate();
   
@@ -40,6 +42,11 @@ const ProductDetail = () => {
   const [isFavorite, setIsFavorite] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const favoriteIds = safeReadStorageJSON('favorites', []);
+    setIsFavorite(Array.isArray(favoriteIds) && favoriteIds.includes(id));
+  }, [id]);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -92,7 +99,12 @@ const ProductDetail = () => {
   };
 
   const toggleFavorite = () => {
-    
+    const stored = safeReadStorageJSON('favorites', []);
+    const next = Array.isArray(stored)
+      ? (isFavorite ? stored.filter((item) => item !== id) : [...stored, id])
+      : [id];
+
+    safeWriteStorageJSON('favorites', next);
     setIsFavorite(!isFavorite);
   };
 
@@ -102,9 +114,11 @@ const ProductDetail = () => {
         annonce: product.code,
         quantite: quantity
       });
-      console.log(`Ajouté au panier: ${product.titre}, Quantité: ${quantity}, Code: ${product.code}`);
+      toast.success(`${product.titre} ${t.successAddToCart || 'ajouté au panier !'}`);
+      navigate("/panier");
     } catch (error) {
       console.error("Erreur ajout au panier:", error);
+      toast.error(error?.response?.data?.error || t.cartError || 'Impossible d’ajouter au panier');
     }
   };
 
@@ -117,6 +131,7 @@ const ProductDetail = () => {
       navigate("/paiement");
     } catch (error) {
       console.error("Erreur achat immédiat:", error);
+      toast.error(error?.response?.data?.error || t.cartError || 'Impossible de préparer l’achat');
     }
   };
 
@@ -286,23 +301,23 @@ const ProductDetail = () => {
               </div>
               
               <div className="flex flex-col gap-3 mt-4">
-                <Link
-                  to="/panier"
+                <button
+                  type="button"
                   onClick={handleAddToCart}
                   className="flex items-center justify-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-xl py-3 px-4 transition-colors w-full"
                 >
                   <FaShoppingCart className="text-base" />
                   <T>addToCart</T>
-                </Link>
-                
-                <Link
-                  to="/paiement"
+                </button>
+
+                <button
+                  type="button"
                   onClick={handleBuyNow}
                   className="flex items-center justify-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-xl py-3 px-4 transition-colors w-full"
                 >
                   <FaPlusCircle className="text-base" />
                   <T>buyNow</T>
-                </Link>
+                </button>
                 
                 <button
                   onClick={toggleFavorite}

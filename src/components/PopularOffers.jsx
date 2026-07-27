@@ -78,7 +78,6 @@ function PopularOffers({ title, categorie }) {
     }
   };
 
-  // ✅ Formatage de date avec traduction
   const formatDate = (dateString) => {
     if (!dateString) return "";
     const date = new Date(dateString);
@@ -96,42 +95,34 @@ function PopularOffers({ title, categorie }) {
     return "w-[200px] xs:w-[220px] sm:w-[240px] md:w-[260px] lg:w-[280px] xl:w-[300px]";
   };
 
-  const handleSearch = async () => {
-    try {
-      console.log("Recherche: ", title);
-      const categoryCode = typeof categorie === 'string'
-        ? categorie
-        : categorie?.code || "CAT_000";
-      let response = [];
-
-      if (title) {
-        if (categoryCode !== "CAT_000") {
-          const matchTitle = await api.get(`annonce/search/?titre=${title}&categorie=${categoryCode}`);
-          response = matchTitle.data;
-        } else {
-          const matchTitle = await api.get(`annonce/search/?titre=${title}`);
-          response = matchTitle.data;
-        }
-      } else if (categoryCode !== "CAT_000") {
-        const matchTitle = await api.get(`annonce/search/?categorie=${categoryCode}`);
-        response = matchTitle.data;
-      } else {
-        response = dataR;
-      }
-
-      console.log("dans popular offer", response);
-      setData(response);
-    } catch (error) {
-      console.error("Erreur de recherche:", error);
-      setData(dataR);
-    }
-  };
-
   useEffect(() => {
-    if (title) {
-      handleSearch();
+    const categoryCode = typeof categorie === 'string'
+      ? categorie
+      : categorie?.code || "CAT_000";
+    const hasTitle = title?.trim().length > 0;
+    const shouldSearch = hasTitle || categoryCode !== "CAT_000";
+
+    if (!shouldSearch) {
+      setData(dataR);
+      return;
     }
-  }, [title]);
+
+    const searchAnnonces = async () => {
+      try {
+        const params = new URLSearchParams();
+        if (hasTitle) params.set('titre', title);
+        if (categoryCode !== "CAT_000") params.set('categorie', categoryCode);
+
+        const response = await api.get(`annonce/search/?${params.toString()}`);
+        setData(response.data);
+      } catch (error) {
+        console.error("Erreur de recherche:", error);
+        setData(dataR);
+      }
+    };
+
+    searchAnnonces();
+  }, [title, categorie, dataR]);
 
   return (
     <section className="py-4 sm:py-6 md:py-8 lg:py-10 px-3 sm:px-4 md:px-6 relative bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
@@ -196,6 +187,7 @@ function PopularOffers({ title, categorie }) {
                 <img
                   src={product.image}
                   alt={product.title}
+                  onError={(e) => { e.target.onerror = null; e.target.src = '/placeholder.webp'; }}
                   className="w-full h-[120px] xs:h-[130px] sm:h-[140px] md:h-[160px] lg:h-[160px] object-cover"
                 />
               </Link>

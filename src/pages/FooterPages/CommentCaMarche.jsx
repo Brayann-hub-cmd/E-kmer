@@ -1,11 +1,9 @@
 // src/pages/Footer/CommentCaMarche.jsx
 import { FaSearch, FaShoppingCart, FaCreditCard, FaUserPlus, FaImage, FaChartLine } from "react-icons/fa";
 import BackToHome from "../../components/BackToHome";
-import { useAppContext } from "../../context/AppContext"; // ← IMPORT
 import T from "../../components/T"; // ← IMPORT
 
 export default function CommentCaMarche() {
-  const { t } = useAppContext(); // ← Récupère les traductions
 
   // Étapes pour les acheteurs
   const acheteurSteps = [

@@ -1,6 +1,6 @@
 // src/pages/AllProducts.jsx
 import { useEffect, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { FaSearch, FaFilter } from "react-icons/fa";
 import ProductCard from "../../components/ProductCard";
 import api from "../../api";
@@ -17,7 +17,6 @@ export default function AllProducts() {
   const [searchTerm, setSearchTerm] = useState(() => searchParams.get("search") || "");
   const [selectedCategory, setSelectedCategory] = useState(() => searchParams.get("categorie") || "");
   const [categories, setCategories] = useState([]);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {

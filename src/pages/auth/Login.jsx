@@ -6,8 +6,9 @@ import { Link, useNavigate } from "react-router-dom";
 import BackToHome from "../../components/BackToHome";
 import api from '../../api';
 import toast from "react-hot-toast";
-import { useAppContext } from "../../context/AppContext"; // ← IMPORT
-import T from "../../components/T"; // ← IMPORT
+import { useAppContext } from "../../context/AppContext";
+import T from "../../components/T";
+import { persistAuthToken } from "../../utils/storage";
 
 function Login() {
   const { t } = useAppContext(); // ← Récupère les traductions
@@ -23,7 +24,7 @@ function Login() {
     if (loginMethod === "email") {
       try {
         const response = await api.post('auth/login/', { email: email, password: password });
-        localStorage.setItem('token', response.data.token);
+        persistAuthToken(response.data.token);
         const userData = response.data.user;
         toast.success(`Bienvenu M./Mme ${userData.username} !`);
         setTimeout(() => {
@@ -33,17 +34,18 @@ function Login() {
         if (error.response?.status === 401) {
           toast.error(t.invalidEmailPassword || 'Email ou mot de passe incorrect.');
         } else {
-          console.log(`Erreur! ${error}.`);
+          toast.error(t.serverError || 'Une erreur est survenue, réessayez.');
+          console.error(error);
         }
       }
     }
     if (loginMethod === "phone") {
       try {
         const response = await api.post('auth/login/tel', {
-          telephone: `+237${phone}`,
+          telephone: `+237${phone.replace(/\D/g, '')}`,
           password: password
         });
-        localStorage.setItem('token', response.data.token);
+        persistAuthToken(response.data.token);
         const userData = response.data.user;
         const welcomeMessage = t.welcomeMessage
           ? t.welcomeMessage.replace('{username}', userData.username)
@@ -65,7 +67,7 @@ function Login() {
 
   return (
     <div className="min-h-screen bg-[#F3F3F3] dark:bg-gray-900 flex items-center justify-center transition-colors duration-300">
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-8 w-[420px] relative transition-colors duration-300">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-8 w-full max-w-md relative transition-colors duration-300">
 
         <div className="absolute top-4 left-4">
           <BackToHome />
