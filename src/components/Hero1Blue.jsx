@@ -32,7 +32,7 @@ const HeroSection = () => {
               {/* Bouton */}
               <div className="mt-4 sm:mt-6 md:mt-8 lg:mt-10">
                 <a
-                  href="/articles"
+                  href="/produits"
                   className="inline-block bg-white dark:bg-gray-700 text-[#253E59] dark:text-white font-semibold px-6 sm:px-8 md:px-10 lg:px-12 py-2.5 sm:py-3 md:py-3.5 lg:py-4 rounded-full text-sm sm:text-base md:text-lg shadow-md hover:shadow-xl hover:scale-105 transition-all duration-300"
                 >
                   <T>findArticles</T>
