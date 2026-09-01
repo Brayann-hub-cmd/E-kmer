@@ -115,7 +115,6 @@ const ProductDetail = () => {
         quantite: quantity
       });
       toast.success(`${product.titre} ${t.successAddToCart || 'ajouté au panier !'}`);
-      navigate("/panier");
     } catch (error) {
       console.error("Erreur ajout au panier:", error);
       toast.error(error?.response?.data?.error || t.cartError || 'Impossible d’ajouter au panier');
@@ -301,23 +300,23 @@ const ProductDetail = () => {
               </div>
               
               <div className="flex flex-col gap-3 mt-4">
-                <button
-                  type="button"
+                <Link
+                  to="/panier"
                   onClick={handleAddToCart}
                   className="flex items-center justify-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-xl py-3 px-4 transition-colors w-full"
                 >
                   <FaShoppingCart className="text-base" />
                   <T>addToCart</T>
-                </button>
-
-                <button
-                  type="button"
+                </Link>
+                
+                <Link
+                  to="/paiement"
                   onClick={handleBuyNow}
                   className="flex items-center justify-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-xl py-3 px-4 transition-colors w-full"
                 >
                   <FaPlusCircle className="text-base" />
                   <T>buyNow</T>
-                </button>
+                </Link>
                 
                 <button
                   onClick={toggleFavorite}
